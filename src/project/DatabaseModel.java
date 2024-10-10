@@ -87,7 +87,7 @@ public class DatabaseModel {
 	 * @param field Field being changed
 	 * @param newValue The new value
 	 */
-	public void editUser(String username, String field, String newValue) {
+	public void editUser(String username, String field, Object newValue) {
 		try {
 			DatabaseHelper.update("users", field, "username", username, newValue);
 		} catch (SQLException e) {

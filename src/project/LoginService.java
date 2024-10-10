@@ -19,6 +19,7 @@ public class LoginService extends TilePane {
 		primaryStage.setTitle("Instructor Home page");
         TextField username = new TextField();
         TextField password = new TextField();
+        
         // set title for the stage
         
         Button btn = new Button();
@@ -32,9 +33,29 @@ public class LoginService extends TilePane {
         
         btn.setOnAction(new EventHandler<>() {
             public void handle(ActionEvent event) {
-            	
+            
 	            	user.username = username.getText();
 	            	user.password = password.getText();	
+	            	
+	            	try {
+						if(DatabaseHelper.isDatabaseEmpty()) {
+							user.roles = new String[] {"Admin"};
+							database.registerUser(
+		            				user.username, 
+		            				user.password, 
+		            				"", 
+		            				user.roles, 
+		            				false, 
+		            				0, 
+		            				new String[] {});
+							
+							
+							FinishSetupPage finish = new FinishSetupPage(primaryStage, user, database);
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	            	
 	            	try {
 						DatabaseHelper.displayUsersByUser();
@@ -48,11 +69,10 @@ public class LoginService extends TilePane {
 	            	{
 	            		
 	            		if(database.getUserField(user.username, "email").equals("")) {
-	            			user.roles = new String[] {"Admin", "Student", "Instructor"};
-			            	Role role = new Role(primaryStage, user, database);
+	            			FinishSetupPage finish = new FinishSetupPage(primaryStage, user, database);
 	            		} else {
-		            		FinishSetupPage finish = new FinishSetupPage(primaryStage, user, database);
-	    	            }
+			            	Role role = new Role(primaryStage, user, database);
+			            }
 	            			
 	            		
 	            	} else {

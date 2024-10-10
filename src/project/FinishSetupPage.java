@@ -24,34 +24,30 @@ public class FinishSetupPage extends TilePane {
         Button btn = new Button();
         btn.setText("Log In");
         
-        Button btn2 = new Button();
-        btn2.setText("One Time Code");
  
         // set preferred column count
         email.setPrefColumnCount(7);        
         
-//        btn.setOnAction(new EventHandler<>() {
-//            public void handle(ActionEvent event) {
-//            	
-//	            	user.email = email.getText();
-//	            	user.password = password.getText();	
-//	            	
-//	            	if(database.getUserField(user.username, "email") != "") {
-//	            		user.roles = new String[] {"Admin", "Student", "Instructor"};
-//		            	Role role = new Role(primaryStage, user, database);
-//	            	}
-//                } 
-//            });
-//        
-//        btn2.setOnAction(new EventHandler<>() {
-//
-//			@Override
-//			public void handle(ActionEvent event) {
-//				// TODO Auto-generated method stub
-//				OneTimePassPage create = new OneTimePassPage(primaryStage, user, database);
-//			}
-//        	
-//        });
+        btn.setOnAction(new EventHandler<>() {
+            public void handle(ActionEvent event) {
+            	
+	            	user.email = email.getText();
+	            	
+	            	FullName name = new FullName();
+	            	
+	            	name.first = first.getText();
+	            	name.middle =middle.getText();
+	            	name.last = last.getText();
+	            	name.preferred = preferred.getText();
+	            	
+	            	user.fullName = name;
+	            	
+	            	database.editUser(user.username, "email", user.email);
+	            	database.editUser(user.username, "fullName", new String[] {name.first, name.middle, name.last, name.preferred});
+	            	
+		            Role role = new Role(primaryStage, user, database);
+                } 
+            });
  
         // create a label
         Label l = new Label("Enter Email: ");
@@ -71,7 +67,6 @@ public class FinishSetupPage extends TilePane {
         getChildren().add(l5);
         getChildren().add(preferred);
         getChildren().add(btn);
-        getChildren().add(btn2);
         
         primaryStage.setScene(new Scene(this, 350, 250));
         primaryStage.show();
