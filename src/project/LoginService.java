@@ -57,13 +57,6 @@ public class LoginService extends TilePane {
 						e.printStackTrace();
 					}
 	            	
-	            	try {
-						DatabaseHelper.displayUsersByUser();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            	
 	            	if(DatabaseHelper.doesExist("users", "username", user.username) &&
 	            			DatabaseHelper.doesExist("users", "password", user.password))
 	            	{
