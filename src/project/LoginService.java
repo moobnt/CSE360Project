@@ -36,7 +36,9 @@ public class LoginService extends TilePane {
 	            	user.password = password.getText();	
 	            	
 //	            	if(database.user)
-	            	
+	            	user.roles = new String[] {"Admin", "Student", "Instructor"};
+	            	Role role = new Role(primaryStage, user, database);
+ 	            	
                 } 
             });
         

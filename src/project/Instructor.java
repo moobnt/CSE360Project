@@ -6,47 +6,35 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
-public class Instructor extends TilePane{
+public class Instructor extends TilePane {
 	
 	
 		//as it pops up it starts with button
-    public void start(Stage primaryStage) {
+    public Instructor(Stage stage, User user, DatabaseModel database) {
     	
-        primaryStage.setTitle("Instructor Home page");
+        stage.setTitle("Instructor Home page");
         
-        TilePane tilePane = new TilePane();
-        tilePane.setHgap(10); // Horizontal gap between tiles
-        tilePane.setVgap(10); 
+        setHgap(10); // Horizontal gap between tiles
+        setVgap(10); 
+        
         Button btn = new Button("log out");
         
+        btn.setOnAction(new EventHandler<>() {
+        	
+        	public void handle(ActionEvent event) {
         
-            public void handle(ActionEvent event) {
-            	@Override
-	            		/***
-	            		 * this event occures when the log out button is played. When the button is pressed
-	            		 * it results in the application closing the current window
-	            		 * and running the new window I.e the log out page
-	            		 */
-	            		
-	                    // Start the external Java process
-	                   
-	                    
-	                    //*****
-	                    
-	                    	// Get the current window
-	                         
-	                        // Close the current window
-	                       
-	                   
-	                } 
-	            });
+        		LoginService login = new LoginService(stage, user, database);
+
+                   
+                } 
+            });
             
         
-        StackPane root = new StackPane();
-        tilePane.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
+        getChildren().add(btn);
+        stage.setScene(new Scene(this, 300, 250));
+        stage.show();
     }
 }
