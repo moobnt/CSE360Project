@@ -8,26 +8,17 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class Instructor extends Application {
+public class Instructor {
 	
-<<<<<<< HEAD
-//	public static void main(String[] args) {
-//		System.out.println("helo");
-//	}
-	//launches button
-		public static void main(String[] args) {
-	        launch(args);
-	    }
-	    
-		//as it pops up it starts with button
-=======
-	//launches button
 	public static void main(String[] args) {
-        launch(args);
-    }
-	
-	//as it pops up it starts with button
->>>>>>> branch 'main' of https://github.com/moobnt/CSE360Project.git
+		System.out.println("helo");
+	}
+//	//launches button
+//		public static void main(String[] args) {
+//	        launch(args);
+//	    }
+//	    
+		//as it pops up it starts with button
     public void start(Stage primaryStage) {
     	
         primaryStage.setTitle("Instructor Home page");
