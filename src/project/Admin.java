@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
@@ -99,6 +100,16 @@ public class Admin extends TilePane {
 			public void handle(ActionEvent event) {
 				TilePane deleteLayout = new TilePane();
 				Scene deleteScene = new Scene(deleteLayout, 600, 250);
+				
+				TextField deleteUser = new TextField();
+				deleteUser.setText("Username");
+				
+				Button confirm = new Button();
+				confirm.setText("Confirm");
+				confirm.setOnAction(e -> database.removeUser(deleteUser.getText()));
+				
+				deleteLayout.getChildren().addAll(deleteUser, confirm);
+				
 				stage.setScene(deleteScene);
 			}
 		});
@@ -110,6 +121,9 @@ public class Admin extends TilePane {
 			public void handle(ActionEvent event) {
 				TilePane listLayout = new TilePane();
 				Scene listScene = new Scene(listLayout, 600, 250);
+				
+				
+				
 				stage.setScene(listScene);
 			}
 		});
@@ -121,6 +135,9 @@ public class Admin extends TilePane {
 			public void handle(ActionEvent event) {
 				TilePane addOrRemoveLayout = new TilePane();
 				Scene addOrRemoveScene = new Scene(addOrRemoveLayout, 600, 250);
+				
+				
+				
 				stage.setScene(addOrRemoveScene);
 			}
 		});
