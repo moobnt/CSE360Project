@@ -1,4 +1,4 @@
-package CSE360Project;
+package project;
 
 public class Role {
 
