@@ -11,56 +11,49 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
-public class LoginService extends Application {
-	DatabaseModel databaseModel;
-
+public class CreateAccount extends TilePane {
 	
-	public static void main(String[] args) {
-
-		launch(args);
-	}
-	
-	public void start(Stage primaryStage) {
-		databaseModel = new DatabaseModel();
-		databaseModel.connect();
+	public CreateAccount(Stage stage, User user, DatabaseModel database) {
 		
-		primaryStage.setTitle("Instructor Home page");
+		stage.setTitle("Create Account");
         TextField username = new TextField();
         TextField password = new TextField();
+        TextField password2 = new TextField();
+
         // set title for the stage
         
         Button btn = new Button();
         btn.setText("Log In");
-        
-        Button btn2 = new Button();
-        btn2.setText("One Time Code");
  
         // set preferred column count
         username.setPrefColumnCount(7);
         
-        User user = new User();
+        Label l4 = new Label("Passwords do not match!");
         
         
         btn.setOnAction(new EventHandler<>() {
             public void handle(ActionEvent event) {
             	
-	            	user.username = username.getText();
-	            	user.password = password.getText();	
+	            	String u = username.getText();
+	            	String p = password.getText();
+	            	String p2 = password2.getText();
+	            	
+	            	if(p.equals(p2)) {
+	            		user.username = u;
+	            		user.password = p;
+	       
+//	            		LoginService login = new LoginService(stage, user, database);
+	            	} else {
+	            		username.clear();
+	            		password.clear();
+	            		password2.clear();
+	            		getChildren().add(l4);
+	            	}
 	            	
 //	            	if(database.user)
 	            	
                 } 
             });
-        
-        btn2.setOnAction(new EventHandler<>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				OneTimePassPage create = new OneTimePassPage(primaryStage, user, databaseModel);
-			}
-        	
-        });
  
         // create a tile pane
         TilePane r = new TilePane();
@@ -68,21 +61,22 @@ public class LoginService extends Application {
         // create a label
         Label l = new Label("Enter Username: ");
         Label l2 = new Label("Enter Password: ");
+        Label l3 = new Label("Re-Enter Password: ");
 
         
-        StackPane root = new StackPane();
 //        root.getChildren().add(btn);
 //        root.getChildren().add(username);
 //        root.getChildren().add(password);
-        r.getChildren().add(l);
-        r.getChildren().add(username);
-        r.getChildren().add(l2);
-        r.getChildren().add(password);
-        r.getChildren().add(btn);
-        r.getChildren().add(btn2);
+        getChildren().add(l);
+        getChildren().add(username);
+        getChildren().add(l2);
+        getChildren().add(password);
+        getChildren().add(l3);
+        getChildren().add(password2);
+        getChildren().add(btn);
         
-        primaryStage.setScene(new Scene(r, 350, 250));
-        primaryStage.show();
+        stage.setScene(new Scene(this, 350, 250));
+        stage.show();
 	}
 
 }
