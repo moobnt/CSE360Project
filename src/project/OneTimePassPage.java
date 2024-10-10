@@ -25,8 +25,6 @@ public class OneTimePassPage extends TilePane {
         btn.setText("Enter");
  
         // set preferred column count
-     
-        
         
         btn.setOnAction(new EventHandler<>() {
             public void handle(ActionEvent event) {

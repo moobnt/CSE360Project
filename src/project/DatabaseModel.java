@@ -45,7 +45,7 @@ public class DatabaseModel {
 			String username, 
 			String password, 
 			String email, 
-			String[] roles, 
+			Object[] roles, 
 			boolean onetime, 
 			long date, 
 			String[] name) 
@@ -74,7 +74,7 @@ public class DatabaseModel {
 	 */
 	public void registerCode(String code, String... roles) {
 		try {
-			DatabaseHelper.register(code, roles);
+			DatabaseHelper.registerCode(code, roles);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

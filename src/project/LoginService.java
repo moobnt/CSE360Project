@@ -1,5 +1,7 @@
 package project;
 
+import java.sql.SQLException;
+
 import javafx.application.Application; 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,8 +15,7 @@ import javafx.stage.Stage;
 
 public class LoginService extends TilePane {
 	
-	public LoginService(Stage primaryStage, User user, DatabaseModel database) {
-		
+	public LoginService(Stage primaryStage, User user, DatabaseModel database) {		
 		primaryStage.setTitle("Instructor Home page");
         TextField username = new TextField();
         TextField password = new TextField();
@@ -35,10 +36,29 @@ public class LoginService extends TilePane {
 	            	user.username = username.getText();
 	            	user.password = password.getText();	
 	            	
-//	            	if(database.user)
-	            	user.roles = new String[] {"Admin", "Student", "Instructor"};
-	            	Role role = new Role(primaryStage, user, database);
- 	            	
+	            	try {
+						DatabaseHelper.displayUsersByUser();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            	
+	            	if(DatabaseHelper.doesExist("users", "username", user.username) &&
+	            			DatabaseHelper.doesExist("users", "password", user.password))
+	            	{
+	            		
+	            		if(database.getUserField(user.username, "email").equals("")) {
+	            			user.roles = new String[] {"Admin", "Student", "Instructor"};
+			            	Role role = new Role(primaryStage, user, database);
+	            		} else {
+		            		FinishSetupPage finish = new FinishSetupPage(primaryStage, user, database);
+	    	            }
+	            			
+	            		
+	            	} else {
+	            		username.clear();
+	            		password.clear();
+	            	}
                 } 
             });
         

@@ -43,7 +43,7 @@ class DatabaseHelper {
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "username VARCHAR(255) UNIQUE NOT NULL, "
                 + "password VARCHAR(255) NOT NULL, "
-                + "email VARCHAR(255) UNIQUE NOT NULL, "
+                + "email VARCHAR(255) NOT NULL, "
                 + "roles VARCHAR(255), "
                 + "onetime BOOLEAN DEFAULT FALSE, "
                 + "onetimeDate DATE, "
@@ -160,9 +160,9 @@ class DatabaseHelper {
      * @param name     the full name of the user
      * @throws SQLException if there is an issue executing the SQL insert
      */
-    public static void register(String username, String password, String email, String roles, boolean onetime, java.sql.Date date, String name) throws SQLException {
+    public static void register(String username, String password, String email, Object[] roles, boolean onetime, java.sql.Date date, String[] name) throws SQLException {
         if (isDatabaseEmpty()) {
-            roles = "Admin"; // First user is assigned the Admin role
+            roles = new String[] {"Admin"}; // First user is assigned the Admin role
         }
         if (doesExist("users", "username", username)) {
             return; // User already exists, do not proceed
@@ -170,14 +170,14 @@ class DatabaseHelper {
 
         String insertUser = "INSERT INTO users (username, password, email, roles, onetime, onetimeDate, fullName) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.setString(3, email);
-            pstmt.setString(4, roles);
-            pstmt.setBoolean(5, onetime);
-            pstmt.setDate(6, date);
-            pstmt.setString(7, name);
-            pstmt.executeUpdate();
+        	pstmt.setString(1, username);
+			pstmt.setString(2, password);
+			pstmt.setString(3, email);
+			pstmt.setObject(4, roles, JDBCType.ARRAY);
+			pstmt.setBoolean(5, onetime);
+			pstmt.setDate(6, date);
+			pstmt.setObject(7, name);
+			pstmt.executeUpdate();
         }
     }
 
@@ -188,7 +188,7 @@ class DatabaseHelper {
      * @param roles the roles associated with the code
      * @throws SQLException if there is an issue executing the SQL insert
      */
-    public static void registerCode(String code, String roles) throws SQLException {
+    public static void registerCode(String code, String[] roles) throws SQLException {
         if (doesExist("codes", "code", code)) {
             return; // Code already exists, do not proceed
         }
@@ -196,7 +196,7 @@ class DatabaseHelper {
         String insertCode = "INSERT INTO codes (code, roles) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertCode)) {
             pstmt.setString(1, code);
-            pstmt.setString(2, roles);
+            pstmt.setObject(2, roles, JDBCType.ARRAY);
             pstmt.executeUpdate();
         }
     }

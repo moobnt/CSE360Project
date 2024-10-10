@@ -12,8 +12,10 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 public class Role extends TilePane {
-
+	
     public Role(Stage stage, User user, DatabaseModel database) {
+    	
+    	database.registerCode("string", "Instructor");
 
         //set title for stage
         stage.setTitle("Roles");
@@ -35,6 +37,18 @@ public class Role extends TilePane {
                  	
                  });
             }
+            
+            if(((String) o).equals("Student")) {
+           	 btn.setOnAction(new EventHandler<>() {
+
+        			@Override
+        			public void handle(ActionEvent event) {
+        				// TODO Auto-generated method stub
+        				Student i = new Student(stage, user, database);
+        			}
+                	
+                });
+           }
             
             getChildren().add(btn);
         }

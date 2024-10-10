@@ -29,7 +29,6 @@ public class CreateAccount extends TilePane {
         
         Label l4 = new Label("Passwords do not match!");
         
-        
         btn.setOnAction(new EventHandler<>() {
             public void handle(ActionEvent event) {
             	
@@ -40,31 +39,32 @@ public class CreateAccount extends TilePane {
 	            	if(p.equals(p2)) {
 	            		user.username = u;
 	            		user.password = p;
-	       
+	            		
+	            		database.registerUser(
+	            				u, 
+	            				p, 
+	            				"", 
+	            				user.roles, 
+	            				false, 
+	            				0, 
+	            				new String[] {});
+	            		
 	            		LoginService login = new LoginService(stage, user, database);
 	            	} else {
 	            		username.clear();
 	            		password.clear();
 	            		password2.clear();
 	            		getChildren().add(l4);
-	            	}
-	            	
-//	            	if(database.user)
-	            	
+	            	}	            	
                 } 
             });
- 
-        // create a tile pane
- 
+  
         // create a label
         Label l = new Label("Enter Username: ");
         Label l2 = new Label("Enter Password: ");
         Label l3 = new Label("Re-Enter Password: ");
 
         
-//        root.getChildren().add(btn);
-//        root.getChildren().add(username);
-//        root.getChildren().add(password);
         getChildren().add(l);
         getChildren().add(username);
         getChildren().add(l2);
