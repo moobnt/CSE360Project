@@ -34,9 +34,6 @@ public class Main {
 
 		databaseModel.addCodeRoles("hello", "Instructor");
 		
-		databaseModel.removeCode("hello");
-		System.out.println(databaseModel.getCodeRoles("hello").length);
-
 		
 	}
 	

@@ -1,6 +1,12 @@
-package CSE360Project;
+package project;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 public class Student extends Application {
 	
@@ -24,15 +30,15 @@ public class Student extends Application {
 	            		 * and running the new window I.e the log out page
 	            		 */
 	            		
-	            		  // Start the external Java process
-		                   LoginService.main(new String[0]);
-		                    
-		                    //*****
-		                    
-		                    	// Get the current window
-		                        Stage stage = (Stage) btn.getScene().getWindow(); 
-		                        // Close the current window
-		                        stage.close(); 
+//	            		  // Start the external Java process
+//		                   LoginService.main(new String[0]);
+//		                    
+//		                    //*****
+//		                    
+//		                    	// Get the current window
+//		                        Stage stage = (Stage) btn.getScene().getWindow(); 
+//		                        // Close the current window
+//		                        stage.close(); 
 		                   
             }
         });
