@@ -27,6 +27,10 @@ public class DatabaseModel {
 		}
 	}
 	
+	public boolean hasCode(String code) {
+		return DatabaseHelper.doesExist("codes", "code", code);
+	}
+	
 	/**
 	 * Register a user
 	 * @param username The username of the user
