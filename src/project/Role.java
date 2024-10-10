@@ -50,6 +50,19 @@ public class Role extends TilePane {
                 });
            }
             
+            if(((String) o).equals("Admin")) {
+            	btn.setOnAction(new EventHandler<>() {
+
+        			@Override
+        			public void handle(ActionEvent event) {
+        				// TODO Auto-generated method stub
+        				Admin i = new Admin(stage, user, database);
+        			}
+                	
+                });
+            }
+            
+            
             getChildren().add(btn);
         }
 
