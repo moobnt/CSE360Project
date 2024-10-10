@@ -8,16 +8,16 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class Instructor {
+public class Instructor extends Application {
 	
-	public static void main(String[] args) {
-		System.out.println("helo");
-	}
-//	//launches button
-//		public static void main(String[] args) {
-//	        launch(args);
-//	    }
-//	    
+//	public static void main(String[] args) {
+//		System.out.println("helo");
+//	}
+	//launches button
+		public static void main(String[] args) {
+	        launch(args);
+	    }
+	    
 		//as it pops up it starts with button
     public void start(Stage primaryStage) {
     	
