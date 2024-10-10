@@ -11,48 +11,35 @@ public class Main {
 	
 	
 	public static void main(String[] args) {
-		DatabaseHelper databaseHelper = new DatabaseHelper();
 		
-		try {
-			databaseHelper.connectToDatabase();
-			databaseHelper.clearDatabase();
-			
-			// register example
-			databaseHelper.register(
-					"asmithey", 
-					"password", 
-					"aasmithe@asu.edu", 
-					new String[] {"Admin", "Student"}, 
-					false,
-					new java.sql.Date(new Date().getTime() + TimeUnit.DAYS.toMillis(1)),
-					new String[] {"Adam", "A", "Smithey", "Adam"});
-			
-			// update user
-			databaseHelper.update("asmithey", "onetimeDate", new java.sql.Date(new Date().getTime() + TimeUnit.DAYS.toMillis(2)));
-			
-			// display all users
-			databaseHelper.displayUsersByUser();
-			
-			// testing
-			System.out.println("\n" + databaseHelper.doesUserExist("asmithey"));
-			System.out.println(databaseHelper.doesUserExist("bsmithey"));
-			
-			// delete user
-			databaseHelper.removeUser("asmithey");
-			
-			// prove user is removed
-			databaseHelper.displayUsersByUser();
-			
-			// close connection
-			databaseHelper.closeConnection();
-			
+		DatabaseModel databaseModel = new DatabaseModel();
+		
+		databaseModel.connect();
+		databaseModel.resetTables();
+		databaseModel.registerUser(
+				"asmithey", 
+				"pw", 
+				"aasmithe@asu.edu", 
+				new String[] {"Admin", "Student"}, 
+				false,
+				new Date().getTime() + TimeUnit.DAYS.toMillis(1),
+				new String[] {"Adam", "A", "Smithey", "Adam"});
+		
+		databaseModel.registerCode(
+				"hello", 
+				"Student", "Admin");
+		
+		databaseModel.editUser("asmithey", "password", "pass");
+		System.out.println(databaseModel.getUserField("asmithey","password"));
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		databaseModel.addCodeRoles("hello", "Instructor");
 		
+		databaseModel.removeCode("hello");
+		System.out.println(databaseModel.getCodeRoles("hello").length);
+
 		
 	}
 	
 }
+
+

@@ -16,24 +16,25 @@ class DatabaseHelper {
 	static final String USER = "sa"; 
 	static final String PASS = ""; 
 
-	private Connection connection = null;
-	private Statement statement = null; 
+	private static Connection connection = null;
+	private static Statement statement = null; 
 	//	PreparedStatement pstmt
 
-	public void connectToDatabase() throws SQLException {
+	public static void connectToDatabase() throws SQLException {
 		try {
 			Class.forName(JDBC_DRIVER); // Load the JDBC driver
 			System.out.println("Connecting to database...");
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
 			statement = connection.createStatement(); 
-			createTables();  // Create the necessary tables if they don't exist
+			createTables();
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
 		}
 	}
 
-	private void createTables() throws SQLException {
-		String userTable = "CREATE TABLE IF NOT EXISTS cse360users ("
+	
+	public static void createTables() throws SQLException {
+		String userTable = "CREATE TABLE IF NOT EXISTS users ("
 				+ "id INT AUTO_INCREMENT PRIMARY KEY, "
 				+ "username VARCHAR(255) UNIQUE,"
 				+ "password VARCHAR(255), "
@@ -43,24 +44,38 @@ class DatabaseHelper {
 				+ "onetimeDate DATE,"
 				+ "fullName VARCHAR(255) ARRAY"
 				+ ")";
+		
 		statement.execute(userTable);
+		
+		String codesTable = "CREATE TABLE IF NOT EXISTS codes ("
+				+ "id INT AUTO_INCREMENT PRIMARY KEY, "
+				+ "code VARCHAR(255) UNIQUE, "
+				+ "roles VARCHAR(255) ARRAY"
+				+ ")";
+		
+		statement.execute(codesTable);
 	}
 
 
 	// Check if the database is empty
-	public boolean isDatabaseEmpty() throws SQLException {
-		String query = "SELECT COUNT(*) AS count FROM cse360users";
+	public static boolean isDatabaseEmpty() throws SQLException {
+		String query = "SELECT"
+				+ "(SELECT COUNT(*) FROM users) AS count,"
+				+ "(SELECT COUNT(*) FROM codes) AS count2,"
+				+ "FROM dual";
 		ResultSet resultSet = statement.executeQuery(query);
+
 		if (resultSet.next()) {
-			return resultSet.getInt("count") == 0;
+			return resultSet.getInt("count") + resultSet.getInt("count2") == 0;
 		}
 		return true;
 	}
 
-	public void register(String username, String password, String email, String[] roles, boolean onetime, java.sql.Date date, String[] name) throws SQLException {
+	public static void register(String username, String password, String email, String[] roles, boolean onetime, java.sql.Date date, String[] name) throws SQLException {
 		if(isDatabaseEmpty()) roles = new String[] {"Admin"};
+		if(doesExist("users", "username", username)) return;
 		
-		String insertUser = "INSERT INTO cse360users "
+		String insertUser = "INSERT INTO users "
 				+ "(username, password, email, roles, onetime, onetimeDate, fullName) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
@@ -75,25 +90,51 @@ class DatabaseHelper {
 		}
 	}
 	
+	public static void register(String code, String[] roles) throws SQLException {
+		if(doesExist("codes", "code", code)) return;
+		
+		String insertCode = "INSERT INTO codes "
+				+ "(code, roles) "
+				+ "VALUES (?,?)";
+		
+		try (PreparedStatement pstmt = connection.prepareStatement(insertCode)) {
+			pstmt.setString(1, code);
+			pstmt.setObject(2, roles, JDBCType.ARRAY);
+
+			pstmt.executeUpdate();
+		}
+	}
+	
+	public static Object getValue(String table, String key, Object value, String field) throws SQLException {
+		String sql = "SELECT " + field + " FROM " + table + " WHERE " + key + " = '" + value + "'";
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		if(rs.next()) {
+			return rs.getObject(field);
+		};
+		
+		return null;
+	}
+	
 	/**
 	 * Updates a user represented by their username. Provide field in string format, and 
 	 * provide the new value you want in that field.
 	 * 
 	 */
-	public void update(String username, String field, Object value)  throws SQLException {
-		String sql = "UPDATE cse360users SET " + field + " = ? WHERE username = ?";
+	public static void update(String table, String field, String key, Object value, Object newValue)  throws SQLException {
+		String sql = "UPDATE " + table + " SET " + field + " = ? WHERE " + key + " = ?";
 		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setObject(1, value);
-			pstmt.setString(2, username);
+			pstmt.setObject(1, newValue);
+			pstmt.setObject(2, value);
 			pstmt.executeUpdate();
 		}
 	}
 	
-	public void removeUser(String username) throws SQLException {
-		String sql = "DELETE FROM cse360users WHERE username = ?";
+	public static void remove(String table, String key, String value) throws SQLException {
+		String sql = "DELETE FROM " + table + " WHERE " + key + " = ?";
 		
 		try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setObject(1, username);
+			pstmt.setObject(1, value);
 			pstmt.executeUpdate();
 		}
 	}
@@ -110,11 +151,11 @@ class DatabaseHelper {
 //		}
 //	}
 	
-	public boolean doesUserExist(String username) {
-	    String query = "SELECT COUNT(*) FROM cse360users WHERE username = ?";
+	public static boolean doesExist(String table, String item, Object value) {
+	    String query = "SELECT COUNT(*) FROM " + table + " WHERE " + item + " = ?";
 	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 	        
-	        pstmt.setString(1, username);
+	        pstmt.setObject(1, value);
 	        ResultSet rs = pstmt.executeQuery();
 	        
 	        if (rs.next()) {
@@ -149,8 +190,8 @@ class DatabaseHelper {
 //		} 
 //	}
 	
-	public void displayUsersByUser() throws SQLException{
-		String sql = "SELECT * FROM cse360users"; 
+	public static void displayUsersByUser() throws SQLException{
+		String sql = "SELECT * FROM users"; 
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql); 
 
@@ -183,20 +224,20 @@ class DatabaseHelper {
 		if(!users) System.out.println("\nNo Users Registered in the Database!");
 	}
 	
-	public void clearDatabase() throws SQLException {
+	public static void clearDatabase() throws SQLException {
 		String sql = "TRUNCATE TABLE cse360users RESTART IDENTITY";
 		Statement stmt = connection.createStatement();
 		stmt.execute(sql);
 	}
 	
-	public void dropTable() throws SQLException {
-		String sql = "DROP TABLE cse360users";
+	public static void dropTable(String table) throws SQLException {
+		String sql = "DROP TABLE " + table;
 		Statement stmt = connection.createStatement();
 		stmt.execute(sql);
 	}
 
 
-	public void closeConnection() {
+	public static void closeConnection() {
 		try{ 
 			if(statement!=null) statement.close(); 
 		} catch(SQLException se2) { 
