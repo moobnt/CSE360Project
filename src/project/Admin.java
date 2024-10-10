@@ -11,14 +11,23 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Admin extends TilePane {
 	
 	public String codeGen() {
-		byte[] array = new byte[7]; // length is bounded by 7
-	    new Random().nextBytes(array);
-	    String generatedString = new String(array, Charset.forName("UTF-8"));
+		int leftLimit = 97; // letter 'a'
+	    int rightLimit = 122; // letter 'z'
+	    int targetStringLength = 10;
+	    Random random = new Random();
+	    StringBuilder buffer = new StringBuilder(targetStringLength);
+	    for (int i = 0; i < targetStringLength; i++) {
+	        int randomLimitedInt = leftLimit + (int) 
+	          (random.nextFloat() * (rightLimit - leftLimit + 1));
+	        buffer.append((char) randomLimitedInt);
+	    }
+	    String generatedString = buffer.toString();
 
 	    return generatedString;
 	}
@@ -38,13 +47,33 @@ public class Admin extends TilePane {
 				// Scene elements
 				Button newInvite = new Button();
 				newInvite.setText("Generate a new invite.");
+				
 				CheckBox instructorRole = new CheckBox();
 				instructorRole.setText("Instructor");
+				CheckBox studentRole = new CheckBox();
+				studentRole.setText("Student");
+				CheckBox adminRole = new CheckBox();
+				adminRole.setText("Admin");
+				
 				newInvite.setOnAction(new EventHandler<>() {
 					public void handle(ActionEvent event) {
 						String inviteCode = codeGen();
+						
+						TilePane inviteCodeLayout = new TilePane();
+						Scene inviteCodeScene = new Scene(inviteCodeLayout, 600, 250);
+						
+						Text inviteCodeDisplay = new Text();
+						inviteCodeDisplay.setText("Invite code created: " + inviteCode);
+						
+						inviteCodeLayout.getChildren().addAll(inviteCodeDisplay);
+						
+						database.registerCode(inviteCode, "Admin");
+						
+						stage.setScene(inviteCodeScene);
 					}
 				});
+				
+				inviteLayout.getChildren().addAll(newInvite, instructorRole, studentRole, adminRole);
 				
 				stage.setScene(inviteScene);
 			}

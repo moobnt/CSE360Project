@@ -26,7 +26,7 @@ public class Main extends Application {
 		databaseModel = new DatabaseModel();
 		databaseModel.connect();	
 		
-		Admin login = new Admin(primaryStage, user, databaseModel);
+		LoginService login = new LoginService(primaryStage, user, databaseModel);
 	}
 	
 }
