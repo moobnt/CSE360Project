@@ -13,8 +13,7 @@ import javafx.stage.Stage;
 
 public class CreateAccount extends TilePane {
 	
-	public CreateAccount(Stage stage, User user, DatabaseModel database) {
-		
+	public CreateAccount(Stage stage, User user, DatabaseModel database) {	
 		stage.setTitle("Create Account");
         TextField username = new TextField();
         TextField password = new TextField();
@@ -42,7 +41,7 @@ public class CreateAccount extends TilePane {
 	            		user.username = u;
 	            		user.password = p;
 	       
-//	            		LoginService login = new LoginService(stage, user, database);
+	            		LoginService login = new LoginService(stage, user, database);
 	            	} else {
 	            		username.clear();
 	            		password.clear();
@@ -56,7 +55,6 @@ public class CreateAccount extends TilePane {
             });
  
         // create a tile pane
-        TilePane r = new TilePane();
  
         // create a label
         Label l = new Label("Enter Username: ");
