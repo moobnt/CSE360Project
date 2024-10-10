@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 /**
@@ -25,7 +24,7 @@ import javafx.stage.Stage;
  */
 
 
-public class Student extends TilePane {
+public class Student extends StackPane {
 	/**********
 	 * This method is for the web page that shows the Student view, which is the log out button.
 	 * 
@@ -38,10 +37,9 @@ public class Student extends TilePane {
     	//title page
         stage.setTitle("Student Home page");
         
-        setHgap(10); // Horizontal gap between tiles
-        setVgap(10); 
+
         
-        Button btn = new Button("log out");
+        Button btn = new Button("Log out");
         
         btn.setOnAction(new EventHandler<>() {
         	
