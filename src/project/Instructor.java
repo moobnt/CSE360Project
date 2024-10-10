@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 public class Instructor extends Application {
 	
+<<<<<<< HEAD
 //	public static void main(String[] args) {
 //		System.out.println("helo");
 //	}
@@ -19,6 +20,14 @@ public class Instructor extends Application {
 	    }
 	    
 		//as it pops up it starts with button
+=======
+	//launches button
+	public static void main(String[] args) {
+        launch(args);
+    }
+	
+	//as it pops up it starts with button
+>>>>>>> branch 'main' of https://github.com/moobnt/CSE360Project.git
     public void start(Stage primaryStage) {
     	
         primaryStage.setTitle("Instructor Home page");
