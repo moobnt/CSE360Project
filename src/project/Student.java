@@ -9,6 +9,21 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * 
+ * <p> Student - Web page </p>
+ * 
+ * <p> Description: This page is set up for the Student, it allows them to view and request post's. 
+ * The code is based on a TilePlan for inputs based of of user preference. </p>
+ * 
+ * 
+ * @author Group TH 58
+ * 
+ * @version 1.00		2024-10-9	Initial baseline
+ * 
+ */
+
+
 public class Student extends TilePane {
 	
 	
@@ -38,4 +53,4 @@ public class Student extends TilePane {
         stage.show();
     }
 }
-}
+
