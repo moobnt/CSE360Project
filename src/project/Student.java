@@ -26,7 +26,12 @@ import javafx.stage.Stage;
 
 
 public class Student extends TilePane {
-	
+	/**********
+	 * This method is for the web page that shows the Student view, which is the log out button.
+	 * 
+	 * @param input		when the button is pressed the 
+	 * @return			send the user back to the log in page
+	 */
 	
 	//as it pops up it starts with button
     public Student(Stage stage, User user, DatabaseModel database) {

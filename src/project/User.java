@@ -2,6 +2,22 @@ package project;
 
 import java.util.Date;
 
+/***
+ * 
+ * <p> user - data storage. </p>
+ * 
+ * <p> Description: A storage for user data, collected from user input. The code is
+ * instantiated holders for the user data.
+ * </p>
+ * 
+ * 
+ * 
+ * @author Group TH 58
+ * 
+ * @version 1.00		2024-10-9	Initial baseline
+ * 
+ */
+
 public class User {
 	public String username;
 	public String password;
