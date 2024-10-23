@@ -1,6 +1,6 @@
 package project;
 
-import java.nio.charset.Charset;
+import java.util.*;
 import java.util.Random;
 
 import javafx.event.ActionEvent;
@@ -86,6 +86,21 @@ public class Admin extends TilePane {
 				CheckBox adminRole = new CheckBox();
 				adminRole.setText("Admin");
 				
+				// Check what roles are requested and make a string
+				// containing them to pass on to registerCode
+				// Doing this w/ an array list so that adding the strings to the array
+				// doesn't have complex looking logic
+				List<String> roleList = new ArrayList<>();
+				
+				// All if statements so that we can account for multiple roles
+				if (instructorRole.isSelected()) {
+					roleList.add("instructor");
+				} if (studentRole.isSelected()) {
+					roleList.add("student");
+				} if (adminRole.isSelected()) {
+					roleList.add("admin");
+				}
+				
 				// Once the generate button is pressed, the admin is brought to a new page
 				// where the code is displayed to give to the new user
 				newInvite.setOnAction(new EventHandler<>() {
@@ -102,8 +117,10 @@ public class Admin extends TilePane {
 						inviteCodeDisplay.setText("Invite code created: " + inviteCode);
 						
 						// Send the invite code off to the database so that it can be used
-						database.registerCode(inviteCode, "Admin");
+						//TODO: the toString() bit at the end may break everything, only there because the function wont take objects
+						database.registerCode(inviteCode, roleList.toArray().toString());
 						
+						// Adds all elements and shows the scene
 						inviteCodeLayout.getChildren().addAll(inviteCodeDisplay);
 						stage.setScene(inviteCodeScene);
 					}

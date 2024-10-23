@@ -1,6 +1,7 @@
 package project;
 
 import java.sql.SQLException;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class DatabaseModel {
 	 * @param email The user's email
 	 * @param roles The roles assigned to the user
 	 * @param onetime Flag indicating one time password
-	 * @param date Expiration date on one time password
+	 * @param date Expiration date on one time password in milliseconds since 1970/1/1 (UTC)
 	 * @param name full name
 	 */
 	public void registerUser(
@@ -47,7 +48,7 @@ public class DatabaseModel {
 			String email, 
 			Object[] roles, 
 			boolean onetime, 
-			long date, 
+			OffsetDateTime date, // in ms since 1970/1/1
 			String[] name) 
 	{
 		
@@ -58,7 +59,7 @@ public class DatabaseModel {
 					email,
 					roles,
 					onetime,
-					new java.sql.Date(date),
+					date,
 					name);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -137,6 +138,22 @@ public class DatabaseModel {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Resets the user's password and gives them a new, one time password that will
+	 * expire 1 week from the date of the reset.
+	 * @param username The user name of the user to be reset
+	 * @throws SQLException
+	 */
+	public void resetUser(String username) {
+		// there are a few things that have to be set, so this function is called for each
+		// This figures out the time in UTC that the reset function is called
+		OffsetDateTime currentTime = OffsetDateTime.now(ZoneOffset.UTC);
+		
+		this.editUser(username, "onetime", true);
+		this.editUser(username, "password", null); // TODO: change from null to a one-time code
+		this.editUser(username, "date", currentTime.plusWeeks(1)); // Adds a week to the current date
 	}
 	
 	public void removeUser(String username) {

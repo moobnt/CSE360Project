@@ -1,6 +1,8 @@
 package project;
 
 import java.sql.*;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 class DatabaseHelper {
@@ -160,7 +162,7 @@ class DatabaseHelper {
      * @param name     the full name of the user
      * @throws SQLException if there is an issue executing the SQL insert
      */
-    public static void register(String username, String password, String email, Object[] roles, boolean onetime, java.sql.Date date, String[] name) throws SQLException {
+    public static void register(String username, String password, String email, Object[] roles, boolean onetime, OffsetDateTime date, String[] name) throws SQLException {
         if (isDatabaseEmpty()) {
             roles = new String[] {"Admin"}; // First user is assigned the Admin role
         }
@@ -175,7 +177,7 @@ class DatabaseHelper {
 			pstmt.setString(3, email);
 			pstmt.setObject(4, roles, JDBCType.ARRAY);
 			pstmt.setBoolean(5, onetime);
-			pstmt.setDate(6, date);
+			pstmt.setObject(6, date);
 			pstmt.setObject(7, name);
 			pstmt.executeUpdate();
         }
@@ -281,6 +283,14 @@ class DatabaseHelper {
         }
         return false;
     }
+    
+    public void resetUser(String username) {
+		// there are a few things that have to be set, so this function is called for each
+		// This figures out the time in UTC that the reset function is called
+		OffsetDateTime currentTime = OffsetDateTime.now(ZoneOffset.UTC);
+		
+		// TODO: update all fields individually and figure out update
+	}
 
     /**
      * Closes the database connection and statement.
