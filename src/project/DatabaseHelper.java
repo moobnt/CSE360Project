@@ -106,6 +106,34 @@ class DatabaseHelper {
             }
         }
     }
+    
+    public static void displayUsersbyAdmin() throws SQLException {
+    	String sql = "SELECT * FROM users";
+    	
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            boolean usersExist = false;
+            while (rs.next()) {
+                usersExist = true;
+                // Retrieve data by column name
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String roles = rs.getString("roles");
+                String fullName = rs.getString("fullName");
+
+                // Display values
+                System.out.print("\n" + id + " : ");
+                System.out.print(username);
+                System.out.print(" | " + fullName);
+                System.out.println(" | " + roles);
+            }
+
+            if (!usersExist) {
+                System.out.println("\nNo Users Registered in the Database!");
+            }
+        }
+    }
 
     /**
      * Clears all records from the specified table and resets auto-incrementing IDs.

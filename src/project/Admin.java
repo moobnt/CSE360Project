@@ -1,5 +1,6 @@
 package project;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.Random;
 
@@ -116,9 +117,7 @@ public class Admin extends TilePane {
 						Text inviteCodeDisplay = new Text();
 						inviteCodeDisplay.setText("Invite code created: " + inviteCode);
 						
-						// Send the invite code off to the database so that it can be used
-						//TODO: the toString() bit at the end may break everything, only there because the function wont take objects
-						database.registerCode(inviteCode, roleList.toArray().toString());
+						database.registerCode(inviteCode, roleList.toArray(String[]::new));
 						
 						// Adds all elements and shows the scene
 						inviteCodeLayout.getChildren().addAll(inviteCodeDisplay);
@@ -165,7 +164,9 @@ public class Admin extends TilePane {
 				// Buttons ---
 				Button confirm = new Button();
 				confirm.setText("Confirm");
-				confirm.setOnAction(e -> database.removeUser(deleteUser.getText()));
+				confirm.setOnAction(e -> {
+					database.removeUser(deleteUser.getText());
+				});
 				
 				// Adds all elements and shows the scene
 				deleteLayout.getChildren().addAll(deleteUser, confirm);
@@ -184,6 +185,16 @@ public class Admin extends TilePane {
 				Scene listScene = new Scene(listLayout, 600, 250);
 				
 				// TODO: List all users button
+				
+				// Create a list of all users and their data and print it out line by line
+				// Format: USERNAME: LAST, FIRST MIDDLE | ROLE1, ROLE2, ROLE3
+				
+				try {
+					DatabaseModel.displayUsersbyAdmin();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				stage.setScene(listScene);
 			}

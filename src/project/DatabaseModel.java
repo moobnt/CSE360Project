@@ -1,12 +1,14 @@
 package project;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.Array;
 
 import project.DatabaseHelper;
@@ -81,6 +83,20 @@ public class DatabaseModel {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+     * Only displays user name, full name, and roles of each user
+     * For use by admin only
+     * @throws SQLException
+     */
+    public static void displayUsersbyAdmin() throws SQLException {
+    	try {
+    		DatabaseHelper.displayUsersbyAdmin();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 	
 	/**
 	 * Edit a value within the user table

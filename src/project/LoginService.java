@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 public class LoginService extends TilePane {
 	
 	public LoginService(Stage primaryStage, User user, DatabaseModel database) {		
-		primaryStage.setTitle("Instructor Home page");
+		primaryStage.setTitle("CSE360 Help Articles");
         TextField username = new TextField();
         TextField password = new TextField();
         
