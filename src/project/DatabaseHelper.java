@@ -2,261 +2,170 @@ package project;
 
 import java.sql.*;
 import java.time.OffsetDateTime;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZoneOffset;
-import java.util.Date;
 
 class DatabaseHelper {
 
-    // JDBC driver name and database URL
-    static final String JDBC_DRIVER = "org.h2.Driver";
-    static final String DB_URL = "jdbc:h2:~/database";
+    private static final String JDBC_DRIVER = "org.h2.Driver";
+    private static final String DB_URL = "jdbc:h2:~/database";
 
-    // Database credentials (these should ideally be stored securely, e.g., using environment variables)
-    static final String USER = "sa";
-    static final String PASS = "";
+    private static final String USER = "sa";
+    private static final String PASS = "";
 
-    private static Connection connection = null;
-    private static Statement statement = null;
+    private static Connection connection;
+    private static Statement statement;
 
     /**
      * Establishes a connection to the database and creates necessary tables.
      * 
+     * @return the database connection
      * @throws SQLException if there is an issue connecting to the database or creating tables
      */
-    public static void connectToDatabase() throws SQLException {
-        try {
-            Class.forName(JDBC_DRIVER); // Load the JDBC driver
-            System.out.println("Connecting to database...");
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            statement = connection.createStatement();
-            createTables();
-        } catch (ClassNotFoundException e) {
-            System.err.println("JDBC Driver not found: " + e.getMessage());
+    public static Connection connectToDatabase() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            try {
+                Class.forName(JDBC_DRIVER);
+                connection = DriverManager.getConnection(DB_URL, USER, PASS);
+                statement = connection.createStatement();
+                createTables();
+            } catch (ClassNotFoundException e) {
+                System.err.println("JDBC Driver not found: " + e.getMessage());
+            }
         }
+        return connection;
     }
 
     /**
-     * Creates the 'users' and 'codes' tables if they do not exist.
-     * 
-     * @throws SQLException if there is an issue executing the SQL statements
+     * Creates necessary tables in the database if they do not exist.
      */
     public static void createTables() throws SQLException {
         String userTable = "CREATE TABLE IF NOT EXISTS users ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "username VARCHAR(255) UNIQUE NOT NULL, "
                 + "password VARCHAR(255) NOT NULL, "
-                + "email VARCHAR(255) NOT NULL, "
+                + "email VARCHAR(255), "
                 + "roles VARCHAR(255), "
                 + "onetime BOOLEAN DEFAULT FALSE, "
-                + "onetimeDate DATE, "
-                + "fullName VARCHAR(255)"
-                + ")";
-
+                + "onetimeCode VARCHAR(255), "        // New column for one-time code
+                + "onetimeDate TIMESTAMP, "           // New column for one-time code expiration
+                + "isReset BOOLEAN DEFAULT FALSE, "   // New column to track reset status
+                + "fullName VARCHAR(255))";
         statement.execute(userTable);
 
         String codesTable = "CREATE TABLE IF NOT EXISTS codes ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "code VARCHAR(255) UNIQUE NOT NULL, "
-                + "roles VARCHAR(255)"
-                + ")";
-
+                + "roles VARCHAR(255))";
         statement.execute(codesTable);
     }
+    
+    public static void storeOneTimeCode(String username, String resetCode, OffsetDateTime expirationDate) throws SQLException {
+        String sql = "UPDATE users SET onetimeCode = ?, onetimeDate = ? WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, resetCode);
+            pstmt.setTimestamp(2, Timestamp.from(expirationDate.toInstant()));
+            pstmt.setString(3, username);
+            pstmt.executeUpdate();
+        }
+    }
 
-    /**
-     * Displays all user records in the 'users' table.
-     * 
-     * @throws SQLException if there is an issue executing the query
-     */
-    public static void displayUsersByUser() throws SQLException {
-        String sql = "SELECT * FROM users";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    public static boolean validateOneTimeCode(String username, String code) throws SQLException {
+        String sql = "SELECT onetimeCode, onetimeDate FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String storedCode = rs.getString("onetimeCode");
+                    Timestamp expirationTimestamp = rs.getTimestamp("onetimeDate");
+                    OffsetDateTime currentDateTime = OffsetDateTime.now(ZoneOffset.UTC);
 
-            boolean usersExist = false;
-            while (rs.next()) {
-                usersExist = true;
-                // Retrieve data by column name
-                int id = rs.getInt("id");
-                String email = rs.getString("email");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-                String roles = rs.getString("roles");
-                Boolean onetime = rs.getBoolean("onetime");
-                Date onetimeDate = rs.getDate("onetimeDate");
-                String fullName = rs.getString("fullName");
-
-                // Display values
-                System.out.println("\nID: " + id);
-                System.out.println("Username: " + username);
-                System.out.println("Password: " + password);
-                System.out.println("Email: " + email);
-                System.out.println("Roles: " + roles);
-                System.out.println("One-Time Password Enabled: " + onetime);
-                if (onetimeDate != null) {
-                    System.out.println("One-Time Expiration Date: " + onetimeDate.toString());
-                } else {
-                    System.out.println("One-Time Expiration Date: Not Set");
+                    return storedCode != null && storedCode.equals(code) &&
+                            expirationTimestamp != null &&
+                            expirationTimestamp.toInstant().isAfter(currentDateTime.toInstant());
                 }
-                System.out.println("Full Name: " + fullName);
-            }
-
-            if (!usersExist) {
-                System.out.println("\nNo Users Registered in the Database!");
             }
         }
+        return false;
     }
-    
-    public static void displayUsersbyAdmin() throws SQLException {
-    	String sql = "SELECT * FROM users";
-    	
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
 
-            boolean usersExist = false;
-            while (rs.next()) {
-                usersExist = true;
-                // Retrieve data by column name
-                int id = rs.getInt("id");
-                String username = rs.getString("username");
-                String roles = rs.getString("roles");
-                String fullName = rs.getString("fullName");
+    public static void clearOneTimeCode(String username) throws SQLException {
+        String sql = "UPDATE users SET onetimeCode = NULL, onetimeDate = NULL WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+        }
+    }
 
-                // Display values
-                System.out.print("\n" + id + " : ");
-                System.out.print(username);
-                System.out.print(" | " + fullName);
-                System.out.println(" | " + roles);
-            }
-
-            if (!usersExist) {
-                System.out.println("\nNo Users Registered in the Database!");
-            }
+    public static void updatePassword(String username, String newPassword) throws SQLException {
+        String sql = "UPDATE users SET password = ?, onetime = FALSE WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
         }
     }
     
     /**
-     * Adds a new user to the database with the specified roles.
-     * 
-     * <p>This method inserts a new record into the Users table with the provided
-     * username and then adds a record in the UserRoles table for each role assigned
-     * to that user. If multiple roles are specified, each role is associated with the 
-     * username through separate records in the UserRoles table.
-     * 
-     * @param username The username of the new user
-     * @param roles An array of roles assigned to the user (e.g., "Admin", "Instructor")
-     * @throws SQLException if there is an error accessing the database
+     * Adds a new user with specified roles.
+     *
+     * @param username the username of the user
+     * @param roles    an array of roles assigned to the user
      */
     public static void addUser(String username, String[] roles) throws SQLException {
-        String insertUserSQL = "INSERT INTO Users (username) VALUES (?)";
-        String insertRoleSQL = "INSERT INTO UserRoles (username, role) VALUES (?, ?)";
+        String insertUserSQL = "INSERT INTO users (username, roles) VALUES (?, ?)";
+        String rolesString = String.join(",", roles); // Convert roles array to a comma-separated string
 
-        try (PreparedStatement userStmt = connection.prepareStatement(insertUserSQL);
-             PreparedStatement roleStmt = connection.prepareStatement(insertRoleSQL)) {
-
-            // Insert the new user
-            userStmt.setString(1, username);
-            userStmt.executeUpdate();
-
-            // Insert each role associated with the user
-            for (String role : roles) {
-                roleStmt.setString(1, username);
-                roleStmt.setString(2, role);
-                roleStmt.executeUpdate();
-            }
+        try (PreparedStatement pstmt = connection.prepareStatement(insertUserSQL)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, rolesString);
+            pstmt.executeUpdate();
         }
     }
-
-    /**
-     * Clears all records from the specified table and resets auto-incrementing IDs.
-     * 
-     * @throws SQLException if there is an issue executing the truncate statement
-     */
-    public static void clearDatabase() throws SQLException {
-        String sql = "TRUNCATE TABLE users RESTART IDENTITY";
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Database has been cleared.");
-        }
-    }
-
-    /**
-     * Drops the specified table from the database.
-     * 
-     * @param table the name of the table to drop
-     * @throws SQLException if there is an issue executing the drop statement
-     */
-    public static void dropTable(String table) throws SQLException {
-        String sql = "DROP TABLE IF EXISTS " + table;
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("Table " + table + " has been dropped.");
-        }
-    }
-
-    /**
-     * Checks if the database is empty.
-     * 
-     * @return true if the 'users' table has no records, false otherwise
-     * @throws SQLException if there is an issue executing the query
-     */
-    public static boolean isDatabaseEmpty() throws SQLException {
-        String query = "SELECT COUNT(*) AS total FROM users";
-        try (ResultSet resultSet = statement.executeQuery(query)) {
-            if (resultSet.next()) {
-                return resultSet.getInt("total") == 0;
-            }
-        }
-        return true;
-    }
-
+    
     /**
      * Registers a new user in the 'users' table.
-     * 
-     * @param username the username of the new user
-     * @param password the password for the new user
-     * @param email    the email address of the new user
-     * @param roles    the roles assigned to the new user
-     * @param onetime  indicates if a one-time password is enabled
-     * @param date     the expiration date for the one-time password
-     * @param name     the full name of the user
-     * @throws SQLException if there is an issue executing the SQL insert
+     *
+     * @param username the username of the user
+     * @param password the password of the user
+     * @param email    the email of the user
+     * @param roles    an array of roles assigned to the user
+     * @param onetime  flag indicating whether the password is one-time
+     * @param date     expiration date for the one-time password
+     * @param name     full name of the user as an array with first, middle, and last names
      */
-    public static void register(String username, String password, String email, Object[] roles, boolean onetime, OffsetDateTime date, String[] name) throws SQLException {
-        if (isDatabaseEmpty()) {
-            roles = new String[] {"Admin"}; // First user is assigned the Admin role
-        }
-        if (doesExist("users", "username", username)) {
-            return; // User already exists, do not proceed
-        }
+    public static void register(String username, String password, String email, Object[] roles,
+            boolean onetime, OffsetDateTime date, String[] name) throws SQLException {
+    	
+    	if (date == null) {
+    		date = OffsetDateTime.now(ZoneOffset.UTC); // Set to current time if null
+    	}
 
-        String insertUser = "INSERT INTO users (username, password, email, roles, onetime, onetimeDate, fullName) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
-        	pstmt.setString(1, username);
-			pstmt.setString(2, password);
-			pstmt.setString(3, email);
-			pstmt.setObject(4, roles, JDBCType.ARRAY);
-			pstmt.setBoolean(5, onetime);
-			pstmt.setObject(6, date);
-			pstmt.setObject(7, name);
-			pstmt.executeUpdate();
-        }
+    	String insertUserSQL = "INSERT INTO users (username, password, email, roles, onetime, onetimeDate, fullName) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    	String fullName = String.join(" ", name);  // Concatenate full name from the array
+
+    	try (PreparedStatement pstmt = connection.prepareStatement(insertUserSQL)) {
+    		pstmt.setString(1, username);
+    		pstmt.setString(2, password);
+    		pstmt.setString(3, email);
+    		pstmt.setString(4, String.join(",", (CharSequence[]) roles));  // Store roles as a comma-separated string
+    		pstmt.setBoolean(5, onetime);
+    		pstmt.setTimestamp(6, Timestamp.from(date.toInstant()));
+    		pstmt.setString(7, fullName);
+    		pstmt.executeUpdate();
+    	}
     }
+
 
     /**
      * Registers a new invitation code in the 'codes' table.
-     * 
-     * @param code  the invitation code
-     * @param roles the roles associated with the code
-     * @throws SQLException if there is an issue executing the SQL insert
      */
     public static void registerCode(String code, String[] roles) throws SQLException {
-        if (doesExist("codes", "code", code)) {
-            return; // Code already exists, do not proceed
-        }
-
-        String insertCode = "INSERT INTO codes (code, roles) VALUES (?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertCode)) {
+        String sql = "INSERT INTO codes (code, roles) VALUES (?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, code);
             pstmt.setObject(2, roles, JDBCType.ARRAY);
             pstmt.executeUpdate();
@@ -264,19 +173,24 @@ class DatabaseHelper {
     }
 
     /**
-     * Retrieves a specific value from a table based on a given condition.
-     * 
-     * @param table the table to query
-     * @param key   the column name used for the condition
-     * @param value the value to match in the key column
-     * @param field the field to retrieve
-     * @return the value from the specified field if found, null otherwise
-     * @throws SQLException if there is an issue executing the query
+     * Updates a specified field in a table based on a condition.
      */
-    public static Object getValue(String table, String key, Object value, String field) throws SQLException {
+    public static void update(String table, String field, String key, String value, Object newValue) throws SQLException {
+        String sql = "UPDATE " + table + " SET " + field + " = ? WHERE " + key + " = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setObject(1, newValue);
+            pstmt.setString(2, value);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Retrieves a specific value from a table based on a given condition.
+     */
+    public static Object getValue(String table, String key, String value, String field) throws SQLException {
         String sql = "SELECT " + field + " FROM " + table + " WHERE " + key + " = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setObject(1, value);
+            pstmt.setString(1, value);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getObject(field);
@@ -287,70 +201,58 @@ class DatabaseHelper {
     }
 
     /**
-     * Updates a specified field in a table based on a condition.
-     * 
-     * @param table    the table to update
-     * @param field    the field to update
-     * @param key      the column used for the condition
-     * @param value    the value to match in the key column
-     * @param newValue the new value to set in the field
-     * @throws SQLException if there is an issue executing the update
+     * Removes a record from the specified table based on a condition.
      */
-    public static void update(String table, String field, String key, Object value, Object newValue) throws SQLException {
-        String sql = "UPDATE " + table + " SET " + field + " = ? WHERE " + key + " = ?";
+    public static void remove(String table, String key, String value) throws SQLException {
+        String sql = "DELETE FROM " + table + " WHERE " + key + " = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setObject(1, newValue);
-            pstmt.setObject(2, value);
+            pstmt.setString(1, value);
             pstmt.executeUpdate();
         }
     }
 
     /**
-     * Deletes a record from a specified table.
-     * 
-     * @param table the table to delete from
-     * @param key   the column used for the condition
-     * @param value the value to match in the key column
-     * @throws SQLException if there is an issue executing the delete
+     * Displays user information for admin purposes.
      */
-    public static void remove(String table, String key, String value) throws SQLException {
-        String sql = "DELETE FROM " + table + " WHERE " + key + " = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setObject(1, value);
-            pstmt.executeUpdate();
+    public static void displayUsersbyAdmin() throws SQLException {
+        String sql = "SELECT username, roles, fullName FROM users";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                System.out.println("Username: " + rs.getString("username"));
+                System.out.println("Roles: " + rs.getString("roles"));
+                System.out.println("Full Name: " + rs.getString("fullName"));
+                System.out.println("---------------------------");
+            }
+        }
+    }
+
+    /**
+     * Drops the specified table from the database.
+     */
+    public static void dropTable(String table) throws SQLException {
+        String sql = "DROP TABLE IF EXISTS " + table;
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("Table " + table + " has been dropped.");
         }
     }
 
     /**
      * Checks if a record exists in a specified table based on a given condition.
-     * 
-     * @param table the table to query
-     * @param item  the column name used for the condition
-     * @param value the value to match in the item column
-     * @return true if the record exists, false otherwise
      */
     public static boolean doesExist(String table, String item, Object value) {
         String query = "SELECT COUNT(*) FROM " + table + " WHERE " + item + " = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setObject(1, value);
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
+                return rs.next() && rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    
-    public void resetUser(String username) {
-		// there are a few things that have to be set, so this function is called for each
-		// This figures out the time in UTC that the reset function is called
-		OffsetDateTime currentTime = OffsetDateTime.now(ZoneOffset.UTC);
-		
-		// TODO: update all fields individually and figure out update
-	}
 
     /**
      * Closes the database connection and statement.
