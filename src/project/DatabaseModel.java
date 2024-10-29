@@ -162,14 +162,21 @@ public class DatabaseModel {
 	 * @param username The user name of the user to be reset
 	 * @throws SQLException
 	 */
-	public void resetUser(String username) {
+	public void resetUser(String username) { // AAAAAAAAAAAAAAA
 		// there are a few things that have to be set, so this function is called for each
 		// This figures out the time in UTC that the reset function is called
 		OffsetDateTime currentTime = OffsetDateTime.now(ZoneOffset.UTC);
 		
-		this.editUser(username, "onetime", true);
-		this.editUser(username, "password", null); // TODO: change from null to a one-time code
-		this.editUser(username, "date", currentTime.plusWeeks(1)); // Adds a week to the current date
+		// check if user exists
+		if (DatabaseHelper.doesExist("users", "username", username)) {
+			this.editUser(username, "onetime", true);
+			this.editUser(username, "password", 1234); // TODO: change from null to a one-time code
+			this.editUser(username, "onetimeDate", currentTime.plusWeeks(1)); // Adds a week to the current date
+		} else {
+			System.out.println("User does not exist");
+		}
+		
+		
 	}
 	
 	public void removeUser(String username) {

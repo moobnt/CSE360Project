@@ -120,13 +120,18 @@ class DatabaseHelper {
                 int id = rs.getInt("id");
                 String username = rs.getString("username");
                 String roles = rs.getString("roles");
-                String fullName = rs.getString("fullName");
 
-                // Display values
-                System.out.print("\n" + id + " : ");
-                System.out.print(username);
-                System.out.print(" | " + fullName);
-                System.out.println(" | " + roles);
+                String fullName = rs.getString("fullName");
+                String [] name = fullName.split(" ");
+                
+                String firstName = name[0];
+                String middleName = name[1];
+                String lastName = name[2];
+                
+                System.out.println("First Name: " + lastName + ", ");
+                System.out.println("First Name: " + firstName);
+                System.out.println("First Name: " + middleName);
+                System.out.println("Full Name: " + fullName);
             }
 
             if (!usersExist) {

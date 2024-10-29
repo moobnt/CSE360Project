@@ -141,8 +141,24 @@ public class Admin extends TilePane {
 				TilePane resetLayout = new TilePane();
 				Scene resetScene = new Scene(resetLayout, 600, 250);
 				
-				// TODO: Reset user button
+				// Text input box ---
+				TextField resetUser = new TextField();
+				resetUser.setText("Username");
 				
+				Button submit = new Button();
+				submit.setText("Submit");
+				submit.setOnAction(new EventHandler<>() {
+					public void handle(ActionEvent event) {
+						database.resetUser(resetUser.getText());
+						
+						Text resetUserFeedback = new Text();
+						resetUserFeedback.setText("User reset");
+						
+						resetLayout.getChildren().addAll(resetUserFeedback);
+					}
+				});
+				
+				resetLayout.getChildren().addAll(resetUser, submit);
 				stage.setScene(resetScene);
 			}
 		});
@@ -187,7 +203,7 @@ public class Admin extends TilePane {
 				// TODO: List all users button
 				
 				// Create a list of all users and their data and print it out line by line
-				// Format: USERNAME: LAST, FIRST MIDDLE | ROLE1, ROLE2, ROLE3
+				// Format: INDEX : USERNAME | LAST, FIRST MIDDLE (PREFERRED) | ROLE1, ROLE2, ROLE3
 				
 				try {
 					DatabaseModel.displayUsersbyAdmin();
