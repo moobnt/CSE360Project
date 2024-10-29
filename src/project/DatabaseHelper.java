@@ -134,6 +134,38 @@ class DatabaseHelper {
             }
         }
     }
+    
+    /**
+     * Adds a new user to the database with the specified roles.
+     * 
+     * <p>This method inserts a new record into the Users table with the provided
+     * username and then adds a record in the UserRoles table for each role assigned
+     * to that user. If multiple roles are specified, each role is associated with the 
+     * username through separate records in the UserRoles table.
+     * 
+     * @param username The username of the new user
+     * @param roles An array of roles assigned to the user (e.g., "Admin", "Instructor")
+     * @throws SQLException if there is an error accessing the database
+     */
+    public static void addUser(String username, String[] roles) throws SQLException {
+        String insertUserSQL = "INSERT INTO Users (username) VALUES (?)";
+        String insertRoleSQL = "INSERT INTO UserRoles (username, role) VALUES (?, ?)";
+
+        try (PreparedStatement userStmt = connection.prepareStatement(insertUserSQL);
+             PreparedStatement roleStmt = connection.prepareStatement(insertRoleSQL)) {
+
+            // Insert the new user
+            userStmt.setString(1, username);
+            userStmt.executeUpdate();
+
+            // Insert each role associated with the user
+            for (String role : roles) {
+                roleStmt.setString(1, username);
+                roleStmt.setString(2, role);
+                roleStmt.executeUpdate();
+            }
+        }
+    }
 
     /**
      * Clears all records from the specified table and resets auto-incrementing IDs.
