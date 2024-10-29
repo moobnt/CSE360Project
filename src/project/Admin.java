@@ -221,15 +221,64 @@ public class Admin extends TilePane {
 		Button addOrRemove = new Button();
 		addOrRemove.setText("Add or Remove Users");
 		addOrRemove.setOnAction(new EventHandler<>() {
-			public void handle(ActionEvent event) {
-				// Scene initialization
-				TilePane addOrRemoveLayout = new TilePane();
-				Scene addOrRemoveScene = new Scene(addOrRemoveLayout, 600, 250);
-				
-				// TODO: Add or remove users button
-				
-				stage.setScene(addOrRemoveScene);
-			}
+		    public void handle(ActionEvent event) {
+		        // Scene initialization
+		        TilePane addOrRemoveLayout = new TilePane();
+		        Scene addOrRemoveScene = new Scene(addOrRemoveLayout, 600, 300);
+
+		        // Text input box for adding a new user ---
+		        TextField newUserField = new TextField();
+		        newUserField.setPromptText("Enter new username");
+
+		        // Checkbox selection for roles
+		        CheckBox instructorRole = new CheckBox("Instructor");
+		        CheckBox studentRole = new CheckBox("Student");
+		        CheckBox adminRole = new CheckBox("Admin");
+
+		        // Button to add a new user
+		        Button addUserButton = new Button("Add User");
+		        addUserButton.setOnAction(e -> {
+		            String username = newUserField.getText().trim();
+		            List<String> roleList = new ArrayList<>();
+
+		            if (instructorRole.isSelected()) roleList.add("instructor");
+		            if (studentRole.isSelected()) roleList.add("student");
+		            if (adminRole.isSelected()) roleList.add("admin");
+
+		            if (!username.isEmpty() && !roleList.isEmpty()) {
+		                database.addUser(username, roleList.toArray(String[]::new));
+		                System.out.println("User added: " + username + " with roles " + roleList);
+		            }
+		        });
+
+		        // Text input box for removing an existing user ---
+		        TextField removeUserField = new TextField();
+		        removeUserField.setPromptText("Enter username to remove");
+
+		        // Button to remove a user
+		        Button removeUserButton = new Button("Remove User");
+		        removeUserButton.setOnAction(e -> {
+		            String usernameToRemove = removeUserField.getText().trim();
+		            if (!usernameToRemove.isEmpty()) {
+		                database.removeUser(usernameToRemove);
+		                System.out.println("User removed: " + usernameToRemove);
+		            }
+		        });
+
+		        // Add all elements to the layout and show the scene
+		        addOrRemoveLayout.getChildren().addAll(
+		                new Text("Add New User"), 
+		                newUserField, 
+		                instructorRole, 
+		                studentRole, 
+		                adminRole, 
+		                addUserButton, 
+		                new Text("Remove Existing User"), 
+		                removeUserField, 
+		                removeUserButton
+		        );
+		        stage.setScene(addOrRemoveScene);
+		    }
 		});
 		
 		// Logout button -------------------------------------------------------------------------------------------

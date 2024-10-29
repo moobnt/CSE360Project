@@ -179,6 +179,21 @@ public class DatabaseModel {
 		
 	}
 	
+	/**
+	 * Add a new user with specified roles.
+	 * 
+	 * @param username The username of the new user
+	 * @param roles An array of roles assigned to the user
+	 * @throws SQLException if a database access error occurs
+	 */
+	public void addUser(String username, String[] roles) {
+	    try {
+	        DatabaseHelper.addUser(username, roles);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	public void removeUser(String username) {
 		try {
 			DatabaseHelper.remove("users", "username", username);
