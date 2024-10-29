@@ -27,6 +27,15 @@ public class User {
 	public Date oneTimeDate;
 	public FullName fullName;
 	
+	// No-argument constructor
+    public User() {}
+	
+	// Constructor accepting username, password, and roles
+    public User(String username, String password, String[] roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 }
 
 class FullName {
