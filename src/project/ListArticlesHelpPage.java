@@ -19,10 +19,20 @@ public class ListArticlesHelpPage extends ScrollPane {
         // Create a VBox to hold the article details
         VBox vbox = new VBox();
         vbox.setSpacing(10); // Add spacing between articles
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+        
+        vbox.getChildren().add(back);
 
         try {
             List<HelpArticle> articles = helpArticleDatabase.getAllArticles(); // Fetch all articles
-            vbox.getChildren().clear(); // Clear existing articles
+//            vbox.getChildren().clear(); // Clear existing articles
+//            
+//            vbox.getChildren().add(back);
 
             if(articles.size() == 0) {
             	Label l = new Label("No Articles to Display.");
@@ -72,7 +82,9 @@ public class ListArticlesHelpPage extends ScrollPane {
         setPannable(true); // Allow panning
 
         // Set the scene with the current ScrollPane
-        stage.setScene(new Scene(this, 800, 600)); // Increase the window size for better readability
+        Scene s = new Scene(this, 800, 600);
+        Back.pushBack(s);
+        stage.setScene(s); // Increase the window size for better readability
         stage.show();
     }
 }

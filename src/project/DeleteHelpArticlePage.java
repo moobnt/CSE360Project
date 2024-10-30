@@ -2,6 +2,7 @@ package project;
 
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.sql.SQLException;
@@ -13,6 +14,11 @@ public class DeleteHelpArticlePage extends VBox {
     public DeleteHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String title) {
         this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Delete Article(s) with Title: " + title);
+        
+        Button back = new Button("Back");
+        back.setOnAction(backEvent -> {
+        	stage.setScene(Back.back(stage));
+        });
 
         // Create a List of HelpArticles with the specified title
         try {
@@ -64,7 +70,7 @@ public class DeleteHelpArticlePage extends VBox {
             });
 
             // Add components to the VBox
-            articlesBox.getChildren().add(deleteButton);
+            articlesBox.getChildren().add(new TilePane(deleteButton, back));
             getChildren().add(articlesBox);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -73,7 +79,9 @@ public class DeleteHelpArticlePage extends VBox {
         }
 
         // Set the scene with the current VBox
-        stage.setScene(new Scene(this, 600, 400)); // Increase the window size for better readability
+        Scene s = new Scene(this, 600, 400);
+        Back.pushBack(s);
+        stage.setScene(s); // Increase the window size for better readability
         stage.show();
     }
 }

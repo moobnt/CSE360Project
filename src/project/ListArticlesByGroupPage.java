@@ -22,10 +22,17 @@ public class ListArticlesByGroupPage extends ScrollPane {
 
         // Button to load articles
         
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+        
         try {
             // Fetch all articles
             List<HelpArticle> articles = helpArticleDatabase.getAllArticles();
             vbox.getChildren().clear(); // Clear existing articles
+            vbox.getChildren().add(back);
 
             // Split the group IDs and trim spaces
             List<String> groupIdList = Arrays.stream(groupIDs.split(","))
@@ -89,7 +96,9 @@ public class ListArticlesByGroupPage extends ScrollPane {
         setPannable(true); // Allow panning
 
         // Set the scene with the current ScrollPane
-        stage.setScene(new Scene(this, 800, 600)); // Increase the window size for better readability
+        Scene s = new Scene(this, 800, 600);
+        Back.pushBack(s);
+        stage.setScene(s); // Increase the window size for better readability
         stage.show();
     }
 }

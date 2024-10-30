@@ -19,13 +19,17 @@ public class ViewHelpArticlePage extends ScrollPane {
         // Create a VBox to hold the article details
         VBox vbox = new VBox();
         vbox.setSpacing(10);
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
 
-        // Button to load matching articles
-//        Button loadArticlesButton = new Button("Load Articles");
-//        loadArticlesButton.setOnAction(event -> {
         try {
             List<HelpArticle> articles = helpArticleDatabase.getAllArticles(); // Fetch all articles
             vbox.getChildren().clear(); // Clear existing articles
+            vbox.getChildren().add(back);
 
             // Filter articles based on the title
             for (HelpArticle article : articles) {
@@ -82,7 +86,9 @@ public class ViewHelpArticlePage extends ScrollPane {
         setPannable(true);
 
         // Set the scene with the current ScrollPane
-        stage.setScene(new Scene(this, 800, 600));
+        Scene s = new Scene(this, 800, 600);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

@@ -11,6 +11,12 @@ public class ListArticlesPage extends TilePane {
     public ListArticlesPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("List Articles");
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
 
         // Create buttons for different article listing options
         Button listAllArticlesButton = new Button("List All Articles");
@@ -31,10 +37,12 @@ public class ListArticlesPage extends TilePane {
         });
 
         // Add buttons to the TilePane
-        getChildren().addAll(listAllArticlesButton, listByGroupButton, viewArticleButton);
+        getChildren().addAll(listAllArticlesButton, listByGroupButton, viewArticleButton, back);
 
         // Set the scene with the current TilePane
-        stage.setScene(new Scene(this, 300, 200));
+        Scene s = new Scene(this, 300, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

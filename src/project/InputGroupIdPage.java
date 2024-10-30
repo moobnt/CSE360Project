@@ -15,6 +15,12 @@ public class InputGroupIdPage extends VBox {
         Label instructionLabel = new Label("Enter Group ID:");
         TextField groupIDField = new TextField();
         Button submitButton = new Button("Submit");
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
 
         submitButton.setOnAction(event -> {
             String groupID = groupIDField.getText().trim();
@@ -26,8 +32,10 @@ public class InputGroupIdPage extends VBox {
             }
         });
 
-        getChildren().addAll(instructionLabel, groupIDField, submitButton);
-        stage.setScene(new Scene(this, 300, 200));
+        getChildren().addAll(instructionLabel, groupIDField, submitButton, back);
+        Scene s = new Scene(this, 300, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

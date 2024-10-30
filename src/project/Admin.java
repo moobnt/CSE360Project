@@ -89,6 +89,10 @@ public class Admin extends TilePane {
             CheckBox adminRole = new CheckBox("Admin");
 
             Button generateInviteButton = new Button("Generate Invite Code");
+            Button back = new Button("Back");
+            back.setOnAction(backEvent -> {
+            	stage.setScene(Back.back(stage));
+            });
 
             generateInviteButton.setOnAction(e -> {
                 // Generate a unique invite code
@@ -115,13 +119,14 @@ public class Admin extends TilePane {
 
                     // Update the invite layout to show the code and options
                     inviteLayout.getChildren().clear();
-                    inviteLayout.getChildren().addAll(inviteCodeDisplay, copyButton, instructorRole, studentRole, adminRole, generateInviteButton);
+                    inviteLayout.getChildren().addAll(inviteCodeDisplay, copyButton, instructorRole, studentRole, adminRole, generateInviteButton, back);
                 } else {
                     System.out.println("Please select at least one role before generating the invite code.");
                 }
             });
 
-            inviteLayout.getChildren().addAll(instructorRole, studentRole, adminRole, generateInviteButton);
+            inviteLayout.getChildren().addAll(instructorRole, studentRole, adminRole, generateInviteButton, back);
+            Back.pushBack(inviteScene);
             stage.setScene(inviteScene);
         });
 
@@ -139,6 +144,11 @@ public class Admin extends TilePane {
             
             Label expirationTimeLabel = new Label("Set Expiration Time (HH:MM):");
             TextField expirationTimeField = new TextField("23:59"); // Default to 11:59 PM
+            
+            Button back = new Button("Back");
+            back.setOnAction(backEvent -> {
+            	stage.setScene(Back.back(stage));
+            });
 
             Button submitButton = new Button("Submit");
             submitButton.setOnAction(e -> {
@@ -165,11 +175,12 @@ public class Admin extends TilePane {
 
                 // Update layout with reset information
                 resetLayout.getChildren().clear();
-                resetLayout.getChildren().addAll(new Text("User reset successfully."), resetSuccessMessage, copyButton);
+                resetLayout.getChildren().addAll(new Text("User reset successfully."), resetSuccessMessage, copyButton, back);
             });
 
             resetLayout.getChildren().addAll(new Text("Reset User Account"), resetUserField, expirationDateLabel, expirationDateField, 
-                                             expirationTimeLabel, expirationTimeField, submitButton);
+                                             expirationTimeLabel, expirationTimeField, submitButton, back);
+            Back.pushBack(resetScene);
             stage.setScene(resetScene);
         });
         
@@ -181,14 +192,27 @@ public class Admin extends TilePane {
 
             TextField deleteUserField = new TextField();
             deleteUserField.setPromptText("Enter username to delete");
+            
+            Button back = new Button("Back");
+            back.setOnAction(backEvent -> {
+            	stage.setScene(Back.back(stage));
+            });
 
             Button confirmButton = new Button("Confirm");
             confirmButton.setOnAction(e -> {
+            	TilePane confirmLayout = new TilePane();
+            	Scene confirmScene = new Scene(confirmLayout, 600, 250);
+            	
                 String usernameToDelete = deleteUserField.getText().trim();
                 if (usernameToDelete.isEmpty()) {
-                    deleteLayout.getChildren().add(new Text("Username cannot be empty."));
+                    deleteLayout.getChildren().addAll(new Text("Username cannot be empty."));
                     return;
                 }
+                
+                Button back2 = new Button("Back");
+                back2.setOnAction(backEvent -> {
+                	stage.setScene(Back.back(stage));
+                });
                 
                 // Confirmation prompt
                 Text confirmText = new Text("Are you sure you want to delete the user '" + usernameToDelete + "'? Type 'Yes' to confirm.");
@@ -199,19 +223,23 @@ public class Admin extends TilePane {
                     String confirmationInput = confirmationField.getText().trim();
                     if ("Yes".equalsIgnoreCase(confirmationInput)) {
                         database.removeUser(usernameToDelete);
-                        deleteLayout.getChildren().clear(); // Clear previous elements
-                        deleteLayout.getChildren().add(new Text("User deleted successfully."));
+                        confirmLayout.getChildren().clear(); // Clear previous elements
+                        confirmLayout.getChildren().addAll(new Text("User deleted successfully."), back2);
                     } else {
-                        deleteLayout.getChildren().clear(); // Clear previous elements
-                        deleteLayout.getChildren().add(new Text("User deletion cancelled."));
+                        confirmLayout.getChildren().clear(); // Clear previous elements
+                        confirmLayout.getChildren().addAll(new Text("User deletion cancelled."), back2);
                     }
                 });
                 
-                deleteLayout.getChildren().clear(); // Clear the previous layout
-                deleteLayout.getChildren().addAll(confirmText, confirmationField, proceedButton);
+                
+                confirmLayout.getChildren().clear(); // Clear the previous layout
+                confirmLayout.getChildren().addAll(confirmText, confirmationField, proceedButton, back2);
+                Back.pushBack(confirmScene);
+                stage.setScene(confirmScene);
             });
 
-            deleteLayout.getChildren().addAll(new Text("Delete User Account"), deleteUserField, confirmButton);
+            deleteLayout.getChildren().addAll(new Text("Delete User Account"), deleteUserField, confirmButton, back);
+            Back.pushBack(deleteScene);
             stage.setScene(deleteScene);
         });
 
@@ -220,6 +248,11 @@ public class Admin extends TilePane {
         listUsersButton.setOnAction(event -> {
             TilePane listLayout = new TilePane();
             Scene listScene = new Scene(listLayout, 600, 250);
+            
+            Button back = new Button("Back");
+            back.setOnAction(backEvent -> {
+            	stage.setScene(Back.back(stage));
+            });
 
             // Fetch and display users using an instance of DatabaseModel
             List<String> users = database.displayUsersByAdmin(); // Call on the instance, not the class
@@ -228,7 +261,9 @@ public class Admin extends TilePane {
             } else {
                 users.forEach(userInfo -> listLayout.getChildren().add(new Text(userInfo))); // Renamed to userInfo
             }
-
+            
+            listLayout.getChildren().add(back);
+            Back.pushBack(listScene);
             stage.setScene(listScene);
         });
 
@@ -240,6 +275,11 @@ public class Admin extends TilePane {
 
             TextField userField = new TextField();
             userField.setPromptText("Enter username");
+            
+            Button back = new Button("Back");
+            back.setOnAction(backEvent -> {
+            	stage.setScene(Back.back(stage));
+            });
 
             CheckBox instructorRole = new CheckBox("Instructor");
             CheckBox studentRole = new CheckBox("Student");
@@ -317,8 +357,9 @@ public class Admin extends TilePane {
             addOrRemoveLayout.getChildren().addAll(
                     new Label("Modify Roles for User"), userField,
                     instructorRole, studentRole, adminRole,
-                    addRolesButton, removeRolesButton, feedbackLabel // Add the feedback label here
+                    addRolesButton, removeRolesButton, feedbackLabel, back // Add the feedback label here
             );
+            Back.pushBack(addOrRemoveScene);
             stage.setScene(addOrRemoveScene);
         });
         
@@ -337,7 +378,9 @@ public class Admin extends TilePane {
 
         // Show buttons in the scene ------------------------------------------------------------------------------
         getChildren().add(buttonBox);
-        stage.setScene(new Scene(this, 600, 250));
+        Scene s = new Scene(this, 600, 250);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

@@ -23,10 +23,17 @@ public class DeleteArticleTitlePage extends VBox {
                 alert.showAndWait();
             }
         });
+        
+        Button back = new Button("Back");
+        back.setOnAction(backEvent -> {
+        	stage.setScene(Back.back(stage));
+        });
 
-        getChildren().addAll(instructionLabel, titleField, submitButton);
+        getChildren().addAll(instructionLabel, titleField, submitButton, back);
 
-        stage.setScene(new Scene(this, 400, 200));
+        Scene s = new Scene(this, 400, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

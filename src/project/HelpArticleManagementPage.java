@@ -47,11 +47,22 @@ public class HelpArticleManagementPage extends TilePane {
         restoreOptionsButton.setOnAction(event -> {
             RestoreOptionsPage restoreOptionsPage = new RestoreOptionsPage(stage, helpArticleDatabase);
         });
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+        
         // Add the create article button to the TilePane
-        getChildren().addAll(createHelpArticleButton,updateHelpArticlesButton,listArticlesButton,deleteArticleButton,backupOptionsButton,restoreOptionsButton);
+        getChildren().addAll(createHelpArticleButton,updateHelpArticlesButton,listArticlesButton,deleteArticleButton,backupOptionsButton,restoreOptionsButton, back);
+        
+        
 
         // Set the scene with the current TilePane
-        stage.setScene(new Scene(this, 500, 600));
+        Scene s = new Scene(this, 500, 600);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

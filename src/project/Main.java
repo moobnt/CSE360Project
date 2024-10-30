@@ -15,6 +15,8 @@ public class Main extends Application {
         User user = new User();
         databaseModel = new DatabaseModel();
         databaseModel.connect();
+        
+        Back.initBack();
 
         // Start at the login page
         new LoginService(primaryStage, user, databaseModel);

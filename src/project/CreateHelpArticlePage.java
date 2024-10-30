@@ -79,6 +79,12 @@ public class CreateHelpArticlePage extends TilePane {
                 alert.showAndWait();
             }
         });
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
 
         // Add all labels and fields to the grid
         gridPane.add(levelLabel, 0, 0);
@@ -97,13 +103,15 @@ public class CreateHelpArticlePage extends TilePane {
         gridPane.add(bodyField, 1, 6);
         gridPane.add(referenceLinksLabel, 0, 7);
         gridPane.add(referenceLinksField, 1, 7);
-        gridPane.add(submitButton, 1, 8); // Add button at the last row
+        gridPane.add(new TilePane(submitButton, back), 1, 8); // Add button at the last row
 
         // Add the gridPane to the TilePane
-        getChildren().add(gridPane);
+        getChildren().addAll(gridPane);
 
         // Set the scene with the current TilePane
-        stage.setScene(new Scene(this, 500, 600));
+        Scene s = new Scene(this, 500, 600);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

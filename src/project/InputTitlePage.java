@@ -13,6 +13,12 @@ public class InputTitlePage extends VBox {
         Label instructionLabel = new Label("Enter the title of the article:");
         TextField titleField = new TextField();
         titleField.setPromptText("Enter article title");
+        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
 
         Button submitButton = new Button("View Articles");
         submitButton.setOnAction(event -> {
@@ -25,9 +31,11 @@ public class InputTitlePage extends VBox {
             }
         });
 
-        getChildren().addAll(instructionLabel, titleField, submitButton);
-
-        stage.setScene(new Scene(this, 400, 200));
+        getChildren().addAll(instructionLabel, titleField, submitButton, back);
+        
+        Scene s = new Scene(this, 400, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }
