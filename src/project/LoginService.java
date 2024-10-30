@@ -76,7 +76,7 @@ public class LoginService extends TilePane {
             getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, loginButton, useInvitationCodeButton, resetAccountButton);
         }
 
-        stage.setScene(new Scene(this, 300, 250));
+        stage.setScene(new Scene(this, 350, 250));
         stage.show();
     }
 }

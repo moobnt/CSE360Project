@@ -11,6 +11,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -332,7 +333,7 @@ public class Admin extends TilePane {
         logoutButton.setOnAction(event -> new LoginService(stage, user, database));
 
         // Arrange buttons horizontally ---------------------------------------------------------------------------
-        HBox buttonBox = new HBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, manageHelpArticlesButton, logoutButton);
+        VBox buttonBox = new VBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, manageHelpArticlesButton, logoutButton);
 
         // Show buttons in the scene ------------------------------------------------------------------------------
         getChildren().add(buttonBox);
