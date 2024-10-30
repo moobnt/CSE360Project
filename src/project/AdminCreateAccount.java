@@ -10,6 +10,15 @@ import javafx.stage.Stage;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * <p> Admin create account </p>
+ * 
+ * <p> Description: Account creation handler used to create Admin account</p>
+ * 
+ * @version 1.00 2024-10-39 Initial baseline
+ */
+
+
 public class AdminCreateAccount extends TilePane {
 
     public AdminCreateAccount(Stage stage, DatabaseModel database, String initialUsername, String initialPassword) {
