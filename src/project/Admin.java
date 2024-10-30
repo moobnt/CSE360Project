@@ -12,6 +12,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.stream.Collectors;
@@ -321,46 +322,10 @@ public class Admin extends TilePane {
             stage.setScene(addOrRemoveScene);
         });
         
-        // CreateHelpArticlePage Button ------------------------------------------------------------------------------------------
-        Button createHelpArticleButton = new Button("Creeate Help Articles");
-        createHelpArticleButton.setOnAction(event -> {
-        	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-        	CreateHelpArticlePage createHelpArticlePage = new CreateHelpArticlePage(stage, helpArticleDatabase);
-        });
-        
-        // HelpArticlesManagementPage Button ------------------------------------------------------------------------------------------
-        Button updateHelpArticlesButton = new Button("Update Help Articles");
-        updateHelpArticlesButton.setOnAction(event -> {
-            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-            FetchHelpArticlePage fetchHelpArticlePage = new FetchHelpArticlePage(stage, helpArticleDatabase);
-        });
-        
-        // List Articles Button ------------------------------------------------------------------------------------------
-        Button listArticlesButton = new Button("List/View Articles");
-        listArticlesButton.setOnAction(event -> {
-            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-            ListArticlesPage listArticlesPage = new ListArticlesPage(stage, helpArticleDatabase);
-        });
-        
-        // Delete Articles Button ------------------------------------------------------------------------------------------
-        Button deleteArticleButton = new Button("Delete Article");
-        deleteArticleButton.setOnAction(event -> {
-            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-            DeleteArticleTitlePage listArticlesPage = new DeleteArticleTitlePage(stage, helpArticleDatabase);
-        });
-
-        // Backup Articles Button ------------------------------------------------------------------------------------------
-        Button backupOptionsButton = new Button("Backup Options");
-        backupOptionsButton.setOnAction(event -> {
-        	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-            BackupOptionsPage backupOptionsPage = new BackupOptionsPage(stage, helpArticleDatabase);
-        });
-
-     // Backup Articles Button ------------------------------------------------------------------------------------------
-        Button restoreOptionsButton = new Button("Restore Articles");
-        restoreOptionsButton.setOnAction(event -> {
-        	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-            RestoreOptionsPage restoreOptionsPage = new RestoreOptionsPage(stage, helpArticleDatabase);
+        Button helpArticleManagementButton = new Button("Manage Help Articles");
+        helpArticleManagementButton.setOnAction(event -> {
+        	HelpArticleDatabase h = new HelpArticleDatabase();
+        	new HelpArticleManagementPage(stage, h);
         });
 
         // Logout Button ------------------------------------------------------------------------------------------
@@ -368,7 +333,7 @@ public class Admin extends TilePane {
         logoutButton.setOnAction(event -> new LoginService(stage, user, database));
 
         // Arrange buttons horizontally ---------------------------------------------------------------------------
-        HBox buttonBox = new HBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, createHelpArticleButton, updateHelpArticlesButton, listArticlesButton, deleteArticleButton, backupOptionsButton, restoreOptionsButton, logoutButton);
+        VBox buttonBox = new VBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, helpArticleManagementButton, logoutButton);
 
         // Show buttons in the scene ------------------------------------------------------------------------------
         getChildren().add(buttonBox);

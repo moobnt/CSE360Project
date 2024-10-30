@@ -46,7 +46,7 @@ public class RoleSelectionPage extends TilePane {
                 } else if ("Student".equals(selectedRole)) {
                     new UserHome(stage, user, database);
                 } else if ("Instructor".equals(selectedRole)) {
-                    new UserHome(stage, user, database);
+                    new Instructor(stage, user, database);
                 }
             } else {
                 feedbackLabel.setText("Please select a role.");

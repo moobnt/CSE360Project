@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -39,6 +40,11 @@ public class Instructor extends StackPane {
     	//title page
         stage.setTitle("Instructor Home page");
         
+        Button manageHelpArticlesButton = new Button("Manage Help Articles");
+        manageHelpArticlesButton.setOnAction(event -> {
+        	HelpArticleDatabase h = new HelpArticleDatabase();
+        	new HelpArticleManagementPage(stage, h);
+        });
         
         Button btn = new Button("Log out");
         
@@ -53,8 +59,8 @@ public class Instructor extends StackPane {
                 } 
             });
             
-        
-        getChildren().add(btn);
+        HBox box = new HBox(manageHelpArticlesButton, btn);
+        getChildren().addAll(box);
         stage.setScene(new Scene(this, 300, 250));
         stage.show();
     }
