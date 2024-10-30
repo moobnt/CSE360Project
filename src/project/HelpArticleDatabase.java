@@ -1,7 +1,12 @@
 package project;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.time.Instant;
 
 public class HelpArticleDatabase {
@@ -103,7 +108,6 @@ public class HelpArticleDatabase {
         }
     }
     
- // Example method to fetch an article by title
     public HelpArticle fetchArticleByTitle(String title) throws SQLException {
         String sql = "SELECT * FROM help_articles WHERE title = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -115,9 +119,15 @@ public class HelpArticleDatabase {
                     String groupIdentifier = rs.getString("groupIdentifier");
                     String access = rs.getString("access");
                     String shortDescription = rs.getString("shortDescription");
-                    Object[] keywords = (Object[]) rs.getArray("keywords").getArray();
+
+                    // Convert SQL Array to Java Object[]
+                    Array keywordsArray = rs.getArray("keywords");
+                    Object[] keywords = keywordsArray != null ? (Object[]) keywordsArray.getArray() : new String[0];
+                    
                     String body = rs.getString("body");
-                    Object[] referenceLinks = (Object[]) rs.getArray("referenceLinks").getArray();
+                    Array referenceLinksArray = rs.getArray("referenceLinks");
+                    Object[] referenceLinks = referenceLinksArray != null ? (Object[]) referenceLinksArray.getArray() : new String[0];
+                    
                     String sensitiveTitle = rs.getString("sensitiveTitle");
                     String sensitiveDescription = rs.getString("sensitiveDescription");
 
@@ -127,6 +137,158 @@ public class HelpArticleDatabase {
         }
         return null; // Return null if no article is found
     }
+    
+    public List<HelpArticle> getAllArticles() throws SQLException {
+        String sql = "SELECT * FROM help_articles";
+        List<HelpArticle> articles = new ArrayList<>();
 
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String level = rs.getString("level");
+                String groupIdentifier = rs.getString("groupIdentifier");
+                String access = rs.getString("access");
+                String shortDescription = rs.getString("shortDescription");
+
+                // Handle keywords and reference links properly
+                Object[] keywords = (Object[]) rs.getArray("keywords").getArray();
+                Object[] referenceLinks = (Object[]) rs.getArray("referenceLinks").getArray();
+
+                // Add the HelpArticle to the list
+                articles.add(new HelpArticle(id, level, groupIdentifier, access, 
+                    rs.getString("title"), shortDescription, keywords, 
+                    rs.getString("body"), referenceLinks, 
+                    rs.getString("sensitiveTitle"), rs.getString("sensitiveDescription")));
+            }
+        }
+        return articles;
+    }
+
+    public void deleteArticleById(long articleId) throws SQLException {
+        String sql = "DELETE FROM help_articles WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, articleId);
+            pstmt.executeUpdate();
+        }
+    }
+    
+    public void removeAllArticles() throws SQLException {
+        String sql = "DELETE FROM help_articles"; // Adjust the table name as necessary
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.executeUpdate();
+        }
+    }
+    
+ // Method to read articles from a backup file
+    public List<HelpArticle> readArticlesFromFile(String filename) {
+        List<HelpArticle> articles = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Assuming each article is separated by two newlines and fields are separated by a specific delimiter
+                String[] fields = line.split(";"); // Change delimiter as necessary
+
+                if (fields.length == 12) { // Adjust according to your fields
+                    HelpArticle article = new HelpArticle(
+                        Long.parseLong(fields[0]), // ID
+                        fields[1], // Level
+                        fields[2], // Group Identifier
+                        fields[3], // Access
+                        fields[4], // Title
+                        fields[5], // Short Description
+                        fields[6].split(","), // Keywords
+                        fields[7], // Body
+                        fields[8].split(","), // Reference Links
+                        fields[9], // Sensitive Title
+                        fields[10] // Sensitive Description
+                    );
+
+                    // Optional: Set created and updated date if needed
+                    article.setCreatedDate(Instant.parse(fields[11])); // Assuming the date is stored as an ISO-8601 string
+                    article.setUpdatedDate(Instant.now()); // Set to now or use from file if available
+
+                    articles.add(article);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle file reading errors
+        } catch (NumberFormatException e) {
+            e.printStackTrace(); // Handle number format errors if parsing ID fails
+        }
+        return articles; // Return the constructed list of HelpArticle objects
+    }
+    
+    public void restoreArticlesFromBackup(String filename) throws SQLException {
+        List<HelpArticle> articles = readArticlesFromFile(filename); // Method to read from the file
+
+        for (HelpArticle article : articles) {
+            // Check if the article with the same ID already exists
+            if (!articleExists(article.getId())) {
+                // Insert the article into the database
+                String sql = "INSERT INTO help_articles (id, title, level, groupIdentifier, access, shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription, createdDate, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                    pstmt.setLong(1, article.getId());
+                    pstmt.setString(2, article.getTitle());
+                    pstmt.setString(3, article.getLevel());
+                    pstmt.setString(4, article.getGroupIdentifier());
+                    pstmt.setString(5, article.getAccess());
+                    pstmt.setString(6, article.getShortDescription());
+                    pstmt.setObject(7, article.getKeywords()); // Adjust this based on how you store keywords
+                    pstmt.setString(8, article.getBody());
+                    pstmt.setObject(9, article.getReferenceLinks()); // Adjust this based on how you store reference links
+                    pstmt.setString(10, article.getSensitiveTitle());
+                    pstmt.setString(11, article.getSensitiveDescription());
+                    pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
+                    pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
+                    pstmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    private boolean articleExists(long id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM help_articles WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // If count is greater than 0, the article exists
+                }
+            }
+        }
+        return false;
+    }
+
+    public void mergeBackupArticles(String filename) throws SQLException {
+        List<HelpArticle> articles = readArticlesFromFile(filename); // Read articles from backup
+
+        for (HelpArticle article : articles) {
+            // Check if the article with the same ID already exists
+            if (!articleExists(article.getId())) {
+                // Insert the article into the database
+                String sql = "INSERT INTO help_articles (id, title, level, groupIdentifier, access, shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription, createdDate, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                    pstmt.setLong(1, article.getId());
+                    pstmt.setString(2, article.getTitle());
+                    pstmt.setString(3, article.getLevel());
+                    pstmt.setString(4, article.getGroupIdentifier());
+                    pstmt.setString(5, article.getAccess());
+                    pstmt.setString(6, article.getShortDescription());
+                    pstmt.setObject(7, article.getKeywords()); // Adjust this based on how you store keywords
+                    pstmt.setString(8, article.getBody());
+                    pstmt.setObject(9, article.getReferenceLinks()); // Adjust this based on how you store reference links
+                    pstmt.setString(10, article.getSensitiveTitle());
+                    pstmt.setString(11, article.getSensitiveDescription());
+                    pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
+                    pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
+                    pstmt.executeUpdate();
+                }
+            } else {
+                // Optionally, you can log or print a message indicating that the article was skipped
+                System.out.println("Article with ID " + article.getId() + " already exists, skipping.");
+            }
+        }
+    }
     // Additional methods (e.g., update, delete, etc.) can be added here
 }

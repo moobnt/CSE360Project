@@ -2,6 +2,7 @@ package project;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+import java.util.stream.Collectors;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -330,8 +331,36 @@ public class Admin extends TilePane {
         // HelpArticlesManagementPage Button ------------------------------------------------------------------------------------------
         Button updateHelpArticlesButton = new Button("Update Help Articles");
         updateHelpArticlesButton.setOnAction(event -> {
+            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
+            FetchHelpArticlePage fetchHelpArticlePage = new FetchHelpArticlePage(stage, helpArticleDatabase);
+        });
+        
+        // List Articles Button ------------------------------------------------------------------------------------------
+        Button listArticlesButton = new Button("List/View Articles");
+        listArticlesButton.setOnAction(event -> {
+            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
+            ListArticlesPage listArticlesPage = new ListArticlesPage(stage, helpArticleDatabase);
+        });
+        
+        // Delete Articles Button ------------------------------------------------------------------------------------------
+        Button deleteArticleButton = new Button("Delete Article");
+        deleteArticleButton.setOnAction(event -> {
+            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
+            DeleteArticleTitlePage listArticlesPage = new DeleteArticleTitlePage(stage, helpArticleDatabase);
+        });
+
+        // Backup Articles Button ------------------------------------------------------------------------------------------
+        Button backupOptionsButton = new Button("Backup Options");
+        backupOptionsButton.setOnAction(event -> {
         	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-            UpdateHelpArticlePage updateHelpArticlePage = new UpdateHelpArticlePage(stage, helpArticleDatabase);
+            BackupOptionsPage backupOptionsPage = new BackupOptionsPage(stage, helpArticleDatabase);
+        });
+
+     // Backup Articles Button ------------------------------------------------------------------------------------------
+        Button restoreOptionsButton = new Button("Restore Articles");
+        restoreOptionsButton.setOnAction(event -> {
+        	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
+            RestoreOptionsPage restoreOptionsPage = new RestoreOptionsPage(stage, helpArticleDatabase);
         });
 
         // Logout Button ------------------------------------------------------------------------------------------
@@ -339,7 +368,7 @@ public class Admin extends TilePane {
         logoutButton.setOnAction(event -> new LoginService(stage, user, database));
 
         // Arrange buttons horizontally ---------------------------------------------------------------------------
-        HBox buttonBox = new HBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, createHelpArticleButton, updateHelpArticlesButton, logoutButton);
+        HBox buttonBox = new HBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, createHelpArticleButton, updateHelpArticlesButton, listArticlesButton, deleteArticleButton, backupOptionsButton, restoreOptionsButton, logoutButton);
 
         // Show buttons in the scene ------------------------------------------------------------------------------
         getChildren().add(buttonBox);

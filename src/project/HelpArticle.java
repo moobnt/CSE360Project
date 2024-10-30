@@ -3,7 +3,12 @@ package project;
 import java.time.Instant;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class HelpArticle {
@@ -49,6 +54,14 @@ public class HelpArticle {
             e.printStackTrace();
             return -1; // Return an invalid ID in case of error
         }
+    }
+    
+    public String[] getGroupIdentifierArray() {
+        // Assuming groupIdentifier is a String that may contain "a, b, c"
+        String groupIdentifier = this.groupIdentifier; // Adjust based on how you store it
+        return Arrays.stream(groupIdentifier.split(","))
+                     .map(String::trim) // Trim whitespace
+                     .toArray(String[]::new); // Convert to String array
     }
     
     // Getter methods
@@ -140,5 +153,21 @@ public class HelpArticle {
     public void setReferenceLinks(String[] referenceLinks) {
         this.referenceLinks = referenceLinks;
     }
+    
+    public void setSensitiveTitle(String sensitiveTitle) {
+        this.sensitiveTitle = sensitiveTitle;
+    }
 
+    public void setSensitiveDescription(String sensitiveDescription) {
+        this.sensitiveDescription = sensitiveDescription;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setUpdatedDate(Instant updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+    
 }
