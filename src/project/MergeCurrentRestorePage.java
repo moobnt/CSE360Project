@@ -4,12 +4,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.sql.SQLException;
 
 public class MergeCurrentRestorePage extends VBox {
     private HelpArticleDatabase helpArticleDatabase;
 
-    public MergeCurrentRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String filename) {
+    public MergeCurrentRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, File filename) {
         this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Merge with Current Articles");
 
@@ -22,7 +24,10 @@ public class MergeCurrentRestorePage extends VBox {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error merging articles: " + e.getMessage(), ButtonType.OK);
             alert.showAndWait();
-        }
+        } catch (Exception e) {
+        	Alert alert = new Alert(Alert.AlertType.ERROR, "Error merging articles: " + e.getMessage(), ButtonType.OK);
+            alert.showAndWait();
+		}
 
         // Add a loading message while the merging is happening
         getChildren().add(new Label("Merging articles..."));

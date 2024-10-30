@@ -1,12 +1,17 @@
 package project;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
 import java.time.Instant;
 
 public class HelpArticleDatabase {
@@ -181,17 +186,23 @@ public class HelpArticleDatabase {
     }
     
  // Method to read articles from a backup file
-    public List<HelpArticle> readArticlesFromFile(String filename) {
+    public List<HelpArticle> readArticlesFromFile(File filename) {
+        System.out.println("READING ARTICLES FROM BACKUP FILE");
+
         List<HelpArticle> articles = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
+            
             while ((line = reader.readLine()) != null) {
                 // Assuming each article is separated by two newlines and fields are separated by a specific delimiter
-                String[] fields = line.split(";"); // Change delimiter as necessary
+                //System.out.println("CURRENT LINE: " + line);
+                String[] fields = line.split(";"); // Delimeter is semicolon in BackupArticles
 
-                if (fields.length == 12) { // Adjust according to your fields
+                System.out.println("Length of fields: " + fields.length);
+
+                if (fields.length == 13) { // Adjust according to your fields
                     HelpArticle article = new HelpArticle(
-                        Long.parseLong(fields[0]), // ID
+                        Long.parseLong(fields[0].substring(4)), // ID
                         fields[1], // Level
                         fields[2], // Group Identifier
                         fields[3], // Access
@@ -203,13 +214,17 @@ public class HelpArticleDatabase {
                         fields[9], // Sensitive Title
                         fields[10] // Sensitive Description
                     );
+                    System.out.println("ARTICLE CREATED");
 
                     // Optional: Set created and updated date if needed
-                    article.setCreatedDate(Instant.parse(fields[11])); // Assuming the date is stored as an ISO-8601 string
+                    article.setCreatedDate(Instant.parse(fields[11].substring(14))); // Assuming the date is stored as an ISO-8601 string
+                    // TODO: parsing error ^^^^^^^^^^^^^
                     article.setUpdatedDate(Instant.now()); // Set to now or use from file if available
 
+                    System.out.println("AAAAAAAAAAAA");
                     articles.add(article);
                 }
+                System.out.println("FIELDS: " + fields);
             }
         } catch (IOException e) {
             e.printStackTrace(); // Handle file reading errors
@@ -219,7 +234,7 @@ public class HelpArticleDatabase {
         return articles; // Return the constructed list of HelpArticle objects
     }
     
-    public void restoreArticlesFromBackup(String filename) throws SQLException {
+    public void restoreArticlesFromBackup(File filename) throws SQLException {
         List<HelpArticle> articles = readArticlesFromFile(filename); // Method to read from the file
 
         for (HelpArticle article : articles) {
@@ -242,6 +257,8 @@ public class HelpArticleDatabase {
                     pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
                     pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
                     pstmt.executeUpdate();
+                } catch(Exception FileNotFoundException) {
+                	System.out.println("Cannot find file");
                 }
             }
         }
@@ -260,10 +277,12 @@ public class HelpArticleDatabase {
         return false;
     }
 
-    public void mergeBackupArticles(String filename) throws SQLException {
+    public void mergeBackupArticles(File filename) throws SQLException, Exception {
         List<HelpArticle> articles = readArticlesFromFile(filename); // Read articles from backup
+        System.out.println("MERGING BACKUPS");
 
         for (HelpArticle article : articles) {
+        	System.out.println("CHECKING ARTICLE");
             // Check if the article with the same ID already exists
             if (!articleExists(article.getId())) {
                 // Insert the article into the database
@@ -283,6 +302,8 @@ public class HelpArticleDatabase {
                     pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
                     pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
                     pstmt.executeUpdate();
+                } catch(Exception e) {
+                	Alert alert = new Alert(Alert.AlertType.ERROR, "Error inserting articles: " + e.getMessage(), ButtonType.OK);
                 }
             } else {
                 // Optionally, you can log or print a message indicating that the article was skipped

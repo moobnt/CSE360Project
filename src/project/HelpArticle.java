@@ -1,6 +1,7 @@
 package project;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -41,6 +42,23 @@ public class HelpArticle {
     	this.sensitiveDescription = sensitiveDescription;
     	this.createdDate = Instant.now();
     	this.updatedDate = Instant.now();
+    }
+    
+    // Constructor that includes createdDate and updatedDate
+    public HelpArticle(long id, String level, String groupIdentifier, String access, String title, String shortDescription, Object[] keywords, String body, Object[] referenceLinks, String sensitiveTitle, String sensitiveDescription, String createdDate, String updatedDate) {
+    	this.id = id;
+    	this.level = level;
+    	this.groupIdentifier = groupIdentifier;
+    	this.access = access;
+    	this.title = title;
+    	this.shortDescription = shortDescription;
+    	this.keywords = keywords;
+    	this.body = body;
+    	this.referenceLinks = referenceLinks;
+    	this.sensitiveTitle = sensitiveTitle;
+    	this.sensitiveDescription = sensitiveDescription;
+    	this.createdDate = Instant.parse(createdDate);
+    	this.updatedDate = Instant.parse(updatedDate);
     }
 
     // Method to generate a unique ID based on the article's content

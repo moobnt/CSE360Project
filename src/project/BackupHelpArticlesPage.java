@@ -22,6 +22,7 @@ public class BackupHelpArticlesPage extends VBox {
         // Create a TextField for the file name
         TextField fileNameField = new TextField();
         fileNameField.setPromptText("Enter backup file name (e.g., backup.txt)");
+        fileNameField.setFocusTraversable(false); // does not focus textbox on opening so that prompt is shown
 
         // Create a Button to trigger the backup
         Button backupButton = new Button("Backup Articles");
@@ -76,9 +77,9 @@ public class BackupHelpArticlesPage extends VBox {
                                             .map(Object::toString)
                                             .collect(Collectors.joining(", "));
         
-        return String.format("ID: %d, Title: %s, Level: %s, Group Identifier: %s, Access: %s, Short Description: %s, " +
-                             "Keywords: [%s], Body: %s, Reference Links: [%s], Sensitive Title: %s, " +
-                             "Sensitive Description: %s, Created Date: %s, Updated Date: %s",
+        return String.format("ID: %d; Title: %s; Level: %s; Group Identifier: %s; Access: %s; Short Description: %s; " +
+                             "Keywords: %s; Body: %s; Reference Links: %s; Sensitive Title: %s; " +
+                             "Sensitive Description: %s; Created Date: %s; Updated Date: %s", // all fields seperated by semicolons
                 article.getId(),
                 article.getTitle(),
                 article.getLevel(),

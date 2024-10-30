@@ -4,12 +4,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.sql.SQLException;
 
 public class RemoveExistingAndRestorePage extends VBox {
     private HelpArticleDatabase helpArticleDatabase;
 
-    public RemoveExistingAndRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String filename) {
+    public RemoveExistingAndRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, File filename) {
         this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Remove Existing Articles and Restore");
 
@@ -39,3 +41,4 @@ public class RemoveExistingAndRestorePage extends VBox {
         stage.setScene(new Scene(this, 400, 200));
     }
 }
+ 
