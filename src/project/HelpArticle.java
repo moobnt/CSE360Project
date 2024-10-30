@@ -13,16 +13,16 @@ public class HelpArticle {
     private String access; // Who has access to the article
     private String title; // Title of the article
     private String shortDescription; // Short description or abstract
-    private String[] keywords; // Keywords for searching
+    private Object[] keywords; // Keywords for searching
     private String body; // The body of the article
-    private String[] referenceLinks; // Links to reference materials
+    private Object[] referenceLinks; // Links to reference materials
     private String sensitiveTitle; // Title without sensitive information
     private String sensitiveDescription; // Description without sensitive information
     private Instant createdDate; // Date of creation
     private Instant updatedDate; // Date of last update
 
     // Getters and setters can be added here
-    public HelpArticle(long id, String level, String groupIdentifier, String access, String title, String shortDescription, String[] keywords, String body, String[] referenceLinks, String sensitiveTitle, String sensitiveDescription) {
+    public HelpArticle(long id, String level, String groupIdentifier, String access, String title, String shortDescription, Object[] keywords, String body, Object[] referenceLinks, String sensitiveTitle, String sensitiveDescription) {
     	this.id = id;
     	this.level = level;
     	this.groupIdentifier = groupIdentifier;
@@ -50,10 +50,6 @@ public class HelpArticle {
             return -1; // Return an invalid ID in case of error
         }
     }
-
-    public void setId(long id) {
-        this.id = id; // Set the unique identifier
-    }
     
     // Getter methods
     public long getId() {
@@ -80,7 +76,7 @@ public class HelpArticle {
         return shortDescription;
     }
 
-    public String[] getKeywords() {
+    public Object[] getKeywords() {
         return keywords;
     }
 
@@ -88,7 +84,7 @@ public class HelpArticle {
         return body;
     }
 
-    public String[] getReferenceLinks() {
+    public Object[] getReferenceLinks() {
         return referenceLinks;
     }
 
@@ -106,6 +102,43 @@ public class HelpArticle {
 
     public Instant getUpdatedDate() {
         return updatedDate;
+    }
+    
+ // Setters
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public void setGroupIdentifier(String groupIdentifier) {
+        this.groupIdentifier = groupIdentifier;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public void setKeywords(String[] keywords) {
+        this.keywords = keywords;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setReferenceLinks(String[] referenceLinks) {
+        this.referenceLinks = referenceLinks;
     }
 
 }

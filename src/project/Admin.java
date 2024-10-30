@@ -11,7 +11,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -321,11 +320,18 @@ public class Admin extends TilePane {
             stage.setScene(addOrRemoveScene);
         });
         
-        // HelpArticlesManagementPage Button ------------------------------------------------------------------------------------------
-        Button manageHelpArticlesButton = new Button("Manage Help Articles");
-        manageHelpArticlesButton.setOnAction(event -> {
+        // CreateHelpArticlePage Button ------------------------------------------------------------------------------------------
+        Button createHelpArticleButton = new Button("Creeate Help Articles");
+        createHelpArticleButton.setOnAction(event -> {
         	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
-        	HelpArticleManagementPage helpArticleManagementPage = new HelpArticleManagementPage(stage, helpArticleDatabase);
+        	CreateHelpArticlePage createHelpArticlePage = new CreateHelpArticlePage(stage, helpArticleDatabase);
+        });
+        
+        // HelpArticlesManagementPage Button ------------------------------------------------------------------------------------------
+        Button updateHelpArticlesButton = new Button("Update Help Articles");
+        updateHelpArticlesButton.setOnAction(event -> {
+        	HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase(); // Create an instance of HelpArticleDatabase
+            UpdateHelpArticlePage updateHelpArticlePage = new UpdateHelpArticlePage(stage, helpArticleDatabase);
         });
 
         // Logout Button ------------------------------------------------------------------------------------------
@@ -333,7 +339,7 @@ public class Admin extends TilePane {
         logoutButton.setOnAction(event -> new LoginService(stage, user, database));
 
         // Arrange buttons horizontally ---------------------------------------------------------------------------
-        VBox buttonBox = new VBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, manageHelpArticlesButton, logoutButton);
+        HBox buttonBox = new HBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, createHelpArticleButton, updateHelpArticlesButton, logoutButton);
 
         // Show buttons in the scene ------------------------------------------------------------------------------
         getChildren().add(buttonBox);
