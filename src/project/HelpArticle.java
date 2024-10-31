@@ -5,6 +5,16 @@ import java.security.*;
 import java.util.Arrays;
 import java.nio.charset.StandardCharsets;
 
+
+/**
+ * <p> HelpArticle class </p>
+ * 
+ * <p> Description: build the help articles for the user, based on the user data/inputs </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class HelpArticle {
     private long id; // Unique identifier
     private String level; // e.g., beginner, intermediate, advanced, expert
