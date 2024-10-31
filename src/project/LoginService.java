@@ -1,13 +1,17 @@
 package project;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class LoginService extends TilePane {
+public class LoginService extends BorderPane {
 
     public LoginService(Stage stage, User user, DatabaseModel database) {
         stage.setTitle("Login Page");
@@ -19,6 +23,18 @@ public class LoginService extends TilePane {
         Button loginButton = new Button("Log In");
         Button useInvitationCodeButton = new Button("Use Invitation Code"); // Button for invitation code
         Button resetAccountButton = new Button("Reset Account"); // New button for reset account
+        
+        GridPane gridPane = new GridPane(); // Spacing between elements
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setPadding(new Insets(20));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        
+        gridPane.add(usernameLabel, 0, 0);
+        gridPane.add(usernameField, 1, 0);
+        gridPane.add(passwordLabel, 0, 1);
+        gridPane.add(passwordField, 1, 1);
+        gridPane.add(loginButton, 0, 2);
 
         // Check if the users table is empty to decide on Admin setup
         if (database.isDatabaseEmpty()) {
@@ -37,7 +53,7 @@ public class LoginService extends TilePane {
                 }
             });
 
-            getChildren().addAll(adminSetupLabel, usernameLabel, usernameField, passwordLabel, passwordField, loginButton);
+            gridPane.add(adminSetupLabel, 0, 3, 2, 1);
 
         } else {
             // Standard login process for existing users
@@ -73,9 +89,12 @@ public class LoginService extends TilePane {
             // Handle reset account button click to open ResetAccountPage
             resetAccountButton.setOnAction(event -> new ResetAccountPage(stage, user, database));
 
-            getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, loginButton, useInvitationCodeButton, resetAccountButton);
-        }
+            // Add the additional buttons only for non-admin setup
+            gridPane.add(useInvitationCodeButton, 0, 3);
+            gridPane.add(resetAccountButton, 1, 3);
 
+        }
+        this.setCenter(gridPane);
         stage.setScene(new Scene(this, 300, 250));
         stage.show();
     }
