@@ -16,6 +16,7 @@ import java.sql.SQLException;
  * @version 1.00 2024-10-30 Initial baseline
  */
 
+
 public class CreateHelpArticlePage extends TilePane {
     public CreateHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Create Help Article");

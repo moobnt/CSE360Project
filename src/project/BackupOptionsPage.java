@@ -14,6 +14,7 @@ import javafx.stage.Stage;
  * 
  * @version 1.00 2024-10-30 Initial baseline
  */
+
 public class BackupOptionsPage extends VBox {
 
     public BackupOptionsPage(Stage stage, HelpArticleDatabase helpArticleDatabase) { // Store the database instance
