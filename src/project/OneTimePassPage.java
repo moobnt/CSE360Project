@@ -5,6 +5,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * <p> OneTimePassword class </p>
+ * 
+ * <p> Description: Uses TilePan to handle the OneTimepass which builds a 1 time use password for a user to use</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class OneTimePassPage extends TilePane {
 	
 	public OneTimePassPage(Stage stage, User user, DatabaseModel database) {
@@ -26,7 +35,7 @@ public class OneTimePassPage extends TilePane {
             		
             		if(valid) {
             			user.roles = database.getCodeRoles(code);
-//                        stage.setScene(new Scene(new LoginService()));
+
                         new CreateAccount(stage, user, database);
             		}
             });
@@ -42,9 +51,6 @@ public class OneTimePassPage extends TilePane {
         	
         });
 
-//	        root.getChildren().add(btn);
-//	        root.getChildren().add(username);
-//	        root.getChildren().add(password);
         getChildren().add(l);
         getChildren().add(password);
         getChildren().add(btn);

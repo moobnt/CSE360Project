@@ -8,6 +8,14 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.sql.SQLException;
 
+/**
+ * <p> MergeCurrRestorePage class </p>
+ * 
+ * <p> Description: Handles the merging of files for backing up articles. </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class MergeCurrentRestorePage extends VBox {
     public MergeCurrentRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, File filename) {
         stage.setTitle("Merge with Current Articles");

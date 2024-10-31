@@ -5,6 +5,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * <p> ListArticlePage class </p>
+ * 
+ * <p> Description: Builds a page for the user to select how they would like to view their articles/list them </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class ListArticlesPage extends TilePane {
     public ListArticlesPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("List Articles");

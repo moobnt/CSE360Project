@@ -6,6 +6,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+/**
+ * <p> LoginService class </p>
+ * 
+ * <p> Description: builds login service extending off of BorderPane.  </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class LoginService extends BorderPane {
 
     public LoginService(Stage stage, User user, DatabaseModel database) {
