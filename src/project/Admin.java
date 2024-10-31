@@ -366,7 +366,7 @@ public class Admin extends TilePane {
         Button helpArticleManagementButton = new Button("Manage Help Articles");
         helpArticleManagementButton.setOnAction(event -> {
         	HelpArticleDatabase h = new HelpArticleDatabase();
-        	new HelpArticleManagementPage(stage, h);
+        	new HelpArticleManagementPage(stage, h, 1);
         });
 
         // Logout Button ------------------------------------------------------------------------------------------
