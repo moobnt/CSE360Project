@@ -5,6 +5,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * <p> InputTitle page class </p>
+ * 
+ * <p> Description: Builds/handles the page that user see that take in article titles. Using the ViewHelperPage class it @returns 
+ * the article if found </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class InputTitlePage extends VBox {
     public InputTitlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Input Article Title");

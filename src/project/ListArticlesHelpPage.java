@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
+/**
+ * <p> ListArticlesHelpPage class </p>
+ * 
+ * <p> Description: Fetches the articles and places them for the user to see, and uses vBox to hold the article details </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class ListArticlesHelpPage extends ScrollPane {
     public ListArticlesHelpPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("List All Articles");

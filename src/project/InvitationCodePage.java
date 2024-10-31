@@ -5,6 +5,16 @@ import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * <p> Invitation Code Page class </p>
+ * 
+ * <p> Description: Handles the page for the invitation codes, takes in the user code as a @param then provides
+ * the appropriate @return value </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class InvitationCodePage extends TilePane {
 
     public InvitationCodePage(Stage stage, User user, DatabaseModel database) {

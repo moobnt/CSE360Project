@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
+/**
+ * <p> ListArticles by GroupPage class </p>
+ * 
+ * <p> Description: Fetches the articles and organizes them based on group, and uses vBox to hold the article details </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class ListArticlesByGroupPage extends ScrollPane {
 
     public ListArticlesByGroupPage(Stage stage, HelpArticleDatabase helpArticleDatabase, String groupIDs) {

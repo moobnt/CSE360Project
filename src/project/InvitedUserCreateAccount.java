@@ -6,6 +6,15 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 import java.time.*;
 
+/**
+ * <p> InvitedUserCreatAccount class </p>
+ * 
+ * <p> Description: Uses textfields to build the user invite create account. </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class InvitedUserCreateAccount extends TilePane {
 
     public InvitedUserCreateAccount(Stage stage, User user, DatabaseModel database, String[] assignedRoles) {
