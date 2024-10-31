@@ -18,7 +18,6 @@ public class DatabaseTest {
 	 * @param args The default arguments for Java's main method
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 	}
 

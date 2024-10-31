@@ -31,7 +31,6 @@ public class Role extends TilePane {
 
          			@Override
          			public void handle(ActionEvent event) {
-         				// TODO Auto-generated method stub
          				Instructor i = new Instructor(stage, user, database);
          			}
                  	
@@ -43,7 +42,6 @@ public class Role extends TilePane {
 
         			@Override
         			public void handle(ActionEvent event) {
-        				// TODO Auto-generated method stub
         				Student i = new Student(stage, user, database);
         			}
                 	
@@ -55,7 +53,6 @@ public class Role extends TilePane {
 
         			@Override
         			public void handle(ActionEvent event) {
-        				// TODO Auto-generated method stub
         				Admin i = new Admin(stage, user, database);
         			}
                 	
