@@ -8,6 +8,19 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * <p> DeleteHelperArticlePage class </p>
+ * 
+ * <p> Description: Handles the page used for the deletion of articles within the help system </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+/**
+ * 
+ * @params ArticleTitle
+ * @returns Confirmation of deletion button
+ */
 public class DeleteHelpArticlePage extends VBox {
     public DeleteHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String title) {
         stage.setTitle("Delete Article(s) with Title: " + title);
