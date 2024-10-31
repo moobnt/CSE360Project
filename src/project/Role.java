@@ -5,7 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
-
+/**
+ * <p> Role class </p>
+ * 
+ * <p> Description: Handles the role of a user</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class Role extends TilePane {
 	
     public Role(Stage stage, User user, DatabaseModel database) {

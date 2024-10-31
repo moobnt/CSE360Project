@@ -8,7 +8,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-
+/**
+ * <p> RestoreOptions class </p>
+ * 
+ * <p> Description: Handles the restore option page using @params to take input and @returning the appropriate results</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class RestoreOptionsPage extends VBox {
     private File backupFile = null; // Declaring it up here to prevent Java intricacies
 
