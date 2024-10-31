@@ -8,6 +8,14 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.sql.SQLException;
 
+/**
+ * <p> RemoveExistingAndRestorePage class </p>
+ * 
+ * <p> Description: Handles the remove and restore page that specific users may use to alter existing articles</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class RemoveExistingAndRestorePage extends VBox {
     public RemoveExistingAndRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, File filename) {
         stage.setTitle("Remove Existing Articles and Restore");
