@@ -43,7 +43,7 @@ public class Instructor extends StackPane {
         Button manageHelpArticlesButton = new Button("Manage Help Articles");
         manageHelpArticlesButton.setOnAction(event -> {
         	HelpArticleDatabase h = new HelpArticleDatabase();
-        	new HelpArticleManagementPage(stage, h);
+        	new HelpArticleManagementPage(stage, h, 0);
         });
         
         Button btn = new Button("Log out");

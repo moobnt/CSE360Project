@@ -1,5 +1,6 @@
 package project;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 
 public class HelpArticleManagementPage extends TilePane {
 
-    public HelpArticleManagementPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
+    public HelpArticleManagementPage(Stage stage, HelpArticleDatabase helpArticleDatabase, int num) {
         stage.setTitle("Help Article Management");
 
      // CreateHelpArticlePage Button ------------------------------------------------------------------------------------------
@@ -35,18 +36,6 @@ public class HelpArticleManagementPage extends TilePane {
         deleteArticleButton.setOnAction(event -> {
             DeleteArticleTitlePage listArticlesPage = new DeleteArticleTitlePage(stage, helpArticleDatabase);
         });
-
-        // Backup Articles Button ------------------------------------------------------------------------------------------
-        Button backupOptionsButton = new Button("Backup Options");
-        backupOptionsButton.setOnAction(event -> {
-            BackupOptionsPage backupOptionsPage = new BackupOptionsPage(stage, helpArticleDatabase);
-        });
-
-     // Backup Articles Button ------------------------------------------------------------------------------------------
-        Button restoreOptionsButton = new Button("Restore Articles");
-        restoreOptionsButton.setOnAction(event -> {
-            RestoreOptionsPage restoreOptionsPage = new RestoreOptionsPage(stage, helpArticleDatabase);
-        });
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
@@ -54,9 +43,27 @@ public class HelpArticleManagementPage extends TilePane {
         	
         });
         
-        // Add the create article button to the TilePane
-        getChildren().addAll(createHelpArticleButton,updateHelpArticlesButton,listArticlesButton,deleteArticleButton,backupOptionsButton,restoreOptionsButton, back);
         
+        // Add the create article button to the TilePane base on whether it is Admin or Instructor
+        if ( num == 1) {
+        	// Backup Articles Button ------------------------------------------------------------------------------------------
+            Button backupOptionsButton = new Button("Backup Options");
+            backupOptionsButton.setOnAction(event -> {
+                BackupOptionsPage backupOptionsPage = new BackupOptionsPage(stage, helpArticleDatabase);
+            });
+
+            // Backup Articles Button ------------------------------------------------------------------------------------------
+            Button restoreOptionsButton = new Button("Restore Articles");
+            restoreOptionsButton.setOnAction(event -> {
+                RestoreOptionsPage restoreOptionsPage = new RestoreOptionsPage(stage, helpArticleDatabase);
+            });
+            
+            getChildren().addAll(createHelpArticleButton,updateHelpArticlesButton,listArticlesButton,deleteArticleButton,backupOptionsButton,restoreOptionsButton, back);
+        }
+        
+        else {
+        	getChildren().addAll(createHelpArticleButton,updateHelpArticlesButton,listArticlesButton,deleteArticleButton,back);
+        }
         
 
         // Set the scene with the current TilePane
