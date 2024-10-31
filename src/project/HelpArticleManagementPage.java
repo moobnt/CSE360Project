@@ -5,6 +5,16 @@ import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+
+/**
+ * <p> HelpArticleManagmentPage class </p>
+ * 
+ * <p> Description: Handles the page the user see's taking in their input to send 
+ * them to the next appropriate page </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class HelpArticleManagementPage extends TilePane {
 
     public HelpArticleManagementPage(Stage stage, HelpArticleDatabase helpArticleDatabase, int num) {
