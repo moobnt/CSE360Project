@@ -4,7 +4,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
-
+/**
+ * <p> userHome class </p>
+ * 
+ * <p> Description: Empty user page for now</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class UserHome extends TilePane {
     public UserHome(Stage stage, User user, DatabaseModel database) {
         stage.setTitle("User Home");

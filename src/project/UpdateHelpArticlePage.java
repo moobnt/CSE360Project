@@ -9,6 +9,14 @@ import java.sql.SQLException;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
+/**
+ * <p> UpdateHelperArticle class </p>
+ * 
+ * <p> Description: Updates the articles using GridPane, which will update the data within the database that stores that article</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class UpdateHelpArticlePage extends TilePane {
     // Constructor that takes a HelpArticle object to update
     public UpdateHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, HelpArticle articleToUpdate) {
