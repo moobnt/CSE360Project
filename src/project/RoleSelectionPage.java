@@ -1,6 +1,14 @@
 package project;
 
 import javafx.scene.Scene;
+
+/**
+ * <p> RoleSelection class </p>
+ * 
+ * <p> Description: Takes the user input and send them to their appropriate page depending on their role selected(if they have multiple roles)</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
