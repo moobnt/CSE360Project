@@ -96,7 +96,9 @@ public class LoginService extends BorderPane {
 
         }
         this.setCenter(gridPane);
-        stage.setScene(new Scene(this, 300, 250));
+        Scene s = new Scene(this, 300, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }
