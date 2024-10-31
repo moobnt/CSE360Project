@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
  * 
  * @version 1.00 2024-10-09 Initial baseline
  */
+//TODO: Make First Admin or if there is only one Admin left, he/she cannot delete himself/herself
 public class Admin extends TilePane {
 
     /**
