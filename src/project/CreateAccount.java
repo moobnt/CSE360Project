@@ -1,16 +1,9 @@
 package project;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import java.time.*;
+import javafx.event.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
@@ -52,7 +45,7 @@ public class CreateAccount extends TilePane {
 	            				OffsetDateTime.now(ZoneOffset.UTC).plusYears(5), // sets expiration 5 years from now
 	            				new String[] {});
 	            		
-	            		LoginService login = new LoginService(stage, user, database);
+	            		new LoginService(stage, user, database);
 	            	} else {
 	            		username.clear();
 	            		password.clear();

@@ -296,7 +296,7 @@ public class HelpArticleDatabase {
                     pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
                     pstmt.executeUpdate();
                 } catch(Exception e) {
-                	Alert alert = new Alert(Alert.AlertType.ERROR, "Error inserting articles: " + e.getMessage(), ButtonType.OK);
+                	new Alert(Alert.AlertType.ERROR, "Error inserting articles: " + e.getMessage(), ButtonType.OK);
                 }
             } else {
                 // Optionally, you can log or print a message indicating that the article was skipped

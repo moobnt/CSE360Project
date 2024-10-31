@@ -10,11 +10,8 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 
 public class UpdateHelpArticlePage extends TilePane {
-    private HelpArticleDatabase helpArticleDatabase;
-
     // Constructor that takes a HelpArticle object to update
     public UpdateHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, HelpArticle articleToUpdate) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Update Help Article");
 
         // Create a GridPane for the article update form

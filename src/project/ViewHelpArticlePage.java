@@ -10,10 +10,7 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 
 public class ViewHelpArticlePage extends ScrollPane {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public ViewHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String title) {
-        this.helpArticleDatabase = helpArticleDatabase;
         stage.setTitle("Articles with Title: " + title);
 
         // Create a VBox to hold the article details

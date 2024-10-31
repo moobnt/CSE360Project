@@ -9,10 +9,7 @@ import java.io.File;
 import java.sql.SQLException;
 
 public class MergeCurrentRestorePage extends VBox {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public MergeCurrentRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, File filename) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Merge with Current Articles");
 
         // Load and merge articles from the backup file

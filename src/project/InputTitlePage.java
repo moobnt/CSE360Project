@@ -6,7 +6,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class InputTitlePage extends VBox {
-	private HelpArticleDatabase helpArticleDatabase;
     public InputTitlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Input Article Title");
 
