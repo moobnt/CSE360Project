@@ -5,6 +5,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * <p> InputGroupIdPage class </p>
+ * 
+ * <p> Description: handles the user input for group id </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
+/**
+ * 
+ * @param Id user enters group ID
+ * @return "Please enter a valid group ID."
+ * @return list of articles based on id
+ */
+
 public class InputGroupIdPage extends VBox {
     public InputGroupIdPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Input Group ID");
