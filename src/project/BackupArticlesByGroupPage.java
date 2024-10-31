@@ -3,17 +3,21 @@ package project;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class BackupArticlesByGroupPage extends VBox {
     private HelpArticleDatabase helpArticleDatabase;
+    private File backupFile = null;
 
     public BackupArticlesByGroupPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
@@ -24,31 +28,43 @@ public class BackupArticlesByGroupPage extends VBox {
         groupNameField.setPromptText("Enter group names (comma-separated)");
 
         // Create a TextField for the filename
-        TextField fileNameField = new TextField();
-        fileNameField.setPromptText("Enter backup filename (without extension)");
+        //TextField fileNameField = new TextField();
+        //fileNameField.setPromptText("Enter backup filename (without extension)");
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save As...");
+        fileChooser.getExtensionFilters().addAll(
+        	new ExtensionFilter("Text Files", "*.txt"));
+
+        Button openFileChooserButton = new Button();
+        openFileChooserButton.setText("Save as...");
+        openFileChooserButton.setOnAction(event -> {
+            // if the file doesn't exist, the file will remain null
+            // there are checks in other functions for this (or there should be)
+            backupFile = fileChooser.showSaveDialog(stage);
+        });
 
         // Create a Button to trigger the backup
         Button backupButton = new Button("Backup Group Articles");
         backupButton.setOnAction(event -> {
             String groupNames = groupNameField.getText();
-            String fileName = fileNameField.getText();
-            if (groupNames.isEmpty() || fileName.isEmpty()) {
+            if (groupNames.isEmpty() || backupFile == null) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter valid group names and a filename.", ButtonType.OK);
                 alert.showAndWait();
             } else {
-                backupArticlesByGroups(groupNames, fileName);
+                backupArticlesByGroups(groupNames, backupFile);
             }
         });
 
         // Add components to the VBox
-        getChildren().addAll(new Label("Backup Articles by Group"), groupNameField, fileNameField, backupButton);
+        getChildren().addAll(new Label("Backup Articles by Group"), groupNameField, openFileChooserButton, backupButton);
 
         // Set the scene with the current VBox
         stage.setScene(new Scene(this, 400, 250));
         stage.show();
     }
 
-    private void backupArticlesByGroups(String groupNames, String fileName) {
+    private void backupArticlesByGroups(String groupNames, File backupFile) {
         try {
             List<HelpArticle> articles = helpArticleDatabase.getAllArticles(); // Fetch all articles
             List<String> groupIdList = Arrays.stream(groupNames.split(","))
@@ -68,19 +84,19 @@ public class BackupArticlesByGroupPage extends VBox {
 
                 if (belongsToAllGroups) {
                     // Prepare article details for backup
-                    backupContent.append("ID: ").append(article.getId()).append("\n")
-                                 .append("Title: ").append(article.getTitle()).append("\n")
-                                 .append("Level: ").append(article.getLevel()).append("\n")
-                                 .append("Group Identifier: ").append(article.getGroupIdentifier()).append("\n")
-                                 .append("Access: ").append(article.getAccess()).append("\n")
-                                 .append("Short Description: ").append(article.getShortDescription()).append("\n")
-                                 .append("Keywords: ").append(Arrays.toString(article.getKeywords())).append("\n")
-                                 .append("Body: ").append(article.getBody()).append("\n")
-                                 .append("Reference Links: ").append(Arrays.toString(article.getReferenceLinks())).append("\n")
-                                 .append("Sensitive Title: ").append(article.getSensitiveTitle()).append("\n")
-                                 .append("Sensitive Description: ").append(article.getSensitiveDescription()).append("\n")
-                                 .append("Created Date: ").append(article.getCreatedDate()).append("\n")
-                                 .append("Updated Date: ").append(article.getUpdatedDate()).append("\n\n");
+                    backupContent.append("ID: ").append(article.getId()).append("; ")
+                                 .append("Title: ").append(article.getTitle()).append("; ")
+                                 .append("Level: ").append(article.getLevel()).append("; ")
+                                 .append("Group Identifier: ").append(article.getGroupIdentifier()).append("; ")
+                                 .append("Access: ").append(article.getAccess()).append("; ")
+                                 .append("Short Description: ").append(article.getShortDescription()).append("; ")
+                                 .append("Keywords: ").append(Arrays.toString(article.getKeywords())).append("; ")
+                                 .append("Body: ").append(article.getBody()).append("; ")
+                                 .append("Reference Links: ").append(Arrays.toString(article.getReferenceLinks())).append("; ")
+                                 .append("Sensitive Title: ").append(article.getSensitiveTitle()).append("; ")
+                                 .append("Sensitive Description: ").append(article.getSensitiveDescription()).append("; ")
+                                 .append("Created Date: ").append(article.getCreatedDate()).append("; ")
+                                 .append("Updated Date: ").append(article.getUpdatedDate()).append("\n");
                     articlesFound = true;
                 }
             }
@@ -88,8 +104,7 @@ public class BackupArticlesByGroupPage extends VBox {
             // Check if any articles were found for the backup
             if (articlesFound) {
                 // Specify the file to write to
-                String filePath = fileName + ".txt"; // Use the user-defined filename with a .txt extension
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile))) {
                     writer.write(backupContent.toString());
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Backup completed successfully!", ButtonType.OK);
                     alert.showAndWait();

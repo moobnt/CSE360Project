@@ -194,37 +194,42 @@ public class HelpArticleDatabase {
             String line;
             
             while ((line = reader.readLine()) != null) {
+                //System.out.println("Line: " + line);
                 // Assuming each article is separated by two newlines and fields are separated by a specific delimiter
                 //System.out.println("CURRENT LINE: " + line);
                 String[] fields = line.split(";"); // Delimeter is semicolon in BackupArticles
 
-                System.out.println("Length of fields: " + fields.length);
+                //System.out.println("Length of fields: " + fields.length);
 
                 if (fields.length == 13) { // Adjust according to your fields
                     HelpArticle article = new HelpArticle(
                         Long.parseLong(fields[0].substring(4)), // ID
-                        fields[1], // Level
-                        fields[2], // Group Identifier
-                        fields[3], // Access
-                        fields[4], // Title
-                        fields[5], // Short Description
-                        fields[6].split(","), // Keywords
-                        fields[7], // Body
-                        fields[8].split(","), // Reference Links
-                        fields[9], // Sensitive Title
-                        fields[10] // Sensitive Description
+                        fields[2].substring(8), // Level
+                        fields[3].substring(19), // Group Identifier
+                        fields[4].substring(9), // Access
+                        fields[1].substring(8), // Title
+                        fields[5].substring(20), // Short Description
+                        fields[6].substring(11).split(","), // Keywords
+                        fields[7].substring(7), // Body
+                        fields[8].substring(18).split(","), // Reference Links
+                        fields[9].substring(18), // Sensitive Title
+                        fields[10].substring(24) // Sensitive Description
                     );
-                    System.out.println("ARTICLE CREATED");
+                    //System.out.println("ARTICLE CREATED");
+                    
+                    //for (int i = 0; i < fields.length; i++) {
+                    //	System.out.println(fields.toString());
+                    //}
 
                     // Optional: Set created and updated date if needed
-                    article.setCreatedDate(Instant.parse(fields[11].substring(14))); // Assuming the date is stored as an ISO-8601 string
+                    article.setCreatedDate(Instant.parse(fields[11].substring(15))); // Assuming the date is stored as an ISO-8601 string
                     // TODO: parsing error ^^^^^^^^^^^^^
                     article.setUpdatedDate(Instant.now()); // Set to now or use from file if available
 
-                    System.out.println("AAAAAAAAAAAA");
+                    //System.out.println("AAAAAAAAAAAA");
                     articles.add(article);
                 }
-                System.out.println("FIELDS: " + fields);
+                //System.out.println("FIELDS: " + fields);
             }
         } catch (IOException e) {
             e.printStackTrace(); // Handle file reading errors
