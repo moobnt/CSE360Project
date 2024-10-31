@@ -4,7 +4,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
-
+/**
+ * <p> ResetAccountPage class </p>
+ * 
+ * <p> Description: Resets the users account, using texfield and tilepane to take inputs and outputs the reset passwords</p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class ResetAccountPage extends TilePane {
 
     public ResetAccountPage(Stage stage, User user, DatabaseModel database) {
