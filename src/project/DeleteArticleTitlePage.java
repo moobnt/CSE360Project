@@ -5,6 +5,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+
+/**
+ * <p> BackUpArticlesByGroup class </p>
+ * 
+ * <p> Description: Handles the deletion of the article page specified by the user </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+/**
+ * @param articleName takes the article specified by user
+ * 
+ */
+
 public class DeleteArticleTitlePage extends VBox {
     public DeleteArticleTitlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Delete Article by Title");
