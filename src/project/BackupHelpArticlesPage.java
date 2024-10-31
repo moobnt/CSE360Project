@@ -14,6 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * <p> BackUpHelpArticlesByGroup class </p>
+ * 
+ * <p> Description: This class handles the page view of the back up help articles. </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class BackupHelpArticlesPage extends VBox {
     private HelpArticleDatabase helpArticleDatabase;
     private File backupFile = null;
@@ -23,9 +31,7 @@ public class BackupHelpArticlesPage extends VBox {
         stage.setTitle("Backup Help Articles");
 
         // Create a TextField for the file name
-        //TextField fileNameField = new TextField();
-        //fileNameField.setPromptText("Enter backup file name (e.g., backup.txt)");
-        //fileNameField.setFocusTraversable(false); // does not focus textbox on opening so that prompt is shown
+        
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As...");
@@ -43,7 +49,7 @@ public class BackupHelpArticlesPage extends VBox {
         // Create a Button to trigger the backup
         Button backupButton = new Button("Backup Articles");
         backupButton.setOnAction(event -> {
-            //String fileName = fileNameField.getText();
+            
             if (backupFile == null) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a file.", ButtonType.OK);
                 alert.showAndWait();

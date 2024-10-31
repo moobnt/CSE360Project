@@ -15,10 +15,27 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * <p> BackUpArticlesByGroup class </p>
+ * 
+ * <p> Description: This class handles backing up articles based on their assigned group(designated by user) </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
+
 public class BackupArticlesByGroupPage extends VBox {
     private HelpArticleDatabase helpArticleDatabase;
     private File backupFile = null;
 
+    /**
+     * <p>This is the initialization and handler of the back up group page that the user views
+     * 	It handles all the inputs the user need for the BackUpArticlesByGroup page
+     *  </p>
+     * 
+     */
+    
     public BackupArticlesByGroupPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Backup Articles by Group");
@@ -28,8 +45,7 @@ public class BackupArticlesByGroupPage extends VBox {
         groupNameField.setPromptText("Enter group names (comma-separated)");
 
         // Create a TextField for the filename
-        //TextField fileNameField = new TextField();
-        //fileNameField.setPromptText("Enter backup filename (without extension)");
+        
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As...");
@@ -71,7 +87,10 @@ public class BackupArticlesByGroupPage extends VBox {
         stage.setScene(s);
         stage.show();
     }
-
+    /**
+     * <p> This takes all the inputs given by the user (group ID) and backs up the appropriate groups </p>
+     * 
+     */
     private void backupArticlesByGroups(String groupNames, File backupFile) {
         try {
             List<HelpArticle> articles = helpArticleDatabase.getAllArticles(); // Fetch all articles
