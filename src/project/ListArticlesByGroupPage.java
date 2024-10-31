@@ -10,10 +10,8 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 
 public class ListArticlesByGroupPage extends ScrollPane {
-    private HelpArticleDatabase helpArticleDatabase;
 
     public ListArticlesByGroupPage(Stage stage, HelpArticleDatabase helpArticleDatabase, String groupIDs) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Articles in Groups: " + groupIDs);
 
         // Create a VBox to hold the article details

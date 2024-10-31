@@ -1,13 +1,8 @@
 package project;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
@@ -31,7 +26,7 @@ public class Role extends TilePane {
 
          			@Override
          			public void handle(ActionEvent event) {
-         				Instructor i = new Instructor(stage, user, database);
+         				new Instructor(stage, user, database);
          			}
                  	
                  });
@@ -42,7 +37,7 @@ public class Role extends TilePane {
 
         			@Override
         			public void handle(ActionEvent event) {
-        				Student i = new Student(stage, user, database);
+        				new Student(stage, user, database);
         			}
                 	
                 });
@@ -53,7 +48,7 @@ public class Role extends TilePane {
 
         			@Override
         			public void handle(ActionEvent event) {
-        				Admin i = new Admin(stage, user, database);
+        				new Admin(stage, user, database);
         			}
                 	
                 });

@@ -45,7 +45,7 @@ public class FinishSetupPage extends TilePane {
 	            	database.editUser(user.username, "email", user.email);
 	            	database.editUser(user.username, "fullName", new String[] {name.first, name.middle, name.last, name.preferred});
 	            	
-		            Role role = new Role(primaryStage, user, database);
+		            new Role(primaryStage, user, database);
                 } 
             });
  

@@ -9,10 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DeleteHelpArticlePage extends VBox {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public DeleteHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String title) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Delete Article(s) with Title: " + title);
         
         Button back = new Button("Back");

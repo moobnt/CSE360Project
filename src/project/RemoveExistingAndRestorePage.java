@@ -9,10 +9,7 @@ import java.io.File;
 import java.sql.SQLException;
 
 public class RemoveExistingAndRestorePage extends VBox {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public RemoveExistingAndRestorePage(Stage stage, HelpArticleDatabase helpArticleDatabase, File filename) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Remove Existing Articles and Restore");
 
         // Confirmation alert

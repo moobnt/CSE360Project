@@ -8,10 +8,7 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 
 public class FetchHelpArticlePage extends TilePane {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public FetchHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Fetch Help Article");
 
         // Create a GridPane for the fetch form
@@ -30,7 +27,7 @@ public class FetchHelpArticlePage extends TilePane {
                     HelpArticle articleToUpdate = helpArticleDatabase.fetchArticleByTitle(titleToFetch);
                     if (articleToUpdate != null) {
                         // Redirect to UpdateHelpArticlePage with fetched article
-                        UpdateHelpArticlePage updateHelpArticlePage = new UpdateHelpArticlePage(stage, helpArticleDatabase, articleToUpdate);
+                        new UpdateHelpArticlePage(stage, helpArticleDatabase, articleToUpdate);
                     } else {
                         Alert alert = new Alert(Alert.AlertType.WARNING, "Article not found!", ButtonType.OK);
                         alert.showAndWait();

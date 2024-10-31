@@ -1,12 +1,9 @@
 package project;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 
@@ -53,7 +50,7 @@ public class Instructor extends StackPane {
         	public void handle(ActionEvent event) {
         		
         		//send back to login page
-        		LoginService login = new LoginService(stage, user, database);
+        		new LoginService(stage, user, database);
                    
                 } 
             });

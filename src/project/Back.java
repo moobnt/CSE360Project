@@ -1,9 +1,7 @@
 package project;
 
 import java.util.Stack;
-
 import javafx.scene.Scene;
-import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 /**

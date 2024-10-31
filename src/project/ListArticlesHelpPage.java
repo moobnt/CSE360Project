@@ -10,10 +10,7 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 
 public class ListArticlesHelpPage extends ScrollPane {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public ListArticlesHelpPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("List All Articles");
 
         // Create a VBox to hold the article details

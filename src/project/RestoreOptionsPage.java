@@ -10,11 +10,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class RestoreOptionsPage extends VBox {
-    private HelpArticleDatabase helpArticleDatabase;
     private File backupFile = null; // Declaring it up here to prevent Java intricacies
 
     public RestoreOptionsPage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Restore Options");
         
         // Open the operating system's file explorer to find the absolute path of the file
@@ -43,7 +41,7 @@ public class RestoreOptionsPage extends VBox {
         		Alert alert = new Alert(Alert.AlertType.ERROR, "Error with restoring file: No file selected", ButtonType.OK);
         		alert.showAndWait();
         	} else {
-        		RemoveExistingAndRestorePage removePage = new RemoveExistingAndRestorePage(stage, helpArticleDatabase, backupFile);
+        		new RemoveExistingAndRestorePage(stage, helpArticleDatabase, backupFile);
         	}
         });
 
@@ -53,7 +51,7 @@ public class RestoreOptionsPage extends VBox {
         		Alert alert = new Alert(Alert.AlertType.ERROR, "Error with restoring file: No file selected", ButtonType.OK);
         		alert.showAndWait();
         	} else {
-        		MergeCurrentRestorePage mergePage = new MergeCurrentRestorePage(stage, helpArticleDatabase, backupFile);
+        		new MergeCurrentRestorePage(stage, helpArticleDatabase, backupFile);
         	}
         });
 

@@ -17,10 +17,7 @@ import java.sql.SQLException;
  */
 
 public class CreateHelpArticlePage extends TilePane {
-    private HelpArticleDatabase helpArticleDatabase;
-
     public CreateHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
-        this.helpArticleDatabase = helpArticleDatabase; // Store the database instance
         stage.setTitle("Create Help Article");
 
         // Create a GridPane for the article creation form
