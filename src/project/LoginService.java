@@ -73,10 +73,13 @@ public class LoginService extends BorderPane {
                         new RoleSelectionPage(stage, user, database, roles);
                     } else if (roles.length == 1) {
                         // Redirect to home page based on the single role
-                        if ("Admin".equals(roles[0])) {
+                        // TODO: remove brackets from role checking
+                        if ("[Admin]".equals(roles[0])) {
                             new Admin(stage, user, database); // Redirect to Admin page if admin
+                        } else if ("[Instructor]".equals(roles[0])) {
+                            new Instructor(stage, user, database);
                         } else {
-                            new UserHome(stage, user, database); // Redirect to user home page
+                            new Student(stage, user, database); // Redirect to user home page
                         }
                     } else {
                         System.out.println("User has no roles assigned.");

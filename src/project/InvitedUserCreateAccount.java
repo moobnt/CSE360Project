@@ -28,7 +28,7 @@ public class InvitedUserCreateAccount extends TilePane {
 
         // Display assigned roles as labels
         Label rolesLabel = new Label("Assigned Roles:");
-        Label rolesDisplay = new Label(String.join(", ", assignedRoles)); // Display roles as a comma-separated list
+        Label rolesDisplay = new Label(String.join(",", (CharSequence[]) assignedRoles)); // Display roles as a comma-separated list
 
         // Create account button
         Button createAccountButton = new Button("Create Account");
@@ -48,23 +48,14 @@ public class InvitedUserCreateAccount extends TilePane {
             }
 
             // Assign roles based on the invitation
-            user.username = username;
-            user.password = password;
-            user.email = email;
-            user.roles = assignedRoles;
 
             // Full name array
             String[] fullName = {firstName, middleName, lastName, preferredName};
 
             // Register the user in the database
-            database.registerUser(username, password, email, user.roles, false, OffsetDateTime.now(ZoneOffset.UTC), fullName);
+            database.registerUser(username, password, email, assignedRoles, false, OffsetDateTime.now(ZoneOffset.UTC), fullName);
 
-            // Redirect to the appropriate home page
-            if (Arrays.asList(assignedRoles).contains("Admin")) {
-                new Admin(stage, user, database);
-            } else {
-                new UserHome(stage, user, database);
-            }
+            new LoginService(stage, user, database);
         });
 
         getChildren().addAll(new Label("Username:"), usernameField,

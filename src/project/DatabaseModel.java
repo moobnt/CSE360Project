@@ -1,18 +1,8 @@
 package project;
 
 import java.sql.*;
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Array;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.HashSet;
-import java.util.Set;
-import java.sql.PreparedStatement;
+import java.util.*;
+import java.time.*;
 
 public class DatabaseModel {
     private Connection connection;
@@ -201,7 +191,7 @@ public class DatabaseModel {
     public void registerUser(String username, String password, String email, Object[] roles,
                              boolean onetime, OffsetDateTime date, String[] name) {
         if (doesUserExist(username)) {
-            System.out.println("User with this username already exists. Choose a different username.");
+            System.out.println("User with this username already exists. Choose a different username."); // TODO: Error message popup instead of println
             return;
         }
         try {
@@ -252,15 +242,21 @@ public class DatabaseModel {
      * Returns the roles associated with a code as an array.
      */
     public String[] getCodeRoles(String code) {
+        String rolesString = null;
+
         try {
-            String rolesString = (String) DatabaseHelper.getValue("codes", "code", code, "roles");
+            rolesString = (String) DatabaseHelper.getValue("codes", "code", code, "roles");
             if (rolesString != null) {
+                System.out.println("Splitting roles string from database");
                 return rolesString.split(",");
+            } else {
+                System.out.println("uh oh");
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return new String[0];
     }
 
     /**
