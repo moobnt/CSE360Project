@@ -7,6 +7,15 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 import java.sql.SQLException;
 
+/**
+ * <p> CreateHelpArticlePage class </p>
+ * 
+ * <p> Description: Handles the page of the help articles, takes in the user inputs and stores it within the 
+ * helpArticlesDatabase  </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
 public class CreateHelpArticlePage extends TilePane {
     private HelpArticleDatabase helpArticleDatabase;
 

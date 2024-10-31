@@ -14,6 +14,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+
+/**
+ * <p> CreateAccount class </p>
+ * 
+ * <p> Description: Handler for creating an account for a user </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class CreateAccount extends TilePane {
 	
 	public CreateAccount(Stage stage, User user, DatabaseModel database) {	
