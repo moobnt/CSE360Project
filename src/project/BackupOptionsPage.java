@@ -5,6 +5,15 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+
+/**
+ * <p> BackUpOptionsPage class </p>
+ * 
+ * <p> Description: This handles the page view up the back up options, sending the user to the 
+ * appropriate page based on their input </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
 public class BackupOptionsPage extends VBox {
     private HelpArticleDatabase helpArticleDatabase;
 
