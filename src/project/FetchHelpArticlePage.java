@@ -7,6 +7,23 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 import java.sql.SQLException;
 
+/**
+ * <p> FetchHelpArticlePage class </p>
+ * 
+ * <p> Description: Fetches the article specified by the user </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
+/**
+ * 
+ * 
+ * @param ArticleName
+ * @returns Article not found
+ * 
+ */
+
 public class FetchHelpArticlePage extends TilePane {
     public FetchHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Fetch Help Article");
