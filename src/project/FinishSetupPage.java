@@ -9,6 +9,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+/**
+ * <p> FinishSetup class </p>
+ * 
+ * <p> Description: Used to set up the user account/finish setting up a user account </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
 public class FinishSetupPage extends TilePane {
 	
 	public FinishSetupPage(Stage primaryStage, User user, DatabaseModel database) {
