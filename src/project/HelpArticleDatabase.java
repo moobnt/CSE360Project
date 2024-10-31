@@ -14,6 +14,18 @@ import javafx.scene.control.ButtonType;
 
 import java.time.Instant;
 
+
+/**
+ * <p> HelpArticleDatabase class </p>
+ * 
+ * <p> Description: Builds a data base on existing articles and future articles built using the system. </p>
+ * 
+ * @version 1.00 2024-10-30 Initial baseline
+ */
+
+
+
+
 public class HelpArticleDatabase {
     private Connection connection;
 
