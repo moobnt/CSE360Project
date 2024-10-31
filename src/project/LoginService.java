@@ -64,7 +64,8 @@ public class LoginService extends BorderPane {
                 // Check if the user is flagged for reset
                 if (database.isUserReset(user.username)) {
                     new ResetAccountPage(stage, user, database); // Redirect to ResetAccountPage
-                } else {
+                } else if(database.doesUserExist(user.username) 
+                		&& database.getUserField(user.username, "password").equals(user.password)){
                     // Check user's roles
                     String[] roles = database.getUserRoles(user.username); // Assume this method retrieves user roles
                     if (roles.length > 1) {

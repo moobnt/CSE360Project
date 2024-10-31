@@ -54,7 +54,6 @@ public class Instructor extends StackPane {
         		
         		//send back to login page
         		LoginService login = new LoginService(stage, user, database);
-
                    
                 } 
             });
@@ -62,7 +61,9 @@ public class Instructor extends StackPane {
         HBox box = new HBox(manageHelpArticlesButton, btn);
         getChildren().addAll(box);
         
-        stage.setScene(new Scene(this, 300, 250));
+        Scene s = new Scene(this, 300, 250);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }
