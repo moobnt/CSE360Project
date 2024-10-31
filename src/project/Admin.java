@@ -1,32 +1,13 @@
 package project;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.util.stream.Collectors;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.util.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -97,16 +78,19 @@ public class Admin extends TilePane {
             generateInviteButton.setOnAction(e -> {
                 // Generate a unique invite code
                 String inviteCode = generateInviteCode();
-                List<String> roles = new ArrayList<>();
+                
+                java.util.List<String> rolesList = new java.util.ArrayList<>(); // TODO: THIS SHIT DONT WORK RIGHT
                 
                 // Collect selected roles
-                if (instructorRole.isSelected()) roles.add("Instructor");
-                if (studentRole.isSelected()) roles.add("Student");
-                if (adminRole.isSelected()) roles.add("Admin");
+                if (instructorRole.isSelected()) rolesList.add("Instructor");
+                if (studentRole.isSelected()) rolesList.add("Student");
+                if (adminRole.isSelected()) rolesList.add("Admin");
 
-                if (!roles.isEmpty()) {
+                String[] roles = rolesList.toArray(new String[0]);
+
+                if (roles != null) {
                     // Register the invite code with associated roles
-                    database.registerCode(inviteCode, roles.toArray(String[]::new));
+                    database.registerCode(inviteCode, roles);
 
                     // Display the invite code and add a copy button
                     Text inviteCodeDisplay = new Text("Invite code created: " + inviteCode);
