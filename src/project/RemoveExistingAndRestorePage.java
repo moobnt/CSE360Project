@@ -36,9 +36,18 @@ public class RemoveExistingAndRestorePage extends VBox {
             }
         });
 
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
         // Add a loading message while the restoration is happening
-        getChildren().add(new Label("Restoring articles..."));
-        stage.setScene(new Scene(this, 400, 200));
+        getChildren().addAll(new Label("Articles restored!"), back);
+
+        Scene s = new Scene(this, 400, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
     }
 }
  

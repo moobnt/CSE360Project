@@ -25,11 +25,19 @@ public class BackupOptionsPage extends VBox {
             BackupArticlesByGroupPage backupArticlesByGroupPage = new BackupArticlesByGroupPage(stage, helpArticleDatabase);
         });
 
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
         // Add components to the VBox
-        getChildren().addAll(new Label("Select Backup Option:"), backupAllButton, backupGroupButton);
+        getChildren().addAll(new Label("Select Backup Option:"), backupAllButton, backupGroupButton, back);
 
         // Set the scene with the current VBox
-        stage.setScene(new Scene(this, 400, 200));
+        Scene s = new Scene(this, 400, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

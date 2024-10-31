@@ -46,16 +46,25 @@ public class FetchHelpArticlePage extends TilePane {
             }
         });
 
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
         // Add controls to the grid
         gridPane.add(titleLabel, 0, 0);
         gridPane.add(titleField, 1, 0);
         gridPane.add(fetchButton, 1, 1);
+        gridPane.add(back, 2, 0);
 
         // Add the gridPane to the TilePane
         getChildren().add(gridPane);
 
         // Set the scene with the current TilePane
-        stage.setScene(new Scene(this, 400, 200));
+        Scene s = new Scene(this, 400, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

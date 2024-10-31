@@ -26,20 +26,15 @@ public class OneTimePassPage extends TilePane {
  
         // set preferred column count
         
-        btn.setOnAction(new EventHandler<>() {
-            public void handle(ActionEvent event) {
+        btn.setOnAction(event -> {
             		String code = password.getText();
             		boolean valid = database.hasCode(password.getText());
             		
             		if(valid) {
             			user.roles = database.getCodeRoles(code);
-            			// Get the current window
-                        Stage stage = (Stage) btn.getScene().getWindow(); 
-//                        // Close the current window
 //                        stage.setScene(new Scene(new LoginService()));
                         CreateAccount login  = new CreateAccount(stage, user, database);
             		}
-                } 
             });
  
         // create a tile pane
@@ -47,15 +42,23 @@ public class OneTimePassPage extends TilePane {
         // create a label
         Label l = new Label("Enter Password: ");
 
-        
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
 //	        root.getChildren().add(btn);
 //	        root.getChildren().add(username);
 //	        root.getChildren().add(password);
         getChildren().add(l);
         getChildren().add(password);
         getChildren().add(btn);
+        getChildren().add(back);
         
-        stage.setScene(new Scene(this, 350, 250));
+        Scene s = new Scene(this, 350, 250);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
 		
 	}

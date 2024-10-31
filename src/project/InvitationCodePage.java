@@ -36,8 +36,17 @@ public class InvitationCodePage extends TilePane {
             }
         });
 
-        getChildren().addAll(codeLabel, codeField, submitButton, feedbackLabel);
-        stage.setScene(new Scene(this, 300, 200));
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
+        getChildren().addAll(codeLabel, codeField, submitButton, feedbackLabel, back);
+
+        Scene s = new Scene(this, 300, 200);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 }

@@ -56,11 +56,19 @@ public class BackupArticlesByGroupPage extends VBox {
             }
         });
 
+        Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
         // Add components to the VBox
-        getChildren().addAll(new Label("Backup Articles by Group"), groupNameField, openFileChooserButton, backupButton);
+        getChildren().addAll(new Label("Backup Articles by Group"), groupNameField, openFileChooserButton, backupButton, back);
 
         // Set the scene with the current VBox
-        stage.setScene(new Scene(this, 400, 250));
+        Scene s = new Scene(this, 400, 250);
+        Back.pushBack(s);
+        stage.setScene(s);
         stage.show();
     }
 

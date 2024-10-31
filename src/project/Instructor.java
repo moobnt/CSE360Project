@@ -61,6 +61,7 @@ public class Instructor extends StackPane {
             
         HBox box = new HBox(manageHelpArticlesButton, btn);
         getChildren().addAll(box);
+        
         stage.setScene(new Scene(this, 300, 250));
         stage.show();
     }
