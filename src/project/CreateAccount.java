@@ -15,6 +15,7 @@ import javafx.stage.Stage;
  * 
  * @version 1.00 2024-10-30 Initial baseline
  */
+
 public class CreateAccount extends TilePane {
 	
 	public CreateAccount(Stage stage, User user, DatabaseModel database) {	
