@@ -80,7 +80,7 @@ public class Admin extends TilePane {
                 // Generate a unique invite code
                 String inviteCode = generateInviteCode();
                 
-                java.util.List<String> rolesList = new java.util.ArrayList<>(); // TODO: THIS SHIT DONT WORK RIGHT
+                java.util.List<String> rolesList = new java.util.ArrayList<>(); // TODO: THIS **stuff** DONT WORK RIGHT
                 
                 // Collect selected roles
                 if (instructorRole.isSelected()) rolesList.add("Instructor");
