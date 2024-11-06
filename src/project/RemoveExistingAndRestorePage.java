@@ -30,7 +30,6 @@ public class RemoveExistingAndRestorePage extends VBox {
                     helpArticleDatabase.restoreArticlesFromBackup(filename); // Restore from the backup
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Articles restored successfully!", ButtonType.OK);
                     alert.showAndWait();
-                    stage.close(); // Close the page
                 } catch (SQLException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Error restoring articles: " + e.getMessage(), ButtonType.OK);
