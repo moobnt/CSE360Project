@@ -16,8 +16,9 @@ class DatabaseHelper {
     private static final String USER = "sa";
     private static final String PASS = "";
 
-    private static Connection connection;
-    private static Statement statement;
+    private static Connection connection = null;
+    private static Statement statement = null;
+    private static PreparedStatement pstmt = null;
 
     /**
      * Establishes a connection to the database and creates necessary tables.
@@ -37,6 +38,15 @@ class DatabaseHelper {
             }
         }
         return connection;
+    }
+    
+    /**
+     * Closes the database connection and statement.
+     */
+    public static void closeConnection() throws SQLException{
+            if (pstmt != null) pstmt.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
     }
 
     /**
@@ -252,21 +262,5 @@ class DatabaseHelper {
             e.printStackTrace();
         }
         return false;
-    }
-
-    /**
-     * Closes the database connection and statement.
-     */
-    public static void closeConnection() {
-        try {
-            if (statement != null) statement.close();
-        } catch (SQLException se2) {
-            se2.printStackTrace();
-        }
-        try {
-            if (connection != null) connection.close();
-        } catch (SQLException se) {
-            se.printStackTrace();
-        }
     }
 }

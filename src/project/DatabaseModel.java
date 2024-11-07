@@ -7,16 +7,27 @@ import java.time.*;
 public class DatabaseModel {
     private Connection connection;
 
-    public DatabaseModel() {
-        connect();
-    }
-
     /**
-     * Establishes the connection to the database.
+     * Establishes the connection to the database if needed
      */
     public void connect() {
         try {
-            connection = DatabaseHelper.connectToDatabase();
+            if (connection == null || connection.isClosed()) {
+                connection = DatabaseHelper.connectToDatabase();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Closes the connection to the database if needed
+     */
+    public void disconnect() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                DatabaseHelper.closeConnection();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -28,18 +39,19 @@ public class DatabaseModel {
      * @return true if no users exist, false otherwise
      */
     public boolean isDatabaseEmpty() {
-        if (connection == null) connect();
+        boolean res = true;
 
         String query = "SELECT COUNT(*) FROM users";
         try (Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(query)) {
             if (resultSet.next()) {
-                return resultSet.getInt(1) == 0;
+                res = false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
+
+        return res;
     }
 
     /**
@@ -182,7 +194,8 @@ public class DatabaseModel {
      * @return true if the user exists, false otherwise.
      */
     public boolean doesUserExist(String username) {
-        return DatabaseHelper.doesExist("users", "username", username);
+        boolean res = DatabaseHelper.doesExist("users", "username", username);
+        return res;
     }
 
     /**
