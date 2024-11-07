@@ -25,20 +25,7 @@ public class Admin extends TilePane {
      *
      * @return the generated string
      */
-    public String generateInviteCode() {
-        int leftLimit = 97; // 'a'
-        int rightLimit = 122; // 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
-        StringBuilder buffer = new StringBuilder(targetStringLength);
-        for (int i = 0; i < targetStringLength; i++) {
-            int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
-            buffer.append((char) randomLimitedInt);
-        }
-        return buffer.toString();
-    }
-    
-    private String generateOneTimeCode() {
+    private String generateCode() {
         // Generate a random 8-character alphanumeric code
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder code = new StringBuilder(8);
@@ -78,7 +65,7 @@ public class Admin extends TilePane {
 
             generateInviteButton.setOnAction(e -> {
                 // Generate a unique invite code
-                String inviteCode = generateInviteCode();
+                String inviteCode = generateCode();
                 
                 java.util.List<String> rolesList = new java.util.ArrayList<>(); // TODO: THIS **stuff** DONT WORK RIGHT
                 
@@ -143,7 +130,7 @@ public class Admin extends TilePane {
                 OffsetDateTime expirationDateTime = OffsetDateTime.of(LocalDateTime.of(expirationDate, expirationTime), ZoneOffset.UTC);
 
                 // Generate a one-time code for the reset
-                String oneTimeCode = generateOneTimeCode();
+                String oneTimeCode = generateCode();
 
                 // Register the reset in the database
                 database.resetUserWithCode(username, oneTimeCode, expirationDateTime);
