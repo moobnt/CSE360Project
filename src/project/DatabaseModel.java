@@ -5,7 +5,7 @@ import java.util.*;
 import java.time.*;
 
 public class DatabaseModel {
-    private Connection connection;
+    protected Connection connection;
 
     /**
      * Establishes the connection to the database if needed
