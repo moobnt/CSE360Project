@@ -13,14 +13,15 @@ import project.DatabaseModel;
  * 
  * @version 1.00 2024-11-13 Initial baseline
  */
-public class GroupDatabase extends DatabaseModel {
+public class SpecialGroupDatabase extends DatabaseModel {
     Statement stmt;
+    private final String TABLE_NAME = "special_group";
     private final String DEFAULT_GROUP_NAME = "Unprotected";
 
     /**
      * Default constructor; connects to the databse and creates tables
      */
-    public GroupDatabase() {
+    public SpecialGroupDatabase() {
         connect();
 
         try {
@@ -39,7 +40,7 @@ public class GroupDatabase extends DatabaseModel {
     private void createTables() throws SQLException {
         stmt = connection.createStatement();
 
-        String groupTable = "CREATE TABLE IF NOT EXISTS groups ("
+        String groupTable = "CREATE TABLE IF NOT EXISTS ? ("
             + "id INT AUTO_INCREMENT PRIMARY KEY, "
             + "title VARCHAR(255) UNIQUE NOT NULL, "
             + "admin VARCHAR(255), "
@@ -47,32 +48,38 @@ public class GroupDatabase extends DatabaseModel {
             + "students VARCHAR(65535), "
             + "articles VARCHAR(255))";
 
-        stmt.execute(groupTable);
+        try (PreparedStatement pstmt = connection.prepareStatement(groupTable)) {
+            pstmt.setString(1, TABLE_NAME);
+
+            pstmt.executeUpdate();
+        }
 
         // creates a default group that will not encrypt any articles
         // anyone can access this group, but because it is so simple
         // it does not have an admin
         //
         // Every instructor and student should be in this group
-        String defaultGroup = "INSERT INTO groups (title, admin, instructors, students, articles)"
+        String defaultGroup = "INSERT INTO ? (title, admin, instructors, students, articles)"
                 + "VALUES (?, NULL, NULL, NULL, NULL)"
                 + "WHERE NOT EXISTS (SELECT 1 FROM groups WHERE title = ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(defaultGroup)) {
-            pstmt.setString(1, DEFAULT_GROUP_NAME);
+            pstmt.setString(1, TABLE_NAME);
             pstmt.setString(2, DEFAULT_GROUP_NAME);
+            pstmt.setString(3, DEFAULT_GROUP_NAME);
 
             pstmt.executeUpdate();
         }
 
         // adds every currently existing person to the group
         // if they aren't already in it
-        String addAll = "UPDATE groups SET instructors = ?, students = ? WHERE title = ?";
+        String addAll = "UPDATE ? SET instructors = ?, students = ? WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(addAll)) {
-            pstmt.setString(1, ""); // TODO: list of instructors
-            pstmt.setString(2, ""); // TODO: list of students
-            pstmt.setString(3, DEFAULT_GROUP_NAME);
+            pstmt.setString(1, TABLE_NAME);
+            pstmt.setString(2, ""); // TODO: list of instructors
+            pstmt.setString(3, ""); // TODO: list of students
+            pstmt.setString(4, DEFAULT_GROUP_NAME);
 
             pstmt.executeUpdate();
         }
@@ -89,15 +96,16 @@ public class GroupDatabase extends DatabaseModel {
      * @param articles Articles to add to the group by ID
      */
     public void createGroup(String title, String admin, String instructors, String students, String articles) {
-        String createGroup = "INSERT INTO groups (title, admin, instructors, students, articles) "
+        String createGroup = "INSERT INTO ? (title, admin, instructors, students, articles) "
                 + "VALUES (?, ?, ?, ?, ?) ";
 
         try (PreparedStatement pstmt = connection.prepareStatement(createGroup)) {
-            pstmt.setString(1, title);
-            pstmt.setString(2, admin);
-            pstmt.setString(3, instructors);
-            pstmt.setString(4, students);
-            pstmt.setString(5, articles);
+            pstmt.setString(1, TABLE_NAME);
+            pstmt.setString(2, title);
+            pstmt.setString(3, admin);
+            pstmt.setString(4, instructors);
+            pstmt.setString(5, students);
+            pstmt.setString(6, articles);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -112,10 +120,11 @@ public class GroupDatabase extends DatabaseModel {
      * @param title Unique title of the group
      */
     public void deleteGroup(String title) {
-        String deleteGroup = "DELETE FROM groups WHERE title = ?";
+        String deleteGroup = "DELETE FROM ? WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(deleteGroup)) {
-            pstmt.setString(1, title);
+            pstmt.setString(1, TABLE_NAME);
+            pstmt.setString(2, title);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -130,7 +139,7 @@ public class GroupDatabase extends DatabaseModel {
      * @param student Student to add to the group
      */
     public void addStudent(String title, String student) {
-        String addStudent = "UPDATE groups SET students = ? WHERE title = ?";
+        String addStudent = "UPDATE ? SET students = ? WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(addStudent)) {
 
@@ -164,7 +173,7 @@ public class GroupDatabase extends DatabaseModel {
      * @param admin Admin to add to the group
      */
     public void addAdmin(String title, String admin) {
-        String addAdmin = "UPDATE groups SET admins = ? WHERE title = ?";
+        String addAdmin = "UPDATE ? SET admins = ? WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(addAdmin)) {
 
