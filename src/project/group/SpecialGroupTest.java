@@ -1,4 +1,4 @@
-package project.groups;
+package project.group;
 
 public class SpecialGroupTest {
     

@@ -1,4 +1,4 @@
-package project.groups;
+package project.group;
 
 import java.sql.*;
 import java.util.*;
