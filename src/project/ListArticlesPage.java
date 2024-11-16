@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
+import project.util.Back;
 
 /**
  * <p> ListArticlePage class </p>
