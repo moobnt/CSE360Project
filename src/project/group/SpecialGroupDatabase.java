@@ -15,7 +15,7 @@ import project.DatabaseModel;
 public class SpecialGroupDatabase extends DatabaseModel {
     Statement stmt;
     private final String TABLE_NAME = "special_group";
-    private final String DEFAULT_GROUP_NAME = "Unprotected";
+    private final String DEFAULT_GROUP_NAME = "unprotected";
     private final String ARRAY_SEPERATOR = ", "; // item seperator in the SQL tables
 
     /**
@@ -60,14 +60,51 @@ public class SpecialGroupDatabase extends DatabaseModel {
         // Every instructor and student should be in this group
         String defaultGroup = "INSERT INTO ? (title, admin, instructors, students, articles)"
                 + "VALUES (?, NULL, NULL, NULL, NULL)"
-                + "WHERE NOT EXISTS (SELECT 1 FROM groups WHERE title = ?)";
+                + "WHERE NOT EXISTS (SELECT 1 FROM ? WHERE title = ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(defaultGroup)) {
             pstmt.setString(1, TABLE_NAME);
             pstmt.setString(2, DEFAULT_GROUP_NAME);
-            pstmt.setString(3, DEFAULT_GROUP_NAME);
+            pstmt.setString(3, TABLE_NAME);
+            pstmt.setString(4, DEFAULT_GROUP_NAME);
 
             pstmt.executeUpdate();
+        }
+
+        // finds all instructors / students in the database
+        String findAll = "SELECT username FROM users WHERE CONTAINS (roles, ?)";
+
+        String allInstructors = null;
+        String allStudents = null;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(findAll)) {
+            pstmt.setString(1, "Instructor");
+
+            ResultSet instructorUsernames = pstmt.executeQuery();
+
+            if (instructorUsernames != null) {
+                do {
+                    allInstructors = addItemToString(allInstructors, 
+                                        instructorUsernames.getString("username"));
+                } while (instructorUsernames.next());
+            } else {
+                System.err.println("No instructors found");
+            }
+        }
+
+        try (PreparedStatement pstmt = connection.prepareStatement(findAll)) {
+            pstmt.setString(1, "Student");
+
+            ResultSet studentUsernames = pstmt.executeQuery();
+
+            if (studentUsernames != null) {
+                do {
+                    allStudents = addItemToString(allStudents, 
+                                    studentUsernames.getString("username"));
+                } while (studentUsernames.next());
+            } else {
+                System.err.println("No students found");
+            }
         }
 
         // adds every currently existing person to the group
@@ -76,8 +113,8 @@ public class SpecialGroupDatabase extends DatabaseModel {
 
         try (PreparedStatement pstmt = connection.prepareStatement(addAll)) {
             pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, ""); // TODO: list of instructors
-            pstmt.setString(3, ""); // TODO: list of students
+            pstmt.setString(2, allInstructors);
+            pstmt.setString(3, allStudents);
             pstmt.setString(4, DEFAULT_GROUP_NAME);
 
             pstmt.executeUpdate();
