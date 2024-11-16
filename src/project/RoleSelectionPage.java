@@ -15,6 +15,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
+import project.student.Student;
 
 public class RoleSelectionPage extends TilePane {
     
@@ -52,7 +53,7 @@ public class RoleSelectionPage extends TilePane {
                 if ("Admin".equals(selectedRole)) {
                     new Admin(stage, user, database);
                 } else if ("Student".equals(selectedRole)) {
-                    new UserHome(stage, user, database);
+                    new Student(stage, user, database);
                 } else if ("Instructor".equals(selectedRole)) {
                     new Instructor(stage, user, database);
                 }
