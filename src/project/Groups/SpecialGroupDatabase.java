@@ -1,9 +1,7 @@
 package project.groups;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import project.DatabaseModel;
 
@@ -176,10 +174,28 @@ public class SpecialGroupDatabase extends DatabaseModel {
      * @param student Student to remove from the group
      */
     public void removeStudent(String title, String student) {
-        String removeStudent = ""; // TODO: pull the comma seperated string and remove the name
+        String studentListString = null;
+        String getStudents = "SELECT students FROM ? WHERE title = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(getStudents)) {
+            pstmt.setString(1, TABLE_NAME);
+            pstmt.setString(2, title);
+
+            ResultSet studentResultSet = pstmt.executeQuery();
+
+            studentListString = removeItemFromString(studentResultSet.getString("students"), student);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        String removeStudent = "UPDATE ? SET students = ? WHERE title = ?"; 
 
         try (PreparedStatement pstmt = connection.prepareStatement(removeStudent)) {
+            pstmt.setString(1, TABLE_NAME);
+            pstmt.setString(2, studentListString);
+            pstmt.setString(3, title); 
 
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -258,13 +274,31 @@ public class SpecialGroupDatabase extends DatabaseModel {
     /**
      * Converts a string into a list, adds an item, and changes it back to a string
      * 
+     * @param initString The initial string that is passed in
+     * @param item The item to be added
      * @return String with item added to the end
      */
-    private String addItemToString(String initString, String newItem) {
+    private String addItemToString(String initString, String item) {
         List<String> itemArray = new ArrayList<>();
 
         itemArray = Arrays.asList(initString.split(ARRAY_SEPERATOR));
-        itemArray.add(newItem);
+        itemArray.add(item);
+
+        return String.join(ARRAY_SEPERATOR, itemArray);
+    }
+
+    /**
+     * Converts a string into a list, removes the item, and changes it back to a string
+     * 
+     * @param initString The initial string that is passed in
+     * @param item The item to be removed
+     * @return String with item removed
+     */
+    private String removeItemFromString(String initString, String item) {
+        List<String> itemArray = new ArrayList<>();
+
+        itemArray = Arrays.asList(initString.split(ARRAY_SEPERATOR));
+        itemArray.remove(item);
 
         return String.join(ARRAY_SEPERATOR, itemArray);
     }
