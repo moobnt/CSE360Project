@@ -1,15 +1,19 @@
 package project.student;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import project.DatabaseModel;
 import project.LoginService;
 import project.User;
+import project.util.Back;
 
 /**
  * 
@@ -25,7 +29,7 @@ import project.User;
  * @version 2.00		2024-11-16 	Added additional buttons
  * 
  */
-public class Student extends TilePane {
+public class Student extends BorderPane {
 	/**********
 	 * This method is for the web page that shows the Student view.
 	 * 
@@ -34,8 +38,7 @@ public class Student extends TilePane {
     public Student(Stage stage, User user, DatabaseModel database) {
     	// Set the title in the window bar
         stage.setTitle("Student Home Page");
-		System.out.println("Student Home Page");
-        
+
 		// LOG OUT BUTTON -----------------------------------------------------
         Button logOutButton = new Button("Log out");
         logOutButton.setOnAction(event -> {
@@ -68,8 +71,23 @@ public class Student extends TilePane {
 		});
             
 		// STAGE SETUP --------------------------------------------------------
-        getChildren().addAll(logOutButton, quitButton, helpButton, listArticlesButton);
-        stage.setScene(new Scene(this, 300, 250));
+		// setting up gridpane
+		GridPane gridPane = new GridPane();
+		gridPane.setAlignment(Pos.CENTER);
+		gridPane.setPadding(new Insets(20));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+		// adding all elements to gridpane
+		gridPane.add(listArticlesButton, 0, 0, 2, 1);
+		gridPane.add(helpButton, 0, 1);
+		gridPane.add(logOutButton, 0, 2);
+		gridPane.add(quitButton, 1, 2);
+        
+        this.setCenter(gridPane);
+		Scene s = new Scene(this, 300, 200);
+        Back.pushBack(s);
+		stage.setScene(s);
         stage.show();
     }
 }
