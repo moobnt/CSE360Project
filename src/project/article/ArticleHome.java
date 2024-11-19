@@ -1,4 +1,4 @@
-package project.student;
+package project.article;
 
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
@@ -20,7 +20,7 @@ public class ArticleHome extends TilePane {
     /**
      * This method displays all options for searching or displaying articles
      */
-    protected ArticleHome(Stage stage, User user, DatabaseModel database) {
+    public ArticleHome(Stage stage, User user, DatabaseModel database) {
         
     }
 }

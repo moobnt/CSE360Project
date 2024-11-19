@@ -1,13 +1,16 @@
 package project.instructor;
 
-import javafx.event.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import project.account.DatabaseModel;
 import project.account.LoginService;
 import project.account.User;
+import project.article.ArticleHome;
 import project.article.HelpArticleDatabase;
 import project.article.HelpArticleManagementPage;
 import project.util.Back;
@@ -41,25 +44,53 @@ public class Instructor extends StackPane {
     	//title page
         stage.setTitle("Instructor Home page");
         
+        // MANAGE HELP ARTICLES -----------------------------------------------
         Button manageHelpArticlesButton = new Button("Manage Help Articles");
         manageHelpArticlesButton.setOnAction(event -> {
         	HelpArticleDatabase h = new HelpArticleDatabase();
         	new HelpArticleManagementPage(stage, h, 0);
         });
+
+        // VIEW HELP ARTICLES -------------------------------------------------
+        Button listArticlesButton = new Button("View Help Articles");
+        listArticlesButton.setOnAction(event -> {
+			new ArticleHome(stage, user, database);
+		});
+
+        // GENERAL GROUP SETTINGS ---------------------------------------------
+        Button groupSettingsButton = new Button("General Group Settings");
+        groupSettingsButton.setOnAction(event -> {
+            // new group settings page here
+        });
+
+        // SPECIAL GROUP SETTINGS ---------------------------------------------
+        Button specialGroupSettingsButton = new Button("Special Group Settings");
+        specialGroupSettingsButton.setOnAction(event -> {
+            // new special group settings page here
+        });
         
-        Button btn = new Button("Log out");
-        
-        btn.setOnAction(new EventHandler<>() {
-        	
-        	public void handle(ActionEvent event) {
-        		
+        // LOG OUT ------------------------------------------------------------
+        Button logOutButton = new Button("Log out");
+        logOutButton.setOnAction(event -> {   		
         		//send back to login page
         		new LoginService(stage, null, database);
-                   
-                } 
             });
+        
+        // QUIT ---------------------------------------------------------------
+        Button quitButton = new Button("Quit");
+		quitButton.setOnAction(event -> {
+			Alert quitAlert = new Alert(AlertType.CONFIRMATION, 
+										"Are you sure you want to quit?", 
+										ButtonType.YES, ButtonType.NO);
+			quitAlert.showAndWait().ifPresent(response -> {
+				if (response == ButtonType.YES) {
+					System.exit(0);
+				}
+			});
+		});
             
-        HBox box = new HBox(manageHelpArticlesButton, btn);
+        // STAGE SETUP --------------------------------------------------------
+        HBox box = new HBox(manageHelpArticlesButton, logOutButton, quitButton);
         getChildren().addAll(box);
         
         Scene s = new Scene(this, 300, 250);
