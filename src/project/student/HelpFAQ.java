@@ -2,8 +2,8 @@ package project.student;
 
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
-import project.DatabaseModel;
-import project.User;
+import project.account.DatabaseModel;
+import project.account.User;
 
 /**
  * <p> HelpFAQ Class </p>

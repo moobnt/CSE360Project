@@ -3,7 +3,7 @@ package project.group;
 import java.sql.*;
 import java.util.*;
 
-import project.DatabaseModel;
+import project.account.DatabaseModel;
 
 /**
  * <p> GroupDatabase Class </p>

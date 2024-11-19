@@ -10,9 +10,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import project.DatabaseModel;
-import project.LoginService;
-import project.User;
+import project.account.DatabaseModel;
+import project.account.LoginService;
+import project.account.User;
 import project.util.Back;
 
 /**
@@ -42,7 +42,7 @@ public class Student extends BorderPane {
 		// LOG OUT BUTTON -----------------------------------------------------
         Button logOutButton = new Button("Log out");
         logOutButton.setOnAction(event -> {
-        	new LoginService(stage, user, database);
+        	new LoginService(stage, null, database);
             });
 
 		// QUIT BUTTON --------------------------------------------------------
@@ -80,9 +80,9 @@ public class Student extends BorderPane {
 
 		// adding all elements to gridpane
 		gridPane.add(listArticlesButton, 0, 0, 2, 1);
-		gridPane.add(helpButton, 0, 1);
-		gridPane.add(logOutButton, 0, 2);
-		gridPane.add(quitButton, 1, 2);
+		gridPane.add(helpButton, 1, 0);
+		gridPane.add(logOutButton, 0, 1);
+		gridPane.add(quitButton, 1, 1);
         
         this.setCenter(gridPane);
 		Scene s = new Scene(this, 300, 200);
