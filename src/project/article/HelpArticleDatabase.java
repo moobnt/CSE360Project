@@ -11,6 +11,7 @@ import java.util.List;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import project.account.DatabaseHelper;
 import project.account.DatabaseModel;
 
 import java.time.Instant;
@@ -34,6 +35,16 @@ public class HelpArticleDatabase extends DatabaseModel {
         connect();
         try {
             createTables(); // Ensure the tables are created on initialization
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void connect() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DatabaseHelper.connectToDatabase();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
