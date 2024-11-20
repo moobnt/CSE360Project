@@ -11,6 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import project.account.DatabaseModel;
 import project.account.LoginService;
@@ -41,6 +42,7 @@ public class Student extends BorderPane {
     public Student(Stage stage, User user, DatabaseModel database) {
     	// Set the title in the window bar
         stage.setTitle("Student Home Page");
+		Text welcomeText = new Text("Welcome, " + user.username + "\nPlease select an option:");
 
 		// LOG OUT BUTTON -----------------------------------------------------
         Button logOutButton = new Button("Log out");
@@ -92,6 +94,9 @@ public class Student extends BorderPane {
 		gridPane.add(logOutButton, 2, 0);
 		gridPane.add(quitButton, 3, 0);
         
+		this.setTop(welcomeText);
+		BorderPane.setAlignment(welcomeText, Pos.CENTER);
+		BorderPane.setMargin(welcomeText, new Insets(20));
         this.setCenter(gridPane);
 		Scene s = new Scene(this, 300, 200);
         Back.pushBack(s);
