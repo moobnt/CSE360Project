@@ -9,6 +9,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -36,8 +39,56 @@ public class ArticleHome extends BorderPane {
     public ArticleHome(Stage stage, User user, DatabaseModel database) {
         stage.setTitle("Article Home Page");
         // set content level
+		Label contentLevelText = new Label();
+		contentLevelText.setText("Select Content Level:");
+		ComboBox<String> contentLevelSelect = new ComboBox<String>();
+		contentLevelSelect.getItems().addAll(
+			"Beginner",
+			"Intermediate",
+			"Advanced",
+			"Expert",
+			"All"
+		);
         // set group
-        // search
+		Label groupTypeText = new Label();
+		groupTypeText.setText("Select Group Type: ");
+		ComboBox<String> groupTypeSelect = new ComboBox<String>();
+		groupTypeSelect.getItems().addAll(
+			"General",
+			"Special Access"
+		);
+		Label groupText = new Label();
+		groupText.setText("Select Group: ");
+		ComboBox<String> groupSelect = new ComboBox<String>();
+		groupSelect.setDisable(true);
+
+		groupTypeSelect.setOnAction(event -> {
+			groupSelect.setDisable(false);
+			String groupType = groupTypeSelect.getValue();
+
+			if (groupType == "General") {
+				groupSelect.getItems().addAll(
+					"Test Group"
+				);
+			} else if (groupType == "Special Access") {
+				// find all special access groups person is part of
+				// and display them
+			} else {
+				groupSelect.getItems().add(
+					groupType
+				);
+			}
+		});
+
+		TextField searchTerm = new TextField();
+		searchTerm.setPromptText("Search Term(s)");
+		
+        Button searchButton = new Button("Search");
+		searchButton.setDisable(true);
+		searchButton.setOnAction(event -> {
+			// search for articles with given criteria
+			// if one or more criteria is empty, prompt to try again
+		});
 
     // OPTIONS THAT ARE ALWAYS AVALIABLE --------------------------------------
         // LOG OUT BUTTON -----------------------------------------------------
@@ -77,20 +128,37 @@ public class ArticleHome extends BorderPane {
 		});
             
 		// STAGE SETUP --------------------------------------------------------
-		// setting up gridpane
-		GridPane gridPane = new GridPane();
-		gridPane.setAlignment(Pos.CENTER);
-		gridPane.setPadding(new Insets(20));
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
+		// gridpane for center
+		GridPane centerGrid = new GridPane();
+		centerGrid.setAlignment(Pos.CENTER);
+		centerGrid.setPadding(new Insets(20));
+        centerGrid.setHgap(10);
+        centerGrid.setVgap(10);
+
+		centerGrid.add(contentLevelText, 0, 0);
+		centerGrid.add(contentLevelSelect, 1, 0);
+		centerGrid.add(groupTypeText, 0, 1);
+		centerGrid.add(groupTypeSelect, 1, 1);
+		centerGrid.add(groupText, 0, 2);
+		centerGrid.add(groupSelect, 1, 2);
+		centerGrid.add(searchTerm, 0, 3, 2, 1);
+		centerGrid.add(searchButton, 0, 4);
+
+		// setting up gridpane for bottom buttons
+		GridPane bottomGrid = new GridPane();
+		bottomGrid.setAlignment(Pos.CENTER);
+		bottomGrid.setPadding(new Insets(20));
+        bottomGrid.setHgap(10);
+        bottomGrid.setVgap(10);
 
 		// adding all elements to gridpane
-		gridPane.add(listArticlesButton, 0, 0, 1, 1);
-		gridPane.add(helpButton, 1, 0);
-		gridPane.add(logOutButton, 2, 0);
-		gridPane.add(quitButton, 3, 0);
+		bottomGrid.add(listArticlesButton, 0, 0, 1, 1);
+		bottomGrid.add(helpButton, 1, 0);
+		bottomGrid.add(logOutButton, 2, 0);
+		bottomGrid.add(quitButton, 3, 0);
         
-        this.setBottom(gridPane);
+		this.setCenter(centerGrid);
+        this.setBottom(bottomGrid);
 		Scene s = new Scene(this, 600, 600);
         Back.pushBack(s);
 		stage.setScene(s);

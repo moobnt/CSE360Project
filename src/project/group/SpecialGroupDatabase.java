@@ -243,6 +243,16 @@ public class SpecialGroupDatabase extends DatabaseModel {
     }
 
     /**
+     * Checks to see what groups someone is in, if any
+     * They should at least be in the general group
+     * 
+     * @param person The person to find in groups
+     */
+    public void findPerson(String person) {
+        String findPerson = "SELECT ? FROM ? WHERE ";
+    }
+
+    /**
      * Converts a string into a list, adds an item, and changes it back to a string
      * 
      * @param initString The initial string that is passed in
