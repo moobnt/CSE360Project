@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  * @version 1.00 2024-10-30 Initial baseline
  */
 
-
+//Automated test required
 public class HelpArticle {
     private long id; // Unique identifier
     private String level; // e.g., beginner, intermediate, advanced, expert

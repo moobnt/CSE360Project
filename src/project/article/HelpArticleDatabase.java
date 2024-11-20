@@ -26,7 +26,7 @@ import java.time.Instant;
 
 
 
-
+//Automated test required
 public class HelpArticleDatabase extends DatabaseModel {
     private static Connection connection;
     // private static Statement statement;
