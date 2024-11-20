@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 
 public class DatabaseHelper {
 

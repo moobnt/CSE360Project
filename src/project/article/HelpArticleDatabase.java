@@ -15,8 +15,6 @@ import project.account.DatabaseHelper;
 import project.account.DatabaseModel;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-
 
 /**
  * <p> HelpArticleDatabase class </p>
@@ -31,7 +29,7 @@ import java.time.LocalDateTime;
 
 public class HelpArticleDatabase extends DatabaseModel {
     private static Connection connection;
-    private static Statement statement;
+    // private static Statement statement;
 
     private static final String JDBC_DRIVER = "org.h2.Driver"; // H2 JDBC driver
     private static final String DB_URL = "jdbc:h2:./database"; // H2 database URL (relative path to database file)
@@ -59,7 +57,7 @@ public class HelpArticleDatabase extends DatabaseModel {
             
             // Establish the connection
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            statement = connection.createStatement();
+            // statement = connection.createStatement();
             
             // Create tables if not already present
             createTables();

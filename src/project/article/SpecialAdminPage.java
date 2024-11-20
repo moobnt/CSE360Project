@@ -4,10 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import project.account.DatabaseHelper;
 import project.util.Back;
-
-import java.sql.SQLException;
 
 public class SpecialAdminPage {
     public SpecialAdminPage(Stage stage, HelpArticleDatabase helpArticleDatabase, String groupName) {

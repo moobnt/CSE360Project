@@ -5,9 +5,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import project.util.Back;
-import project.account.DatabaseHelper;
-
-import java.sql.SQLException;
 
 public class SpecialViewPage {
     public SpecialViewPage(Stage stage, HelpArticleDatabase helpArticleDatabase, String groupName) {
