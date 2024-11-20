@@ -355,7 +355,7 @@ public class Admin extends TilePane {
         Button logoutButton = new Button("Log Out");
         logoutButton.setOnAction(event -> {
 			try {
-				new LoginService(stage, user, database);
+				new LoginService(stage, new User(), database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

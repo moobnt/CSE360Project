@@ -46,7 +46,7 @@ public class Student extends BorderPane {
         Button logOutButton = new Button("Log out");
         logOutButton.setOnAction(event -> {
         	try {
-				new LoginService(stage, null, database);
+				new LoginService(stage, new User(), database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

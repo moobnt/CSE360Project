@@ -82,7 +82,7 @@ public class Instructor extends StackPane {
         logOutButton.setOnAction(event -> {   		
         		//send back to login page
         		try {
-					new LoginService(stage, null, database);
+					new LoginService(stage, new User(), database);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

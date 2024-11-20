@@ -17,6 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         User user = new User();
+
         databaseModel = new DatabaseModel();
         databaseModel.connect();
         
