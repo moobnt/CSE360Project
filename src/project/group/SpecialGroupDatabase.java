@@ -12,6 +12,7 @@ import project.account.DatabaseModel;
  * 
  * @version 1.00 2024-11-13 Initial baseline
  */
+//Automated test required
 public class SpecialGroupDatabase extends DatabaseModel {
     Statement stmt;
     private final String TABLE_NAME = "special_group";
