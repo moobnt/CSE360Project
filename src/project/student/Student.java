@@ -87,10 +87,10 @@ public class Student extends BorderPane {
         gridPane.setVgap(10);
 
 		// adding all elements to gridpane
-		gridPane.add(listArticlesButton, 0, 0, 2, 1);
+		gridPane.add(listArticlesButton, 0, 0, 1, 1);
 		gridPane.add(helpButton, 1, 0);
-		gridPane.add(logOutButton, 0, 1);
-		gridPane.add(quitButton, 1, 1);
+		gridPane.add(logOutButton, 2, 0);
+		gridPane.add(quitButton, 3, 0);
         
         this.setCenter(gridPane);
 		Scene s = new Scene(this, 300, 200);
