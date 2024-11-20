@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
 
-class DatabaseHelper {
+public class DatabaseHelper {
 
     private static final String JDBC_DRIVER = "org.h2.Driver";
     private static final String DB_URL = "jdbc:h2:~/database";
