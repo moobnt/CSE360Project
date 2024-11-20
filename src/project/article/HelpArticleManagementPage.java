@@ -1,10 +1,7 @@
 package project.article;
 
 import java.sql.SQLException;
-import java.util.Optional;
-
 import javafx.scene.Scene;
-
 import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;

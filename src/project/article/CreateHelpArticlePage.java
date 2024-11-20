@@ -7,8 +7,6 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 import project.util.Back;
 
-import java.sql.SQLException;
-
 /**
  * <p> CreateHelpArticlePage class </p>
  * 
