@@ -9,8 +9,9 @@ public class DatabaseModel {
 
     /**
      * Establishes the connection to the database if needed
+     * @throws SQLException 
      */
-    public void connect() {
+    public void connect() throws SQLException {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DatabaseHelper.connectToDatabase();

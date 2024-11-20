@@ -1,5 +1,7 @@
 package project.instructor;
 
+import java.sql.SQLException;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -47,7 +49,13 @@ public class Instructor extends StackPane {
         // MANAGE HELP ARTICLES -----------------------------------------------
         Button manageHelpArticlesButton = new Button("Manage Help Articles");
         manageHelpArticlesButton.setOnAction(event -> {
-        	HelpArticleDatabase h = new HelpArticleDatabase();
+        	HelpArticleDatabase h = null;
+			try {
+				h = new HelpArticleDatabase();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         	new HelpArticleManagementPage(stage, h, 0);
         });
 
@@ -73,7 +81,12 @@ public class Instructor extends StackPane {
         Button logOutButton = new Button("Log out");
         logOutButton.setOnAction(event -> {   		
         		//send back to login page
-        		new LoginService(stage, null, database);
+        		try {
+					new LoginService(stage, null, database);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             });
         
         // QUIT ---------------------------------------------------------------

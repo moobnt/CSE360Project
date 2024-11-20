@@ -1,5 +1,7 @@
 package project.account;
 
+import java.sql.SQLException;
+
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
@@ -50,7 +52,12 @@ public class ResetAccountPage extends TilePane {
                 feedbackLabel.setText("Password reset successful. Please log in.");
 
                 // Redirect back to the login page after reset
-                new LoginService(stage, user, database);
+                try {
+					new LoginService(stage, user, database);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             } else {
                 feedbackLabel.setText("Invalid or expired one-time code.");
             }

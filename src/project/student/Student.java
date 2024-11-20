@@ -1,5 +1,7 @@
 package project.student;
 
+import java.sql.SQLException;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -43,7 +45,12 @@ public class Student extends BorderPane {
 		// LOG OUT BUTTON -----------------------------------------------------
         Button logOutButton = new Button("Log out");
         logOutButton.setOnAction(event -> {
-        	new LoginService(stage, null, database);
+        	try {
+				new LoginService(stage, null, database);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             });
 
 		// QUIT BUTTON --------------------------------------------------------

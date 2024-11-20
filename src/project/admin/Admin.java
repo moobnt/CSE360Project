@@ -10,6 +10,7 @@ import project.account.*;
 import project.article.*;
 import project.util.Back;
 import java.util.*;
+import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
@@ -340,13 +341,26 @@ public class Admin extends TilePane {
         
         Button helpArticleManagementButton = new Button("Manage Help Articles");
         helpArticleManagementButton.setOnAction(event -> {
-        	HelpArticleDatabase h = new HelpArticleDatabase();
+        	HelpArticleDatabase h = null;
+			try {
+				h = new HelpArticleDatabase();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         	new HelpArticleManagementPage(stage, h, 1);
         });
 
         // Logout Button ------------------------------------------------------------------------------------------
         Button logoutButton = new Button("Log Out");
-        logoutButton.setOnAction(event -> new LoginService(stage, user, database));
+        logoutButton.setOnAction(event -> {
+			try {
+				new LoginService(stage, user, database);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 
         // Arrange buttons horizontally ---------------------------------------------------------------------------
         VBox buttonBox = new VBox(10, inviteButton, resetButton, deleteButton, listUsersButton, addOrRemoveUserButton, helpArticleManagementButton, logoutButton);

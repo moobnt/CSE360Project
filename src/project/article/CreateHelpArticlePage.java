@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 
 public class CreateHelpArticlePage extends TilePane {
-    public CreateHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase) {
+    public CreateHelpArticlePage(Stage stage, HelpArticleDatabase helpArticleDatabase, String username, boolean isInstructor) {
         stage.setTitle("Create Help Article");
 
         // Create a GridPane for the article creation form
@@ -77,22 +77,13 @@ public class CreateHelpArticlePage extends TilePane {
             long uniqueId = article.generateUniqueId();
             article.setId(uniqueId);
 
-            try {
-                // Use helpArticleDatabase to create the article
-                helpArticleDatabase.createHelpArticle(article);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Article created successfully!", ButtonType.OK);
-                alert.showAndWait();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Error creating article: " + ex.getMessage(), ButtonType.OK);
-                alert.showAndWait();
-            }
+            // After article creation, redirect to group selection page
+            new SelectGroupPage(stage, article, helpArticleDatabase, username, isInstructor);
         });
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
-        	
+            stage.setScene(Back.back(stage)); // Navigate back
         });
 
         // Add all labels and fields to the grid

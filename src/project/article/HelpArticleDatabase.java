@@ -15,6 +15,7 @@ import project.account.DatabaseHelper;
 import project.account.DatabaseModel;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 /**
@@ -29,9 +30,15 @@ import java.time.Instant;
 
 
 public class HelpArticleDatabase extends DatabaseModel {
-    private Connection connection;
+    private static Connection connection;
+    private static Statement statement;
 
-    public HelpArticleDatabase() {
+    private static final String JDBC_DRIVER = "org.h2.Driver"; // H2 JDBC driver
+    private static final String DB_URL = "jdbc:h2:./database"; // H2 database URL (relative path to database file)
+    private static final String USER = "sa"; // Default user for H2
+    private static final String PASS = ""; // Default password for H2 (empty string for embedded mode)
+    
+    public HelpArticleDatabase() throws SQLException {
         connect();
         try {
             createTables(); // Ensure the tables are created on initialization
@@ -40,18 +47,30 @@ public class HelpArticleDatabase extends DatabaseModel {
         }
     }
     
-    public void connect() {
+    /**
+     * Establishes a connection to the database and creates necessary tables.
+     * @throws SQLException 
+     */
+    public void connect() throws SQLException {
         try {
-            if (connection == null || connection.isClosed()) {
-                connection = DatabaseHelper.connectToDatabase();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            // Load the JDBC driver for H2
+            Class.forName(JDBC_DRIVER);
+            System.out.println("Connecting to database...");
+            
+            // Establish the connection
+            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            statement = connection.createStatement();
+            
+            // Create tables if not already present
+            createTables();
+        } catch (ClassNotFoundException e) {
+            System.err.println("JDBC Driver not found: " + e.getMessage());
         }
     }
     
     // Create the help_articles table if it doesn't exist
     private void createTables() throws SQLException {
+        // Create the help_articles table if it doesn't exist
         String helpArticlesTable = "CREATE TABLE IF NOT EXISTS help_articles ("
                 + "id BIGINT PRIMARY KEY, "
                 + "level VARCHAR(255), "
@@ -66,9 +85,62 @@ public class HelpArticleDatabase extends DatabaseModel {
                 + "sensitiveDescription VARCHAR(255), "
                 + "createdDate TIMESTAMP, "
                 + "updatedDate TIMESTAMP)";
-        
+
+        // Create the group_articles table if it doesn't exist
+        String groupArticlesTable = "CREATE TABLE IF NOT EXISTS group_articles ("
+                + "article_id BIGINT, "
+                + "group_name VARCHAR(255), "
+                + "group_type VARCHAR(50), " // 'general' or 'special_access'
+                + "adminRights VARCHAR(255), "  // Store admin rights as a comma-separated string
+                + "viewable VARCHAR(255), "      // Store viewable users as a comma-separated string
+                + "isInstructor BOOLEAN, "        // Flag to check if the first instructor is added
+                + "PRIMARY KEY (article_id, group_name))";
+
+        // Execute the table creation statements
         try (Statement stmt = connection.createStatement()) {
+            // Create help_articles table
             stmt.execute(helpArticlesTable);
+            // Create group_articles table
+            stmt.execute(groupArticlesTable);
+         // Check if the adminRights and viewable columns already exist in group_articles table
+            String checkColumnsQuery = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS "
+                                     + "WHERE TABLE_NAME = 'GROUP_ARTICLES' "
+                                     + "AND (COLUMN_NAME = 'ADMINRIGHTS' OR COLUMN_NAME = 'VIEWABLE' OR COLUMN_NAME = 'ISINSTRUCTOR')";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(checkColumnsQuery)) {
+                ResultSet rs = pstmt.executeQuery();
+
+                boolean adminRightsExists = false;
+                boolean viewableExists = false;
+                boolean isInstructorExists = false;
+
+                while (rs.next()) {
+                    String columnName = rs.getString("COLUMN_NAME");
+                    if ("ADMINRIGHTS".equalsIgnoreCase(columnName)) {
+                        adminRightsExists = true;
+                    } else if ("VIEWABLE".equalsIgnoreCase(columnName)) {
+                        viewableExists = true;
+                    } else if ("ISINSTRUCTOR".equalsIgnoreCase(columnName)) {
+                        isInstructorExists = true;
+                    }
+                }
+
+                // Add columns if they do not exist
+                if (!adminRightsExists) {
+                    String alterTableAdminRights = "ALTER TABLE group_articles ADD COLUMN adminRights VARCHAR(255)";
+                    stmt.executeUpdate(alterTableAdminRights);
+                }
+
+                if (!viewableExists) {
+                    String alterTableViewable = "ALTER TABLE group_articles ADD COLUMN viewable VARCHAR(255)";
+                    stmt.executeUpdate(alterTableViewable);
+                }
+
+                if (!isInstructorExists) {
+                    String alterTableIsInstructor = "ALTER TABLE group_articles ADD COLUMN isInstructor BOOLEAN";
+                    stmt.executeUpdate(alterTableIsInstructor);
+                }
+            }
         }
     }
 
@@ -94,7 +166,125 @@ public class HelpArticleDatabase extends DatabaseModel {
             pstmt.executeUpdate();
         }
     }
+ 
+    // Method to store an article in a specific group with its type (General or Special Access)
+    public void createGroupArticle(HelpArticle article, String groupName, String groupType, String username, boolean isInstructor) throws SQLException {
+        // Generate a unique ID for the article if not already set
+        long uniqueId = article.getId() == 0 ? article.generateUniqueId() : article.getId();
+        article.setId(uniqueId); // Ensure the article has an ID
+
+        // Set initial values for admin rights and viewable users as comma-separated strings
+        String adminRights = username; // The user who creates the article is added as an admin
+        String viewable = username;    // The user is also initially added to the viewable array
+
+        // Check if the user is the first instructor to be added to adminRights
+        boolean isFirstInstructor = false;
+
+        // If the group is special access, check if it's the first instructor
+        if ("special_access".equals(groupType) && isInstructor) {
+            // Query the group_articles table to check if any instructors already exist
+            String checkInstructorQuery = "SELECT isInstructor FROM group_articles WHERE group_name = ? AND group_type = ?";
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkInstructorQuery)) {
+                checkStmt.setString(1, groupName);
+                checkStmt.setString(2, groupType);
+                ResultSet rs = checkStmt.executeQuery();
+                if (!rs.next()) {
+                    // First instructor for this group
+                    isFirstInstructor = true;
+                }
+            }
+        }
+
+        // If the group is special access, store the article with admin rights, viewable rights, and instructor status
+        if ("special_access".equals(groupType)) {
+            // Insert into group_articles table to map article to the group
+            String query = "INSERT INTO group_articles (article_id, group_name, group_type, adminRights, viewable, isInstructor) VALUES (?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setLong(1, uniqueId);
+                stmt.setString(2, groupName);
+                stmt.setString(3, groupType);
+                stmt.setString(4, adminRights);  // Store admin rights as a comma-separated string
+                stmt.setString(5, viewable);    // Store viewable rights as a comma-separated string
+                stmt.setBoolean(6, isFirstInstructor);  // Set instructor flag if this is the first instructor
+                stmt.executeUpdate();
+            }
+        }
+
+        // Insert the article itself into the help_articles table (already done through createHelpArticle)
+        // The article is stored in the help_articles table using the same method you're already using
+        createHelpArticle(article);
+    }
+
+    // Method to retrieve articles by group name
+    public List<HelpArticle> getArticlesByGroup(String groupName, String groupType) throws SQLException {
+        List<HelpArticle> articles = new ArrayList<>();
+
+        // Query to get articles that belong to a specific group and group type
+        String query = "SELECT ha.* FROM help_articles ha "
+                     + "JOIN group_articles ga ON ha.id = ga.article_id "
+                     + "WHERE ga.group_name = ? AND ga.group_type = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, groupName);           // Set the group name
+            stmt.setString(2, groupType);           // Set the group type
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                HelpArticle article = new HelpArticle(
+                        rs.getLong("id"),
+                        rs.getString("level"),
+                        rs.getString("groupIdentifier"),
+                        rs.getString("access"),
+                        rs.getString("title"),
+                        rs.getString("shortDescription"),
+                        (String[]) rs.getArray("keywords").getArray(),
+                        rs.getString("body"),
+                        (String[]) rs.getArray("referenceLinks").getArray(),
+                        rs.getString("sensitiveTitle"),
+                        rs.getString("sensitiveDescription")
+                );
+                articles.add(article);
+            }
+        }
+
+        return articles;
+    }
     
+    public static boolean isUserAdminInGroup(String groupName) throws SQLException {
+        String username = DatabaseHelper.getUsername();  // Retrieve the current logged-in username
+        String query = "SELECT adminRights FROM group_articles WHERE group_name = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, groupName);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String adminRights = rs.getString("adminRights");
+                // Check if the username is in the adminRights (comma-separated string)
+                return Arrays.asList(adminRights.split(",")).contains(username);
+            }
+        }
+        return false;
+    }
+    
+    public static boolean isUserViewableInGroup(String groupName) throws SQLException {
+        String query = "SELECT viewable FROM group_articles WHERE group_name = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, groupName);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String viewableUsers = rs.getString("viewable");
+                String[] viewableArray = viewableUsers.split(",");  // Assuming viewable users are stored as a comma-separated string
+                for (String user : viewableArray) {
+                    if (user.trim().equalsIgnoreCase(DatabaseHelper.getUsername())) {
+                        return true; // User is in the viewable list
+                    }
+                }
+            }
+        }
+        return false; // User is not in the viewable list
+    }
+
     // Update an existing help article based on its unique ID
     public void updateHelpArticle(HelpArticle article) throws SQLException {
         String sql = "UPDATE help_articles SET level = ?, groupIdentifier = ?, access = ?, title = ?, " +

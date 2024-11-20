@@ -1,5 +1,6 @@
 package project.account;
 
+import java.sql.SQLException;
 import java.time.*;
 import javafx.event.*;
 import javafx.scene.Scene;
@@ -55,7 +56,12 @@ public class CreateAccount extends TilePane {
 	            				OffsetDateTime.now(ZoneOffset.UTC).plusYears(5), // sets expiration 5 years from now
 	            				new String[] {});
 	            		
-	            		new LoginService(stage, user, database);
+	            		try {
+							new LoginService(stage, user, database);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 	            	} else {
 	            		username.clear();
 	            		password.clear();

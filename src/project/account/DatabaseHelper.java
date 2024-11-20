@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 
 public class DatabaseHelper {
 
@@ -33,6 +34,7 @@ public class DatabaseHelper {
                 connection = DriverManager.getConnection(DB_URL, USER, PASS);
                 statement = connection.createStatement();
                 createTables();
+                addCurrentSessionColumn(); // Add current_session column if it's missing
             } catch (ClassNotFoundException e) {
                 System.err.println("JDBC Driver not found: " + e.getMessage());
             }
@@ -53,6 +55,7 @@ public class DatabaseHelper {
      * Creates necessary tables in the database if they do not exist.
      */
     public static void createTables() throws SQLException {
+        // Create the users table if it doesn't exist
         String userTable = "CREATE TABLE IF NOT EXISTS users ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "username VARCHAR(255) UNIQUE NOT NULL, "
@@ -60,12 +63,15 @@ public class DatabaseHelper {
                 + "email VARCHAR(255), "
                 + "roles VARCHAR(255), "
                 + "onetime BOOLEAN DEFAULT FALSE, "
-                + "onetimeCode VARCHAR(255), "        // New column for one-time code
-                + "onetimeDate TIMESTAMP, "           // New column for one-time code expiration
-                + "isReset BOOLEAN DEFAULT FALSE, "   // New column to track reset status
-                + "fullName VARCHAR(255))";
+                + "onetimeCode VARCHAR(255), "
+                + "onetimeDate TIMESTAMP, "
+                + "isReset BOOLEAN DEFAULT FALSE, "
+                + "fullName VARCHAR(255), "
+                + "current_session BOOLEAN DEFAULT FALSE)";  // Adding the current_session column
+
         statement.execute(userTable);
 
+        // Create the codes table if it doesn't exist
         String codesTable = "CREATE TABLE IF NOT EXISTS codes ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "code VARCHAR(255) UNIQUE NOT NULL, "
@@ -73,6 +79,80 @@ public class DatabaseHelper {
         statement.execute(codesTable);
     }
     
+    /**
+     * Checks if the database is empty.
+     * 
+     * @return true if the 'users' table has no records, false otherwise
+     * @throws SQLException if there is an issue executing the query
+     */
+    public static boolean isDatabaseEmpty() throws SQLException {
+        String query = "SELECT COUNT(*) AS total FROM users";
+        try (ResultSet resultSet = statement.executeQuery(query)) {
+            if (resultSet.next()) {
+                return resultSet.getInt("total") == 0;
+            }
+        }
+        return true;
+    }
+    
+    public static void addCurrentSessionColumn() throws SQLException {
+        // First, check if the column already exists in the users table
+        String checkColumnQuery = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS " +
+                                  "WHERE TABLE_NAME = 'USERS' AND COLUMN_NAME = 'CURRENT_SESSION'";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(checkColumnQuery)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (!rs.next()) {
+                // Column does not exist, so we can add it
+                String alterTableQuery = "ALTER TABLE users ADD COLUMN current_session BOOLEAN DEFAULT FALSE";
+                try (Statement stmt = connection.createStatement()) {
+                    stmt.executeUpdate(alterTableQuery);
+                }
+            }
+        }
+    }
+    
+        
+    // Method to get the current username (assuming a session or context where the user is logged in)
+    public static String getUsername() throws SQLException {
+        String query = "SELECT username FROM users WHERE current_session = TRUE"; // Example query, adjust based on your session handling
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("username");
+            } else {
+                return null; // No logged-in user found
+            }
+        }
+    }
+
+    public static boolean isInstructor() throws SQLException {
+        // Query to get the roles string for the currently logged-in user
+        String query = "SELECT roles FROM users WHERE current_session = TRUE"; // Assuming current_session marks the logged-in user
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                // Get the roles as a comma-separated string
+                String rolesString = rs.getString("roles");
+
+                // Split the roles string into an array of individual roles
+                String[] roles = rolesString.split(",");
+
+                // Check if "Instructor" is one of the roles
+                for (String role : roles) {
+                    if (role.trim().equalsIgnoreCase("Instructor")) {
+                        return true; // User is an instructor
+                    }
+                }
+            }
+        }
+
+        // Default return if "Instructor" role is not found
+        return false;
+    }
+
     public static void storeOneTimeCode(String username, String resetCode, OffsetDateTime expirationDate) throws SQLException {
         String sql = "UPDATE users SET onetimeCode = ?, onetimeDate = ? WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

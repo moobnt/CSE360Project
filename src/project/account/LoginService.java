@@ -1,5 +1,7 @@
 package project.account;
 
+import java.sql.SQLException;
+
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,7 +25,7 @@ import project.util.RoleSelectionPage;
 
 public class LoginService extends BorderPane {
 
-    public LoginService(Stage stage, User user, DatabaseModel database) {
+    public LoginService(Stage stage, User user, DatabaseModel database) throws SQLException {
         stage.setTitle("Login Page");
 
         Label usernameLabel = new Label("Enter Username:");
@@ -47,7 +49,7 @@ public class LoginService extends BorderPane {
         gridPane.add(loginButton, 0, 2);
 
         // Check if the users table is empty to decide on Admin setup
-        if (database.isDatabaseEmpty()) {
+        if (DatabaseHelper.isDatabaseEmpty()) {
             Label adminSetupLabel = new Label("Setting up the first Admin account");
             loginButton.setText("Create Admin Account");
 

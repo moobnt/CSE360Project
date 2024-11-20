@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.time.*;
 
 /**
@@ -60,7 +61,12 @@ public class InvitedUserCreateAccount extends TilePane {
             // Register the user in the database
             database.registerUser(username, password, email, assignedRoles, false, OffsetDateTime.now(ZoneOffset.UTC), fullName);
 
-            new LoginService(stage, user, database);
+            try {
+				new LoginService(stage, user, database);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         });
 
         getChildren().addAll(new Label("Username:"), usernameField,

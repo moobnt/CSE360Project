@@ -20,8 +20,9 @@ public class SpecialGroupDatabase extends DatabaseModel {
 
     /**
      * Default constructor; connects to the databse and creates tables
+     * @throws SQLException 
      */
-    public SpecialGroupDatabase() {
+    public SpecialGroupDatabase() throws SQLException {
         connect();
 
         try {
