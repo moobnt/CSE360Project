@@ -2,10 +2,6 @@ package project.account;
 
 import java.sql.*;
 import java.time.OffsetDateTime;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.ZoneOffset;
 
 public class DatabaseHelper {
@@ -69,6 +65,16 @@ public class DatabaseHelper {
                 + "current_session BOOLEAN DEFAULT FALSE)";  // Adding the current_session column
 
         statement.execute(userTable);
+
+        // Create the help_messages table if it doesn't exist
+        String helpMessagesTable = "CREATE TABLE IF NOT EXISTS help_messages ("
+                + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                + "username VARCHAR(255) NOT NULL, "
+                + "message TEXT NOT NULL, "
+                + "type VARCHAR(50) NOT NULL, "
+                + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+        
+        statement.execute(helpMessagesTable);
 
         // Create the codes table if it doesn't exist
         String codesTable = "CREATE TABLE IF NOT EXISTS codes ("
@@ -335,6 +341,19 @@ public class DatabaseHelper {
             stmt.execute(sql);
             System.out.println("Table " + table + " has been dropped.");
         }
+    }
+
+    /**
+     * Gets the current connection to the database.
+     *
+     * @return the active database connection
+     * @throws SQLException if there is an issue with the connection
+     */
+    public static Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connectToDatabase(); // Ensure the connection is established
+        }
+        return connection;
     }
 
     /**
