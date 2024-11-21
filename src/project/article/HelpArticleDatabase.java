@@ -169,6 +169,7 @@ public class HelpArticleDatabase extends DatabaseModel {
         // Generate a unique ID for the article if not already set
         long uniqueId = article.getId() == 0 ? article.generateUniqueId() : article.getId();
         article.setId(uniqueId); // Ensure the article has an ID
+        System.out.println(username);
 
         // Set initial values for admin rights and viewable users as comma-separated strings
         String adminRights = username; // The user who creates the article is added as an admin
@@ -194,6 +195,7 @@ public class HelpArticleDatabase extends DatabaseModel {
 
         // If the group is special access, store the article with admin rights, viewable rights, and instructor status
         if ("special_access".equals(groupType)) {
+        	System.out.println("HELLO???");
             // Insert into group_articles table to map article to the group
             String query = "INSERT INTO group_articles (article_id, group_name, group_type, adminRights, viewable, isInstructor) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -205,12 +207,28 @@ public class HelpArticleDatabase extends DatabaseModel {
                 stmt.setString(5, viewable);    // Store viewable rights as a comma-separated string
                 stmt.setBoolean(6, isFirstInstructor);  // Set instructor flag if this is the first instructor
                 stmt.executeUpdate();
+                
             }
+            
+            
         }
 
         // Insert the article itself into the help_articles table (already done through createHelpArticle)
         // The article is stored in the help_articles table using the same method you're already using
         createHelpArticle(article);
+    }
+    
+    public void printALL() throws SQLException {
+    	String s = "SELECT * FROM group_articles";
+    	try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(s)) {
+           while (rs.next()) {
+               System.out.println("Name: " + rs.getString("group_name"));
+               System.out.println("Viewable: " + rs.getString("viewable"));
+               System.out.println("Admin Rights: " + rs.getString("adminRights"));
+               System.out.println("---------------------------");
+           }
+       }
     }
 
     // Method to retrieve articles by group name
@@ -241,6 +259,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                         rs.getString("sensitiveTitle"),
                         rs.getString("sensitiveDescription")
                 );
+                System.out.println(article.getTitle());
                 articles.add(article);
             }
         }
@@ -258,25 +277,30 @@ public class HelpArticleDatabase extends DatabaseModel {
             if (rs.next()) {
                 String adminRights = rs.getString("adminRights");
                 // Check if the username is in the adminRights (comma-separated string)
-                return Arrays.asList(adminRights.split(",")).contains(username);
+                return adminRights != null && Arrays.asList(adminRights.split(",")).contains(username);
             }
         }
         return false;
     }
     
     public static boolean isUserViewableInGroup(String groupName) throws SQLException {
+    	System.out.println("test");
         String query = "SELECT viewable FROM group_articles WHERE group_name = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, groupName);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String viewableUsers = rs.getString("viewable");
-                String[] viewableArray = viewableUsers.split(",");  // Assuming viewable users are stored as a comma-separated string
-                for (String user : viewableArray) {
-                    if (user.trim().equalsIgnoreCase(DatabaseHelper.getUsername())) {
-                        return true; // User is in the viewable list
+                if(viewableUsers != null) {
+                	String[] viewableArray = viewableUsers.split(",");  // Assuming viewable users are stored as a comma-separated string
+                    for (String user : viewableArray) {
+                    	System.out.println(user);
+                        if (user.trim().equalsIgnoreCase(DatabaseHelper.getUsername())) {
+                            return true; // User is in the viewable list
+                        }
                     }
                 }
+                
             }
         }
         return false; // User is not in the viewable list

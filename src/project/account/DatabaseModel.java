@@ -33,6 +33,20 @@ public class DatabaseModel {
             e.printStackTrace();
         }
     }
+    
+    public void resetSessions() {
+    	String query = "SELECT username FROM users";
+    	
+    	try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query)) {
+           while (rs.next()) {
+              DatabaseHelper.updateSessionStatus(rs.getString("username"), false);
+           }
+       } catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    }
 
     /**
      * Checks if the 'users' table in the database is empty.

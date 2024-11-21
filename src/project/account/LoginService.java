@@ -27,6 +27,8 @@ public class LoginService extends BorderPane {
 
     public LoginService(Stage stage, User user, DatabaseModel database) throws SQLException {
         stage.setTitle("Login Page");
+        
+        database.resetSessions();
 
         Label usernameLabel = new Label("Enter Username:");
         TextField usernameField = new TextField();
@@ -78,6 +80,12 @@ public class LoginService extends BorderPane {
                     new ResetAccountPage(stage, user, database); // Redirect to ResetAccountPage
                 } else if(database.doesUserExist(user.username) 
                 		&& database.getUserField(user.username, "password").equals(user.password)){
+                	try {
+						DatabaseHelper.updateSessionStatus(user.username, true);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                     // Check user's roles
                     String[] roles = database.getUserRoles(user.username); // Assume this method retrieves user roles
                     if (roles.length > 1) {
