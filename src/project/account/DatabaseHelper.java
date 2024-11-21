@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
 
-//Automated test required
 public class DatabaseHelper {
 
     private static final String JDBC_DRIVER = "org.h2.Driver";

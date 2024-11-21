@@ -4,7 +4,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-//Automated test required
 public class EncryptionUtil {
 
     // AES encryption key (must be 16 bytes for AES-128)
