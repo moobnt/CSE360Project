@@ -278,6 +278,23 @@ public class HelpArticleDatabase extends DatabaseModel {
         Object[] objArray = (Object[]) sqlArray.getArray(); // Get the array
         return Arrays.copyOf(objArray, objArray.length, String[].class); // Safely cast to String[]
     }
+
+    private List<String> getAllGroups() throws SQLException {
+        String query = "SELECT group_name FROM group_articles WHERE 1=1";
+        List<String> groupList = new ArrayList<>();
+
+        Statement stmt = connection.createStatement();
+
+        try (ResultSet resultSet = stmt.executeQuery(query)) {
+            while (resultSet.next()) {
+                groupList.add(resultSet.getString("group_name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return groupList;
+    }
     
     public static boolean isUserAdminInGroup(String groupName) throws SQLException {
         String username = DatabaseHelper.getUsername();  // Retrieve the current logged-in username
@@ -316,6 +333,19 @@ public class HelpArticleDatabase extends DatabaseModel {
             }
         }
         return false; // User is not in the viewable list
+    }
+
+    public String[] userGroupsList(String username) throws SQLException {
+        List<String> allGroupList = getAllGroups();
+        List<String> userGroupsList = new ArrayList<>();
+
+        for (int ii = 0; ii < allGroupList.size(); ii++) {
+            if (isUserViewableInGroup(allGroupList.get(ii))) {
+                userGroupsList.add(allGroupList.get(ii));
+            }
+        }
+
+        return userGroupsList.toArray(new String[0]);
     }
 
     public void addAdminToGroup() throws SQLException {

@@ -75,7 +75,7 @@ public class ArticleHome extends BorderPane {
 			} else if (groupType == "Special Access") {
 				groupSelect.getItems().setAll(new String[0]);
 				groupSelect.getItems().addAll(
-					"Unprotected"
+					"Special Test Group"
 				);
 			} else {
 				groupSelect.getItems().setAll(new String[0]);
@@ -89,13 +89,18 @@ public class ArticleHome extends BorderPane {
 		searchTerm.setPromptText("Search Term(s)");
 		
         Button searchButton = new Button("Search");
-		searchButton.setDisable(true);
 		searchButton.setOnAction(event -> {
-			// search for articles with given criteria
-			// if one or more criteria is empty, prompt to try again
+			
 		});
 
     // OPTIONS THAT ARE ALWAYS AVALIABLE --------------------------------------
+		// BACK BUTTON --------------------------------------------------------
+		Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	stage.setScene(Back.back(stage));
+        	
+        });
+
         // LOG OUT BUTTON -----------------------------------------------------
         Button logOutButton = new Button("Log out");
         logOutButton.setOnAction(event -> {
@@ -157,14 +162,15 @@ public class ArticleHome extends BorderPane {
         bottomGrid.setVgap(10);
 
 		// adding all elements to gridpane
-		bottomGrid.add(listArticlesButton, 0, 0, 1, 1);
-		bottomGrid.add(helpButton, 1, 0);
-		bottomGrid.add(logOutButton, 2, 0);
-		bottomGrid.add(quitButton, 3, 0);
+		bottomGrid.add(back, 0, 0);
+		bottomGrid.add(listArticlesButton, 1, 0, 1, 1);
+		bottomGrid.add(helpButton, 2, 0);
+		bottomGrid.add(logOutButton, 3, 0);
+		bottomGrid.add(quitButton, 4, 0);
         
 		this.setCenter(centerGrid);
         this.setBottom(bottomGrid);
-		Scene s = new Scene(this, 300, 300);
+		Scene s = new Scene(this, 400, 300);
         Back.pushBack(s);
 		stage.setScene(s);
         stage.show();

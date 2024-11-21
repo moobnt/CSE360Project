@@ -2,6 +2,8 @@ package project.instructor;
 
 import java.sql.SQLException;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -36,7 +38,7 @@ import project.util.Back;
 
 
 
-public class Instructor extends StackPane {
+public class Instructor extends BorderPane {
 	
 	/**********
 	 * This method is for the web page that shows the instructors view.
@@ -74,7 +76,7 @@ public class Instructor extends StackPane {
         // SPECIAL GROUP SETTINGS ---------------------------------------------
         Button specialGroupSettingsButton = new Button("Special Group Settings");
         specialGroupSettingsButton.setOnAction(event -> {
-            // new special group settings page here
+            new SpecialGroupSettings(stage, user, database);
         });
         
         // LOG OUT ------------------------------------------------------------
@@ -103,10 +105,31 @@ public class Instructor extends StackPane {
 		});
             
         // STAGE SETUP --------------------------------------------------------
-        HBox box = new HBox(manageHelpArticlesButton, logOutButton, quitButton);
-        getChildren().addAll(box);
+        GridPane centerPane = new GridPane();
+        centerPane.setAlignment(Pos.CENTER);
+        centerPane.setPadding(new Insets(20));
+        centerPane.setHgap(10);
+        centerPane.setVgap(10);
+        centerPane.add(manageHelpArticlesButton, 0, 0);
+        centerPane.add(listArticlesButton, 1, 0);
+        centerPane.add(groupSettingsButton, 0, 1);
+        centerPane.add(specialGroupSettingsButton, 1, 1);
+
+        GridPane bottomPane = new GridPane();
+        bottomPane.setAlignment(Pos.CENTER);
+		bottomPane.setPadding(new Insets(20));
+        bottomPane.setHgap(10);
+        bottomPane.setVgap(10);
+        bottomPane.add(logOutButton, 0, 0);
+        bottomPane.add(quitButton, 1, 0);
         
-        Scene s = new Scene(this, 300, 250);
+        this.setBottom(bottomPane);
+        BorderPane.setAlignment(bottomPane, Pos.CENTER);
+		BorderPane.setMargin(bottomPane, new Insets(20));
+        this.setCenter(centerPane);
+        BorderPane.setAlignment(centerPane, Pos.CENTER);
+		BorderPane.setMargin(centerPane, new Insets(20));
+        Scene s = new Scene(this, 400, 250);
         Back.pushBack(s);
         stage.setScene(s);
         stage.show();
