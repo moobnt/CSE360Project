@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 import java.time.*;
 
-//Automated test required
 public class DatabaseModel {
     protected Connection connection;
 

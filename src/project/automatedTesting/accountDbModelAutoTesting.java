@@ -15,7 +15,6 @@ import project.account.DatabaseModel;
  */
 
 public class accountDbModelAutoTesting {
-	protected Connection connection;
 	static int numPassed = 0;
     static int numFailed = 0;
 
