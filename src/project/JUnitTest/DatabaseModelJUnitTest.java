@@ -52,18 +52,24 @@ class DatabaseModelJUnitTest {
 //    }
 
     @Test
-    void testRegisterUserDuplicate() {
+    void testUserExists() {
         // Test attempting to register a user with an existing username
         String username = "thaituan";
-        String password = "1234";
-        String email = "hehe@gmail.com";
-        Object[] roles = {"Instructor"};
-        
         
         
         // Capture system output to check for duplicate user message
         // Note: In a real-world scenario, you might want to use a more robust logging mechanism
-        assertTrue(databaseModel.doesUserExist(username), "First user registration should succeed");
+        assertTrue(databaseModel.doesUserExist(username), "The Test User should exists");
+    }
+    
+    void testNonExistentUser() {
+        // Test attempting to register a user with an existing username
+        String username = "definitelyNOT";
+        
+        
+        // Capture system output to check for duplicate user message
+        // Note: In a real-world scenario, you might want to use a more robust logging mechanism
+        assertFalse(databaseModel.doesUserExist(username), "The Test User shouldn't exists");
     }
 
     @Test
@@ -88,6 +94,11 @@ class DatabaseModelJUnitTest {
         // Verify admin role
         assertTrue(databaseModel.isUserAdmin(adminUsername), "Admin user should have Admin role");
         assertFalse(databaseModel.isUserAdmin(regularUsername), "Regular user should not have Admin role");
+    }
+    
+    @Test
+    public void testOneTimeCodeValidation() {
+        assertFalse(databaseModel.validateOneTimeCode("testUser", "abcdabcde"), "One-time code validation failed for 'testUser'.");
     }
 
 
