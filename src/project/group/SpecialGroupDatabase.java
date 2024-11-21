@@ -3,7 +3,7 @@ package project.group;
 import java.sql.*;
 import java.util.*;
 
-import project.account.DatabaseModel;
+import project.account.DatabaseHelper;
 
 /**
  * <p> GroupDatabase Class </p>
@@ -13,9 +13,8 @@ import project.account.DatabaseModel;
  * @version 1.00 2024-11-13 Initial baseline
  */
 //Automated test required
-public class SpecialGroupDatabase extends DatabaseModel {
-    Statement stmt;
-    private final String TABLE_NAME = "special_group";
+public class SpecialGroupDatabase {
+    protected Connection connection;
     private final String DEFAULT_GROUP_NAME = "unprotected";
     private final String ARRAY_SEPERATOR = ", "; // item seperator in the SQL tables
 
@@ -26,14 +25,25 @@ public class SpecialGroupDatabase extends DatabaseModel {
     public SpecialGroupDatabase() {
         try {
             connect();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
 
         try {
-            createTables();
+            createTable();
         } catch (SQLException e) {
             System.err.println("Error creating tables: " + e.getMessage());
         }
+    }
+
+    public void connect() throws SQLException {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DatabaseHelper.connectToDatabase();
+            }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -42,8 +52,8 @@ public class SpecialGroupDatabase extends DatabaseModel {
      * 
      * @throws SQLException
      */
-    private void createTables() throws SQLException {
-        stmt = connection.createStatement();
+    public void createTable() throws SQLException {
+        //Statement stmt = connection.createStatement();
 
         String groupTable = "CREATE TABLE IF NOT EXISTS special_group ("
             + "id INT AUTO_INCREMENT PRIMARY KEY, "
@@ -53,7 +63,11 @@ public class SpecialGroupDatabase extends DatabaseModel {
             + "students VARCHAR(65535), "
             + "articles VARCHAR(255))";
 
-        stmt.execute(groupTable);
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(groupTable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // creates a default group that will not encrypt any articles
         // anyone can access this group, but because it is so simple
@@ -71,55 +85,57 @@ public class SpecialGroupDatabase extends DatabaseModel {
                 pstmt.executeUpdate();
             }
 
+        } else {
+            System.err.println("Default group exists");
         }
         
         // finds all instructors / students in the database
-        String findAll = "SELECT username FROM users WHERE roles LIKE ?";
+        // String findAll = "SELECT username FROM users WHERE roles LIKE ?";
 
-        String allInstructors = null;
-        String allStudents = null;
+        // String allInstructors = null;
+        // String allStudents = null;
 
-        try (PreparedStatement pstmt = connection.prepareStatement(findAll)) {
-            pstmt.setString(1, "Instructor");
+        // try (PreparedStatement pstmt = connection.prepareStatement(findAll)) {
+        //     pstmt.setString(1, "Instructor");
 
-            ResultSet instructorUsernames = pstmt.executeQuery();
+        //     ResultSet instructorUsernames = pstmt.executeQuery();
 
-            if (instructorUsernames != null) {
-                do {
-                    allInstructors = addItemToString(allInstructors, 
-                                        instructorUsernames.getString("username"));
-                } while (instructorUsernames.next());
-            } else {
-                System.err.println("No instructors found");
-            }
-        }
+        //     if (instructorUsernames != null) {
+        //         do {
+        //             allInstructors = addItemToString(allInstructors, 
+        //                                 instructorUsernames.getString("username"));
+        //         } while (instructorUsernames.next());
+        //     } else {
+        //         System.err.println("No instructors found");
+        //     }
+        // }
 
-        try (PreparedStatement pstmt = connection.prepareStatement(findAll)) {
-            pstmt.setString(1, "Student");
+        // try (PreparedStatement pstmt = connection.prepareStatement(findAll)) {
+        //     pstmt.setString(1, "Student");
 
-            ResultSet studentUsernames = pstmt.executeQuery();
+        //     ResultSet studentUsernames = pstmt.executeQuery();
 
-            if (studentUsernames != null) {
-                do {
-                    allStudents = addItemToString(allStudents, 
-                                    studentUsernames.getString("username"));
-                } while (studentUsernames.next());
-            } else {
-                System.err.println("No students found");
-            }
-        }
+        //     if (studentUsernames != null) {
+        //         do {
+        //             allStudents = addItemToString(allStudents, 
+        //                             studentUsernames.getString("username"));
+        //         } while (studentUsernames.next());
+        //     } else {
+        //         System.err.println("No students found");
+        //     }
+        // }
 
         // adds every currently existing person to the group
         // if they aren't already in it
-        String addAll = "UPDATE special_group SET instructors = ?, students = ? WHERE title = ?";
+        // String addAll = "UPDATE special_group SET instructors = ?, students = ? WHERE title = ?";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(addAll)) {
-            pstmt.setString(1, allInstructors);
-            pstmt.setString(2, allStudents);
-            pstmt.setString(3, DEFAULT_GROUP_NAME);
+        // try (PreparedStatement pstmt = connection.prepareStatement(addAll)) {
+        //     pstmt.setString(1, allInstructors);
+        //     pstmt.setString(2, allStudents);
+        //     pstmt.setString(3, DEFAULT_GROUP_NAME);
 
-            pstmt.executeUpdate();
-        }
+        //     pstmt.executeUpdate();
+        // }
     }
 
     /**
@@ -164,6 +180,7 @@ public class SpecialGroupDatabase extends DatabaseModel {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -198,6 +215,7 @@ public class SpecialGroupDatabase extends DatabaseModel {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -232,6 +250,7 @@ public class SpecialGroupDatabase extends DatabaseModel {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -245,14 +264,14 @@ public class SpecialGroupDatabase extends DatabaseModel {
         String foundGroups = DEFAULT_GROUP_NAME;
 
         // loop through all groups
+        // TODO: fix
         for (int ii = 0; ii < numberOfGroups(); ii++) {
-            String findGroup = "SELECT ? FROM special_group WHERE id = ?";
+            String findGroup = "SELECT ? FROM special_group WHERE title LIKE 1=1";
         
             // check for instructors if user who called function is an instructor
             if (Arrays.asList(roles).contains("Instructor")) {
                 try (PreparedStatement pstmt = connection.prepareStatement(findGroup)) {
                     pstmt.setString(1, "instructors");
-                    pstmt.setString(2, String.valueOf(ii));
         
                     ResultSet foundInstructors = pstmt.executeQuery();
 
@@ -269,7 +288,6 @@ public class SpecialGroupDatabase extends DatabaseModel {
             if (Arrays.asList(roles).contains("Student")) {
                 try (PreparedStatement pstmt = connection.prepareStatement(findGroup)) {
                     pstmt.setString(1, "students");
-                    pstmt.setString(2, String.valueOf(ii));
         
                     ResultSet foundStudents = pstmt.executeQuery();
 
@@ -279,6 +297,7 @@ public class SpecialGroupDatabase extends DatabaseModel {
 
                 } catch (SQLException e) {
                     System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
@@ -298,11 +317,14 @@ public class SpecialGroupDatabase extends DatabaseModel {
                 pstmt2.setString(1, "title");
                 pstmt2.setString(2, String.valueOf(ii));
 
-                ResultSet foundGroupTitle = pstmt2.executeQuery();
-
-                groupList.add(foundGroupTitle.getString("title"));
+                try(ResultSet foundGroupTitle = pstmt2.executeQuery()) {
+                    while(foundGroupTitle.next()) {
+                        groupList.add(foundGroupTitle.getString("title"));
+                    }
+                }
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
         
@@ -343,21 +365,20 @@ public class SpecialGroupDatabase extends DatabaseModel {
     }
 
     private boolean doesGroupExist(String title) {
-        String query = "SELECT id FROM special_group WHERE title = ?";
-        boolean res = false;
+        String query = "SELECT COUNT(*) FROM special_group WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, title);
-
-            ResultSet resultSet = stmt.executeQuery(query);
-
-            if (resultSet.next()) {
-                res = true;
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return false;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.err.println(e.getSQLState());
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
-        return res;
+        return false;
     }
 
     /**
