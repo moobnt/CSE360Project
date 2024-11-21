@@ -1,5 +1,7 @@
 package project.article;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javafx.geometry.Insets;
@@ -11,10 +13,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import project.account.DatabaseHelper;
 import project.account.DatabaseModel;
 import project.account.LoginService;
 import project.account.User;
@@ -38,6 +43,12 @@ public class ArticleHome extends BorderPane {
      */
     public ArticleHome(Stage stage, User user, DatabaseModel database) {
         stage.setTitle("Article Home Page");
+
+		try {
+            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 		
         // set content level
 		Label contentLevelText = new Label();
@@ -60,38 +71,68 @@ public class ArticleHome extends BorderPane {
 		);
 		Label groupText = new Label();
 		groupText.setText("Select Group: ");
-		ComboBox<String> groupSelect = new ComboBox<String>();
-		groupSelect.setDisable(true);
-
-		groupTypeSelect.setOnAction(event -> {
-			groupSelect.setDisable(false);
-			String groupType = groupTypeSelect.getValue();
-
-			if (groupType == "General") {
-				groupSelect.getItems().setAll(new String[0]);
-				groupSelect.getItems().addAll(
-					"Test Group"
-				);
-			} else if (groupType == "Special Access") {
-				groupSelect.getItems().setAll(new String[0]);
-				groupSelect.getItems().addAll(
-					"Special Test Group"
-				);
-			} else {
-				groupSelect.getItems().setAll(new String[0]);
-				groupSelect.getItems().add(
-					null
-				);
-			}
-		});
+		TextField groupNameInput = new TextField(); // Changed to TextField for group name input
 
 		TextField searchTerm = new TextField();
 		searchTerm.setPromptText("Search Term(s)");
 		
         Button searchButton = new Button("Search");
-		searchButton.setOnAction(event -> {
-			
-		});
+        searchButton.setDisable(true);
+
+        // Enable search button if search criteria is provided
+        searchTerm.textProperty().addListener((observable, oldValue, newValue) -> toggleSearchButton(searchButton, searchTerm, groupNameInput, contentLevelSelect));
+
+        groupNameInput.textProperty().addListener((observable, oldValue, newValue) -> toggleSearchButton(searchButton, searchTerm, groupNameInput, contentLevelSelect));
+
+        contentLevelSelect.valueProperty().addListener((observable, oldValue, newValue) -> toggleSearchButton(searchButton, searchTerm, groupNameInput, contentLevelSelect));
+
+        searchButton.setOnAction(event -> {
+            // Search for articles with given criteria
+            String title = searchTerm.getText(); // Use the title as the search term
+            String groupName = groupNameInput.getText(); // Get the group name from the input
+            String level = contentLevelSelect.getValue();
+
+            if (title.isEmpty() && groupName.isEmpty() && "All".equals(level)) {
+                showError("Please provide at least one search criterion.");
+            } else {
+                try {
+                    // Construct the SQL query based on the user's input
+                    StringBuilder query = new StringBuilder("SELECT * FROM help_articles WHERE 1=1");
+
+                    if (!title.isEmpty()) {
+                        query.append(" AND title LIKE ?");
+                    }
+                    if (!"All".equals(level)) {
+                        query.append(" AND level = ?");
+                    }
+                    if (!groupName.isEmpty()) {
+                        query.append(" AND groupIdentifier LIKE ?");
+                    }
+
+                    PreparedStatement pstmt = DatabaseHelper.getConnection().prepareStatement(query.toString());
+
+                    int index = 1;
+                    if (!title.isEmpty()) {
+                        pstmt.setString(index++, "%" + title + "%");
+                    }
+                    if (!"All".equals(level)) {
+                        pstmt.setString(index++, level);
+                    }
+                    if (!groupName.isEmpty()) {
+                        pstmt.setString(index, "%" + groupName + "%");
+                    }
+
+                    // Execute the query
+                    ResultSet rs = pstmt.executeQuery();
+                    // Process and display the search results
+                    displaySearchResults(rs, groupName, level);
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showError("Error performing search: " + e.getMessage());
+                }
+            }
+        });
 
     // OPTIONS THAT ARE ALWAYS AVALIABLE --------------------------------------
 		// BACK BUTTON --------------------------------------------------------
@@ -150,7 +191,7 @@ public class ArticleHome extends BorderPane {
 		centerGrid.add(groupTypeText, 0, 1);
 		centerGrid.add(groupTypeSelect, 1, 1);
 		centerGrid.add(groupText, 0, 2);
-		centerGrid.add(groupSelect, 1, 2);
+		centerGrid.add(groupTypeSelect, 1, 2);
 		centerGrid.add(searchTerm, 0, 3, 2, 1);
 		centerGrid.add(searchButton, 0, 4);
 
@@ -174,5 +215,55 @@ public class ArticleHome extends BorderPane {
         Back.pushBack(s);
 		stage.setScene(s);
         stage.show();
+    }
+
+	private void toggleSearchButton(Button searchButton, TextField searchTerm, TextField groupNameInput, ComboBox<String> contentLevelSelect) {
+        boolean enableButton = !searchTerm.getText().isEmpty() || !groupNameInput.getText().isEmpty() || !contentLevelSelect.getValue().equals("All");
+        searchButton.setDisable(!enableButton);
+    }
+
+    private void displaySearchResults(ResultSet rs, String groupName, String selectedLevel) throws SQLException {
+        VBox searchResultsBox = new VBox();
+        searchResultsBox.setSpacing(10);
+
+        Label groupLabel = new Label("Group: " + groupName);
+        searchResultsBox.getChildren().add(groupLabel);
+
+        int levelCount = 0;
+        while (rs.next()) {
+            String level = rs.getString("level");
+            if (level.equalsIgnoreCase(selectedLevel) || selectedLevel.equals("All")) {
+                levelCount++;
+            }
+        }
+
+        Label levelCountLabel = new Label("Number of articles in " + selectedLevel + ": " + levelCount);
+        searchResultsBox.getChildren().add(levelCountLabel);
+
+        rs.beforeFirst();  // Reset cursor to the start
+        int count = 1;
+        while (rs.next()) {
+            String level = rs.getString("level");
+            if (level.equalsIgnoreCase(selectedLevel) || selectedLevel.equals("All")) {
+                String title = rs.getString("title");
+                String author = rs.getString("author");
+                String shortDescription = rs.getString("shortDescription");
+
+                String shortForm = String.format("%d. %s by %s: %s", count++, title, author, shortDescription);
+                Label articleLabel = new Label(shortForm);
+                searchResultsBox.getChildren().add(articleLabel);
+            }
+        }
+
+        ScrollPane scrollPane = new ScrollPane(searchResultsBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPannable(true);
+
+        setCenter(scrollPane);
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+        alert.showAndWait();
     }
 }

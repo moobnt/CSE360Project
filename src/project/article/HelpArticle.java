@@ -18,6 +18,7 @@ public class HelpArticle {
     private long id; // Unique identifier
     private String level; // e.g., beginner, intermediate, advanced, expert
     private String groupIdentifier; // Grouping identifier for related articles
+    private String author;
     private String access; // Who has access to the article
     private String title; // Title of the article
     private String shortDescription; // Short description or abstract
@@ -30,10 +31,11 @@ public class HelpArticle {
     private Instant updatedDate; // Date of last update
 
     // Getters and setters can be added here
-    public HelpArticle(long id, String level, String groupIdentifier, String access, String title, String shortDescription, Object[] keywords, String body, Object[] referenceLinks, String sensitiveTitle, String sensitiveDescription) {
+    public HelpArticle(long id, String level, String groupIdentifier, String author, String access, String title, String shortDescription, Object[] keywords, String body, Object[] referenceLinks, String sensitiveTitle, String sensitiveDescription) {
     	this.id = id;
     	this.level = level;
     	this.groupIdentifier = groupIdentifier;
+    	this.author = author;
     	this.access = access;
     	this.title = title;
     	this.shortDescription = shortDescription;
@@ -47,10 +49,11 @@ public class HelpArticle {
     }
     
     // Constructor that includes createdDate and updatedDate
-    public HelpArticle(long id, String level, String groupIdentifier, String access, String title, String shortDescription, Object[] keywords, String body, Object[] referenceLinks, String sensitiveTitle, String sensitiveDescription, String createdDate, String updatedDate) {
+    public HelpArticle(long id, String level, String groupIdentifier, String author, String access, String title, String shortDescription, Object[] keywords, String body, Object[] referenceLinks, String sensitiveTitle, String sensitiveDescription, String createdDate, String updatedDate) {
     	this.id = id;
     	this.level = level;
     	this.groupIdentifier = groupIdentifier;
+    	this.author = author;
     	this.access = access;
     	this.title = title;
     	this.shortDescription = shortDescription;
@@ -95,6 +98,10 @@ public class HelpArticle {
 
     public String getGroupIdentifier() {
         return groupIdentifier;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public String getAccess() {
@@ -148,6 +155,14 @@ public class HelpArticle {
 
     public void setGroupIdentifier(String groupIdentifier) {
         this.groupIdentifier = groupIdentifier;
+    }
+    
+    public void setAuthor(String author) {
+        if (author == null || author.isEmpty()) {
+            this.author = "Unknown"; // Default value
+        } else {
+            this.author = author;
+        }
     }
 
     public void setAccess(String access) {

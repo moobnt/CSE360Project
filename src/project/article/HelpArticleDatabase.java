@@ -72,6 +72,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                 + "id BIGINT PRIMARY KEY, "
                 + "level VARCHAR(255), "
                 + "groupIdentifier VARCHAR(255), "
+                + "author VARCHAR(255),"
                 + "access VARCHAR(255), "
                 + "title VARCHAR(255), "
                 + "shortDescription VARCHAR(255), "
@@ -145,24 +146,25 @@ public class HelpArticleDatabase extends DatabaseModel {
     }
 
     public void createHelpArticle(HelpArticle article) throws SQLException {
-        String sql = "INSERT INTO help_articles (id, level, groupIdentifier, access, title, " +
+        String sql = "INSERT INTO help_articles (id, level, groupIdentifier, author, access, title, " +
                      "shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription, createdDate, updatedDate) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setLong(1, article.getId());
             pstmt.setString(2, article.getLevel());
             pstmt.setString(3, article.getGroupIdentifier());
-            pstmt.setString(4, article.getAccess());
-            pstmt.setString(5, article.getTitle());
-            pstmt.setString(6, article.getShortDescription());
-            pstmt.setArray(7, connection.createArrayOf("VARCHAR", article.getKeywords()));
-            pstmt.setString(8, article.getBody());
-            pstmt.setArray(9, connection.createArrayOf("VARCHAR", article.getReferenceLinks()));
-            pstmt.setString(10, article.getSensitiveTitle());
-            pstmt.setString(11, article.getSensitiveDescription());
-            pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
-            pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
+            pstmt.setString(4, article.getAuthor());
+            pstmt.setString(5, article.getAccess());
+            pstmt.setString(6, article.getTitle());
+            pstmt.setString(7, article.getShortDescription());
+            pstmt.setArray(8, connection.createArrayOf("VARCHAR", article.getKeywords()));
+            pstmt.setString(9, article.getBody());
+            pstmt.setArray(10, connection.createArrayOf("VARCHAR", article.getReferenceLinks()));
+            pstmt.setString(11, article.getSensitiveTitle());
+            pstmt.setString(12, article.getSensitiveDescription());
+            pstmt.setTimestamp(13, Timestamp.from(article.getCreatedDate()));
+            pstmt.setTimestamp(14, Timestamp.from(article.getUpdatedDate()));
             pstmt.executeUpdate();
         }
     }
@@ -197,7 +199,7 @@ public class HelpArticleDatabase extends DatabaseModel {
         }
 
         // If the group is special access, store the article with admin rights, viewable rights, and instructor status
-        if ("special_access".equals(groupType) && !groupExists(groupType)) {
+        if ("special_access".equals(groupType)) {
         	System.out.println("HELLO???");
             // Insert into group_articles table to map article to the group
             String query = "INSERT INTO group_articles (article_id, group_name, group_type, adminRights, viewable, isInstructor) VALUES (?, ?, ?, ?, ?, ?)";
@@ -252,6 +254,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                         rs.getLong("id"),
                         rs.getString("level"),
                         rs.getString("groupIdentifier"),
+                        rs.getString("author"),
                         rs.getString("access"),
                         rs.getString("title"),
                         rs.getString("shortDescription"),
@@ -396,6 +399,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                     long id = rs.getLong("id");
                     String level = rs.getString("level");
                     String groupIdentifier = rs.getString("groupIdentifier");
+                    String author = rs.getString("author");
                     String access = rs.getString("access");
                     String shortDescription = rs.getString("shortDescription");
 
@@ -410,7 +414,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                     String sensitiveTitle = rs.getString("sensitiveTitle");
                     String sensitiveDescription = rs.getString("sensitiveDescription");
 
-                    return new HelpArticle(id, level, groupIdentifier, access, title, shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription);
+                    return new HelpArticle(id, level, groupIdentifier, author, access, title, shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription);
                 }
             }
         }
@@ -427,6 +431,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                 long id = rs.getLong("id");
                 String level = rs.getString("level");
                 String groupIdentifier = rs.getString("groupIdentifier");
+                String author = rs.getString("author");
                 String access = rs.getString("access");
                 String shortDescription = rs.getString("shortDescription");
 
@@ -435,7 +440,7 @@ public class HelpArticleDatabase extends DatabaseModel {
                 Object[] referenceLinks = (Object[]) rs.getArray("referenceLinks").getArray();
 
                 // Add the HelpArticle to the list
-                articles.add(new HelpArticle(id, level, groupIdentifier, access, 
+                articles.add(new HelpArticle(id, level, groupIdentifier, author, access, 
                     rs.getString("title"), shortDescription, keywords, 
                     rs.getString("body"), referenceLinks, 
                     rs.getString("sensitiveTitle"), rs.getString("sensitiveDescription")));
@@ -460,76 +465,77 @@ public class HelpArticleDatabase extends DatabaseModel {
     }
     
  // Method to read articles from a backup file
-    public List<HelpArticle> readArticlesFromFile(File filename) {
-        System.out.println("READING ARTICLES FROM BACKUP FILE");
+ public List<HelpArticle> readArticlesFromFile(File filename) {
+    System.out.println("READING ARTICLES FROM BACKUP FILE");
 
-        List<HelpArticle> articles = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            
-            while ((line = reader.readLine()) != null) {
-                // Assuming each article is separated by two newlines and fields are separated by a specific delimiter
-                String[] fields = line.split(";"); // Delimeter is semicolon in BackupArticles
+    List<HelpArticle> articles = new ArrayList<>();
+    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        String line;
+        
+        while ((line = reader.readLine()) != null) {
+            // Assuming each article is separated by two newlines and fields are separated by a specific delimiter
+            String[] fields = line.split(";"); // Delimeter is semicolon in BackupArticles
 
-                if (fields.length == 13) { // Adjust according to your fields
-                    HelpArticle article = new HelpArticle(
-                        Long.parseLong(fields[0].substring(4)), // ID
-                        fields[2].substring(8), // Level
-                        fields[3].substring(19), // Group Identifier
-                        fields[4].substring(9), // Access
-                        fields[1].substring(8), // Title
-                        fields[5].substring(20), // Short Description
-                        fields[6].substring(11).split(","), // Keywords
-                        fields[7].substring(7), // Body
-                        fields[8].substring(18).split(","), // Reference Links
-                        fields[9].substring(18), // Sensitive Title
-                        fields[10].substring(24) // Sensitive Description
-                    );
+            if (fields.length == 13) { // Adjust according to your fields
+                HelpArticle article = new HelpArticle(
+                    Long.parseLong(fields[0].substring(4)), // ID
+                    fields[2].substring(8), // Level
+                    fields[3].substring(19), // Group Identifier
+                    fields[11].substring(19),
+                    fields[4].substring(9), // Access
+                    fields[1].substring(8), // Title
+                    fields[5].substring(20), // Short Description
+                    fields[6].substring(11).split(","), // Keywords
+                    fields[7].substring(7), // Body
+                    fields[8].substring(18).split(","), // Reference Links
+                    fields[9].substring(18), // Sensitive Title
+                    fields[10].substring(24) // Sensitive Description
+                );
 
-                    // Optional: Set created and updated date if needed
-                    article.setCreatedDate(Instant.parse(fields[11].substring(15))); // Assuming the date is stored as an ISO-8601 string
-                    article.setUpdatedDate(Instant.now()); // Set to now or use from file if available
+                // Optional: Set created and updated date if needed
+                article.setCreatedDate(Instant.parse(fields[11].substring(15))); // Assuming the date is stored as an ISO-8601 string
+                article.setUpdatedDate(Instant.now()); // Set to now or use from file if available
 
-                    articles.add(article);
-                }
+                articles.add(article);
             }
-        } catch (IOException e) {
-            e.printStackTrace(); // Handle file reading errors
-        } catch (NumberFormatException e) {
-            e.printStackTrace(); // Handle number format errors if parsing ID fails
         }
-        return articles; // Return the constructed list of HelpArticle objects
+    } catch (IOException e) {
+        e.printStackTrace(); // Handle file reading errors
+    } catch (NumberFormatException e) {
+        e.printStackTrace(); // Handle number format errors if parsing ID fails
     }
+    return articles; // Return the constructed list of HelpArticle objects
+}
     
-    public void restoreArticlesFromBackup(File filename) throws SQLException {
-        List<HelpArticle> articles = readArticlesFromFile(filename); // Method to read from the file
+public void restoreArticlesFromBackup(File filename) throws SQLException {
+    List<HelpArticle> articles = readArticlesFromFile(filename); // Method to read from the file
 
-        for (HelpArticle article : articles) {
-            // Check if the article with the same ID already exists
-            if (!articleExists(article.getId())) {
-                // Insert the article into the database
-                String sql = "INSERT INTO help_articles (id, title, level, groupIdentifier, access, shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription, createdDate, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                    pstmt.setLong(1, article.getId());
-                    pstmt.setString(2, article.getTitle());
-                    pstmt.setString(3, article.getLevel());
-                    pstmt.setString(4, article.getGroupIdentifier());
-                    pstmt.setString(5, article.getAccess());
-                    pstmt.setString(6, article.getShortDescription());
-                    pstmt.setObject(7, article.getKeywords()); // Adjust this based on how you store keywords
-                    pstmt.setString(8, article.getBody());
-                    pstmt.setObject(9, article.getReferenceLinks()); // Adjust this based on how you store reference links
-                    pstmt.setString(10, article.getSensitiveTitle());
-                    pstmt.setString(11, article.getSensitiveDescription());
-                    pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
-                    pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
-                    pstmt.executeUpdate();
-                } catch(Exception FileNotFoundException) {
-                	System.out.println("Cannot find file");
-                }
+    for (HelpArticle article : articles) {
+        // Check if the article with the same ID already exists
+        if (!articleExists(article.getId())) {
+            // Insert the article into the database
+            String sql = "INSERT INTO help_articles (id, title, level, groupIdentifier, access, shortDescription, keywords, body, referenceLinks, sensitiveTitle, sensitiveDescription, createdDate, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setLong(1, article.getId());
+                pstmt.setString(2, article.getTitle());
+                pstmt.setString(3, article.getLevel());
+                pstmt.setString(4, article.getGroupIdentifier());
+                pstmt.setString(5, article.getAccess());
+                pstmt.setString(6, article.getShortDescription());
+                pstmt.setObject(7, article.getKeywords()); // Adjust this based on how you store keywords
+                pstmt.setString(8, article.getBody());
+                pstmt.setObject(9, article.getReferenceLinks()); // Adjust this based on how you store reference links
+                pstmt.setString(10, article.getSensitiveTitle());
+                pstmt.setString(11, article.getSensitiveDescription());
+                pstmt.setTimestamp(12, Timestamp.from(article.getCreatedDate()));
+                pstmt.setTimestamp(13, Timestamp.from(article.getUpdatedDate()));
+                pstmt.executeUpdate();
+            } catch(Exception FileNotFoundException) {
+                System.out.println("Cannot find file");
             }
         }
     }
+}
 
     private boolean articleExists(long id) throws SQLException {
         String sql = "SELECT COUNT(*) FROM help_articles WHERE id = ?";
@@ -538,20 +544,6 @@ public class HelpArticleDatabase extends DatabaseModel {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0; // If count is greater than 0, the article exists
-                }
-            }
-        }
-        return false;
-    }
-    
-
-    private boolean groupExists(String name) throws SQLException {
-    	String sql = "SELECT COUNT(*) FROM group_articles WHERE group_name = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0; // If count is greater than 0, the group exists
                 }
             }
         }

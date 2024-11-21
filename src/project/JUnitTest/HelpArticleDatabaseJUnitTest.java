@@ -19,19 +19,20 @@ public class HelpArticleDatabaseJUnitTest {
         database = new HelpArticleDatabase();
         database.connect();
         // Prepare test article
-        testArticle = new HelpArticle(
-                1001L,
-                "Beginner",
-                "TestGroup",
-                "Public",
-                "Test Article",
-                "A short description",
-                new String[]{"test", "automation"},
-                "Article body content",
-                new String[]{"https://example.com"},
-                "Sensitive Title",
+        HelpArticle article = new HelpArticle(
+                1001L, 
+                "Beginner", 
+                "TestGroup", 
+                "Author",
+                "Public", 
+                "Test Article", 
+                "A short description", 
+                new String[]{"test", "automation"}, 
+                "Article body content", 
+                new String[]{"https://example.com"}, 
+                "Sensitive Title", 
                 "Sensitive Description"
-        );
+            );
     }
 
     @AfterAll
