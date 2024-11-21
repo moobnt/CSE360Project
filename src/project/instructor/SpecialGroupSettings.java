@@ -10,6 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -31,6 +32,7 @@ public class SpecialGroupSettings extends BorderPane {
     public SpecialGroupSettings(Stage stage, User user, DatabaseModel database) {
         stage.setTitle("Special Group Settings");
 
+        Label specialGroupLabel = new Label("Select Group to Edit");
         ComboBox<String> specialGroupSelect = new ComboBox<>();
 
         try {
@@ -48,13 +50,13 @@ public class SpecialGroupSettings extends BorderPane {
         // MANAGE STUDENTS BUTTON ---------------------------------------------
         Button manageStudentsButton = new Button("Manage Students");
         manageStudentsButton.setOnAction(event -> {
-            
+            new ManageSpecialGroupStudents(stage, user, database, specialGroupSelect.getValue());
         });
 
         // MANAGE GROUPS BUTTON -----------------------------------------------
         Button manageGroupsButton = new Button("Manage Groups");
         manageGroupsButton.setOnAction(event -> {
-            
+            new ManageSpecialGroup(stage, user, database, specialGroupSelect.getValue());
         });
 
         // LOG OUT ------------------------------------------------------------
@@ -94,7 +96,8 @@ public class SpecialGroupSettings extends BorderPane {
         centerPane.setPadding(new Insets(20));
         centerPane.setHgap(10);
         centerPane.setVgap(10);
-        centerPane.add(specialGroupSelect, 0, 0, 2, 1);
+        centerPane.add(specialGroupLabel, 0, 0);
+        centerPane.add(specialGroupSelect, 1, 0, 1, 1);
         centerPane.add(manageStudentsButton, 0, 1);
         centerPane.add(manageGroupsButton, 1, 1);
 
@@ -106,7 +109,6 @@ public class SpecialGroupSettings extends BorderPane {
         bottomPane.add(back, 0, 0);
         bottomPane.add(logOutButton, 1, 0);
         bottomPane.add(quitButton, 2, 0);
-        
 
         this.setBottom(bottomPane);
         BorderPane.setAlignment(bottomPane, Pos.CENTER);
@@ -114,7 +116,8 @@ public class SpecialGroupSettings extends BorderPane {
         this.setCenter(centerPane);
         BorderPane.setAlignment(centerPane, Pos.CENTER);
 		BorderPane.setMargin(centerPane, new Insets(20));
-        Scene s = new Scene(this, 300, 200);
+
+        Scene s = new Scene(this, 300, 300);
         Back.pushBack(s);
 		stage.setScene(s);
         stage.show();

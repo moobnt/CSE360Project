@@ -1,7 +1,6 @@
 package project.instructor;
 
 import java.sql.SQLException;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,17 +17,13 @@ import project.account.User;
 import project.util.Back;
 
 /**
- * <p> ManageSpecialGroupStudents Class </p>
+ * <p> ManageSpecialGroup Class </p>
  * 
- * <p> Description: The page that allows instructors in a group to edit students in the group </p>
- * 
- * @author Group TH 58
- * 
- * @version 1.00        2024-11-20  Initial
+ * <p> Description: A group used to manage articles that are in special groups </p>
  */
-public class ManageSpecialGroupStudents extends BorderPane {
-    public ManageSpecialGroupStudents(Stage stage, User user, DatabaseModel database, String group) {
-        stage.setTitle("Manage Students");
+public class ManageSpecialGroup extends BorderPane {
+    public ManageSpecialGroup(Stage stage, User user, DatabaseModel database, String group) {
+        stage.setTitle("Manage Special Group");
 
         // LOG OUT ------------------------------------------------------------
         Button logOutButton = new Button("Log out");
@@ -79,6 +74,5 @@ public class ManageSpecialGroupStudents extends BorderPane {
         Back.pushBack(s);
 		stage.setScene(s);
         stage.show();
-
     }
 }
