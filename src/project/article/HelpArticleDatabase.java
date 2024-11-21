@@ -82,6 +82,9 @@ public class HelpArticleDatabase extends DatabaseModel {
                 + "sensitiveDescription VARCHAR(255), "
                 + "createdDate TIMESTAMP, "
                 + "updatedDate TIMESTAMP)";
+        
+        // Log the SQL query to confirm table creation
+        System.out.println("Executing SQL: " + helpArticlesTable);
 
         // Create the group_articles table if it doesn't exist
         String groupArticlesTable = "CREATE TABLE IF NOT EXISTS group_articles ("
@@ -192,10 +195,9 @@ public class HelpArticleDatabase extends DatabaseModel {
                 }
             }
         }
-        
 
         // If the group is special access, store the article with admin rights, viewable rights, and instructor status
-        if ("special_access".equals(groupType) && !groupExists(groupName)) {
+        if ("special_access".equals(groupType)) {
         	System.out.println("HELLO???");
             // Insert into group_articles table to map article to the group
             String query = "INSERT INTO group_articles (article_id, group_name, group_type, adminRights, viewable, isInstructor) VALUES (?, ?, ?, ?, ?, ?)";
@@ -208,11 +210,12 @@ public class HelpArticleDatabase extends DatabaseModel {
                 stmt.setString(5, viewable);    // Store viewable rights as a comma-separated string
                 stmt.setBoolean(6, isFirstInstructor);  // Set instructor flag if this is the first instructor
                 stmt.executeUpdate();
+                
             }
             
             
         }
-        
+
         // Insert the article itself into the help_articles table (already done through createHelpArticle)
         // The article is stored in the help_articles table using the same method you're already using
         createHelpArticle(article);
@@ -231,7 +234,6 @@ public class HelpArticleDatabase extends DatabaseModel {
        }
     }
 
-    // Method to retrieve articles by group name
     public List<HelpArticle> getArticlesByGroup(String groupName, String groupType) throws SQLException {
         List<HelpArticle> articles = new ArrayList<>();
 
@@ -253,9 +255,9 @@ public class HelpArticleDatabase extends DatabaseModel {
                         rs.getString("access"),
                         rs.getString("title"),
                         rs.getString("shortDescription"),
-                        (String[]) rs.getArray("keywords").getArray(),
+                        convertArrayToStringArray(rs.getArray("keywords")),
                         rs.getString("body"),
-                        (String[]) rs.getArray("referenceLinks").getArray(),
+                        convertArrayToStringArray(rs.getArray("referenceLinks")),
                         rs.getString("sensitiveTitle"),
                         rs.getString("sensitiveDescription")
                 );
@@ -265,6 +267,16 @@ public class HelpArticleDatabase extends DatabaseModel {
         }
 
         return articles;
+    }
+
+    // Helper method to convert SQL Array to String[]
+    private String[] convertArrayToStringArray(Array sqlArray) throws SQLException {
+        if (sqlArray == null) {
+            return new String[0]; // Return an empty array if the SQL array is null
+        }
+
+        Object[] objArray = (Object[]) sqlArray.getArray(); // Get the array
+        return Arrays.copyOf(objArray, objArray.length, String[].class); // Safely cast to String[]
     }
     
     public static boolean isUserAdminInGroup(String groupName) throws SQLException {
@@ -305,6 +317,11 @@ public class HelpArticleDatabase extends DatabaseModel {
         }
         return false; // User is not in the viewable list
     }
+
+    public void addAdminToGroup() throws SQLException {
+
+    }
+
 
     // Update an existing help article based on its unique ID
     public void updateHelpArticle(HelpArticle article) throws SQLException {
@@ -491,19 +508,6 @@ public class HelpArticleDatabase extends DatabaseModel {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0; // If count is greater than 0, the article exists
-                }
-            }
-        }
-        return false;
-    }
-    
-    private boolean groupExists(String name) throws SQLException {
-    	String sql = "SELECT COUNT(*) FROM group_articles WHERE group_name = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0; // If count is greater than 0, the group exists
                 }
             }
         }
