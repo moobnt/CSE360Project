@@ -191,7 +191,7 @@ public class ArticleHome extends BorderPane {
 		centerGrid.add(groupTypeText, 0, 1);
 		centerGrid.add(groupTypeSelect, 1, 1);
 		centerGrid.add(groupText, 0, 2);
-		centerGrid.add(groupTypeSelect, 1, 2);
+		centerGrid.add(groupNameInput, 1, 2);
 		centerGrid.add(searchTerm, 0, 3, 2, 1);
 		centerGrid.add(searchButton, 0, 4);
 
