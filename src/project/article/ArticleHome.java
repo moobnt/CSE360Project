@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import project.account.DatabaseModel;
 import project.account.LoginService;
 import project.account.User;
-import project.group.SpecialGroupDatabase;
 import project.student.HelpFAQ;
 import project.util.Back;
 
@@ -39,7 +38,6 @@ public class ArticleHome extends BorderPane {
      */
     public ArticleHome(Stage stage, User user, DatabaseModel database) {
         stage.setTitle("Article Home Page");
-		SpecialGroupDatabase specialGroupDatabase = new SpecialGroupDatabase();
 		
         // set content level
 		Label contentLevelText = new Label();
@@ -76,9 +74,8 @@ public class ArticleHome extends BorderPane {
 				);
 			} else if (groupType == "Special Access") {
 				groupSelect.getItems().setAll(new String[0]);
-				String[] userGroups = specialGroupDatabase.findGroups(user.username, user.roles);
 				groupSelect.getItems().addAll(
-					userGroups
+					"Unprotected"
 				);
 			} else {
 				groupSelect.getItems().setAll(new String[0]);
