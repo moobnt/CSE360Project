@@ -192,9 +192,10 @@ public class HelpArticleDatabase extends DatabaseModel {
                 }
             }
         }
+        
 
         // If the group is special access, store the article with admin rights, viewable rights, and instructor status
-        if ("special_access".equals(groupType)) {
+        if ("special_access".equals(groupType) && !groupExists(groupName)) {
         	System.out.println("HELLO???");
             // Insert into group_articles table to map article to the group
             String query = "INSERT INTO group_articles (article_id, group_name, group_type, adminRights, viewable, isInstructor) VALUES (?, ?, ?, ?, ?, ?)";
@@ -207,12 +208,11 @@ public class HelpArticleDatabase extends DatabaseModel {
                 stmt.setString(5, viewable);    // Store viewable rights as a comma-separated string
                 stmt.setBoolean(6, isFirstInstructor);  // Set instructor flag if this is the first instructor
                 stmt.executeUpdate();
-                
             }
             
             
         }
-
+        
         // Insert the article itself into the help_articles table (already done through createHelpArticle)
         // The article is stored in the help_articles table using the same method you're already using
         createHelpArticle(article);
@@ -491,6 +491,19 @@ public class HelpArticleDatabase extends DatabaseModel {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0; // If count is greater than 0, the article exists
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean groupExists(String name) throws SQLException {
+    	String sql = "SELECT COUNT(*) FROM group_articles WHERE group_name = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // If count is greater than 0, the group exists
                 }
             }
         }
