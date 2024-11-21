@@ -125,6 +125,16 @@ public class DatabaseHelper {
             }
         }
     }
+    
+    public static void updateSessionStatus(String username, boolean status) throws SQLException {
+    	String query = "UPDATE users SET current_session = ? WHERE username = ?";
+    	
+    	try (PreparedStatement stmt = connection.prepareStatement(query)) {
+    		stmt.setBoolean(1, status);
+    		stmt.setString(2, username);
+            stmt.executeUpdate();
+        }
+    }
 
     public static boolean isInstructor() throws SQLException {
         // Query to get the roles string for the currently logged-in user
