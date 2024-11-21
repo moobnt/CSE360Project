@@ -1,7 +1,6 @@
 package project.automatedTesting;
 
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import project.account.DatabaseModel;

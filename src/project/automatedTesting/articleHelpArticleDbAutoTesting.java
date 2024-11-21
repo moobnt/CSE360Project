@@ -137,6 +137,7 @@ public class articleHelpArticleDbAutoTesting {
         try {
             List<HelpArticle> articles = database.getArticlesByGroup("TestGroup", "general");
             
+            //test later when article groups is not empty
             if (articles != null && !articles.isEmpty()) {
                 System.out.println("***Success*** Get articles by group test passed.");
                 numPassed++;
