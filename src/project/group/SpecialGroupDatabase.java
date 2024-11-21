@@ -23,13 +23,17 @@ public class SpecialGroupDatabase extends DatabaseModel {
      * Default constructor; connects to the databse and creates tables
      * @throws SQLException 
      */
-    public SpecialGroupDatabase() throws SQLException {
-        connect();
+    public SpecialGroupDatabase() {
+        try {
+            connect();
 
         try {
             createTables();
         } catch (SQLException e) {
             System.err.println("Error creating tables: " + e.getMessage());
+        }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
     
@@ -41,7 +45,7 @@ public class SpecialGroupDatabase extends DatabaseModel {
     private void createTables() throws SQLException {
         stmt = connection.createStatement();
 
-        String groupTable = "CREATE TABLE IF NOT EXISTS ? ("
+        String groupTable = "CREATE TABLE IF NOT EXISTS special_group ("
             + "id INT AUTO_INCREMENT PRIMARY KEY, "
             + "title VARCHAR(255) UNIQUE NOT NULL, "
             + "admin VARCHAR(255), "
@@ -49,32 +53,28 @@ public class SpecialGroupDatabase extends DatabaseModel {
             + "students VARCHAR(65535), "
             + "articles VARCHAR(255))";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(groupTable)) {
-            pstmt.setString(1, TABLE_NAME);
-
-            pstmt.executeUpdate();
-        }
+        stmt.execute(groupTable);
 
         // creates a default group that will not encrypt any articles
         // anyone can access this group, but because it is so simple
         // it does not have an admin
         //
         // Every instructor and student should be in this group
-        String defaultGroup = "INSERT INTO ? (title, admin, instructors, students, articles)"
-                + "VALUES (?, NULL, NULL, NULL, NULL)"
-                + "WHERE NOT EXISTS (SELECT 1 FROM ? WHERE title = ?)";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(defaultGroup)) {
-            pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, DEFAULT_GROUP_NAME);
-            pstmt.setString(3, TABLE_NAME);
-            pstmt.setString(4, DEFAULT_GROUP_NAME);
+        if (!doesGroupExist(DEFAULT_GROUP_NAME)) {
+            String defaultGroup = "INSERT INTO special_group (title, admin, instructors, students, articles) "
+                + "VALUES (?, NULL, NULL, NULL, NULL)";
 
-            pstmt.executeUpdate();
+            try (PreparedStatement pstmt = connection.prepareStatement(defaultGroup)) {
+                pstmt.setString(1, DEFAULT_GROUP_NAME);
+
+                pstmt.executeUpdate();
+            }
+
         }
-
+        
         // finds all instructors / students in the database
-        String findAll = "SELECT username FROM users WHERE CONTAINS (roles, ?)";
+        String findAll = "SELECT username FROM users WHERE roles LIKE ?";
 
         String allInstructors = null;
         String allStudents = null;
@@ -111,13 +111,12 @@ public class SpecialGroupDatabase extends DatabaseModel {
 
         // adds every currently existing person to the group
         // if they aren't already in it
-        String addAll = "UPDATE ? SET instructors = ?, students = ? WHERE title = ?";
+        String addAll = "UPDATE special_group SET instructors = ?, students = ? WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(addAll)) {
-            pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, allInstructors);
-            pstmt.setString(3, allStudents);
-            pstmt.setString(4, DEFAULT_GROUP_NAME);
+            pstmt.setString(1, allInstructors);
+            pstmt.setString(2, allStudents);
+            pstmt.setString(3, DEFAULT_GROUP_NAME);
 
             pstmt.executeUpdate();
         }
@@ -134,16 +133,15 @@ public class SpecialGroupDatabase extends DatabaseModel {
      * @param articles Articles to add to the group by ID
      */
     public void createGroup(String title, String admin, String instructors, String students, String articles) {
-        String createGroup = "INSERT INTO ? (title, admin, instructors, students, articles) "
+        String createGroup = "INSERT INTO special_group (title, admin, instructors, students, articles) "
                 + "VALUES (?, ?, ?, ?, ?) ";
 
         try (PreparedStatement pstmt = connection.prepareStatement(createGroup)) {
-            pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, title);
-            pstmt.setString(3, admin);
-            pstmt.setString(4, instructors);
-            pstmt.setString(5, students);
-            pstmt.setString(6, articles);
+            pstmt.setString(1, title);
+            pstmt.setString(2, admin);
+            pstmt.setString(3, instructors);
+            pstmt.setString(4, students);
+            pstmt.setString(5, articles);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -158,11 +156,10 @@ public class SpecialGroupDatabase extends DatabaseModel {
      * @param title Unique title of the group
      */
     public void deleteGroup(String title) {
-        String deleteGroup = "DELETE FROM ? WHERE title = ?";
+        String deleteGroup = "DELETE FROM special_group WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(deleteGroup)) {
-            pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, title);
+            pstmt.setString(1, title);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -179,12 +176,11 @@ public class SpecialGroupDatabase extends DatabaseModel {
      */
     public void addPerson(String title, String role, String person) {
         String roleListString = null;
-        String getPeople = "SELECT ? FROM ? WHERE title = ?";
+        String getPeople = "SELECT ? FROM special_group WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(getPeople)) {
             pstmt.setString(1, role);
-            pstmt.setString(2, TABLE_NAME);
-            pstmt.setString(3, title);
+            pstmt.setString(2, title);
 
             ResultSet resultSet = pstmt.executeQuery();
 
@@ -193,12 +189,11 @@ public class SpecialGroupDatabase extends DatabaseModel {
             System.err.println(e.getMessage());
         }
 
-        String addPerson = "UPDATE ? SET ? = ? WHERE title = ?";
+        String addPerson = "UPDATE special_group SET ? = ? WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(addPerson)) {
-            pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, roleListString);
-            pstmt.setString(3, title);
+            pstmt.setString(1, roleListString);
+            pstmt.setString(2, title);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -215,12 +210,11 @@ public class SpecialGroupDatabase extends DatabaseModel {
      */
     public void removePerson(String title, String role, String person) {
         String roleListString = null;
-        String getPeople = "SELECT ? FROM ? WHERE title = ?";
+        String getPeople = "SELECT ? FROM special_group WHERE title = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(getPeople)) {
             pstmt.setString(1, role);
-            pstmt.setString(2, TABLE_NAME);
-            pstmt.setString(3, title);
+            pstmt.setString(2, title);
 
             ResultSet studentResultSet = pstmt.executeQuery();
 
@@ -229,12 +223,11 @@ public class SpecialGroupDatabase extends DatabaseModel {
             System.err.println(e.getMessage());
         }
 
-        String removeStudent = "UPDATE ? SET students = ? WHERE title = ?"; 
+        String removeStudent = "UPDATE special_group SET students = ? WHERE title = ?"; 
 
         try (PreparedStatement pstmt = connection.prepareStatement(removeStudent)) {
-            pstmt.setString(1, TABLE_NAME);
-            pstmt.setString(2, roleListString);
-            pstmt.setString(3, title); 
+            pstmt.setString(1, roleListString);
+            pstmt.setString(2, title); 
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -248,8 +241,73 @@ public class SpecialGroupDatabase extends DatabaseModel {
      * 
      * @param person The person to find in groups
      */
-    public void findPerson(String person) {
-        String findPerson = "SELECT ? FROM ? WHERE ";
+    public String[] findGroups(String person, Object[] roles) {
+        String foundGroups = DEFAULT_GROUP_NAME;
+
+        // loop through all groups
+        for (int ii = 0; ii < numberOfGroups(); ii++) {
+            String findGroup = "SELECT ? FROM special_group WHERE id = ?";
+        
+            // check for instructors if user who called function is an instructor
+            if (Arrays.asList(roles).contains("Instructor")) {
+                try (PreparedStatement pstmt = connection.prepareStatement(findGroup)) {
+                    pstmt.setString(1, "instructors");
+                    pstmt.setString(2, String.valueOf(ii));
+        
+                    ResultSet foundInstructors = pstmt.executeQuery();
+
+                    if (foundInstructors != null) {
+                        addItemToString(foundGroups, String.valueOf(ii));
+                    }
+
+                } catch (SQLException e) {
+                    System.err.println(e.getMessage());
+                }
+            } 
+
+            // check for students if user who called function is a student
+            if (Arrays.asList(roles).contains("Student")) {
+                try (PreparedStatement pstmt = connection.prepareStatement(findGroup)) {
+                    pstmt.setString(1, "students");
+                    pstmt.setString(2, String.valueOf(ii));
+        
+                    ResultSet foundStudents = pstmt.executeQuery();
+
+                    if (foundStudents != null) {
+                        addItemToString(foundGroups, String.valueOf(ii));
+                    }
+
+                } catch (SQLException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+
+        List<String> listWithDuplicates = Arrays.asList(foundGroups.split(ARRAY_SEPERATOR));
+        List<String> groupIDList = new ArrayList<>();
+        List<String> groupList = new ArrayList<>();
+
+        for (int ii = 0; ii < listWithDuplicates.size(); ii++) {
+            groupIDList.add(listWithDuplicates.get(ii));
+        }
+        
+        for (int ii = 0; ii < groupIDList.size(); ii++) {
+            String findGroupName = "SELECT ? FROM special_group WHERE id = ?";
+
+            try (PreparedStatement pstmt2 = connection.prepareStatement(findGroupName)) {
+                pstmt2.setString(1, "title");
+                pstmt2.setString(2, String.valueOf(ii));
+
+                ResultSet foundGroupTitle = pstmt2.executeQuery();
+
+                groupList.add(foundGroupTitle.getString("title"));
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        
+        
+        return groupList.toArray(new String[0]);
     }
 
     /**
@@ -282,5 +340,31 @@ public class SpecialGroupDatabase extends DatabaseModel {
         itemArray.remove(item);
 
         return String.join(ARRAY_SEPERATOR, itemArray);
+    }
+
+    private boolean doesGroupExist(String title) {
+        String query = "SELECT id FROM special_group WHERE title = ?";
+        boolean res = false;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, title);
+
+            ResultSet resultSet = stmt.executeQuery(query);
+
+            if (resultSet.next()) {
+                res = true;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return res;
+    }
+
+    /**
+     * Returns the number of groups (rows) that are in the table
+     * @return
+     */
+    private int numberOfGroups() {
+        return 0;
     }
 }
