@@ -94,7 +94,7 @@ public class LoginService extends BorderPane {
                     } else if (roles.length == 1) {
                         // Redirect to home page based on the single role
                         // TODO: remove brackets from role checking
-                        if ("[Admin]".equals(roles[0])) {
+                        if ("[Admin]".equals(roles[0]) || "Admin".equals(roles[0])) {
                             new Admin(stage, user, database); // Redirect to Admin page if admin
                         } else if ("[Instructor]".equals(roles[0])) {
                             new Instructor(stage, user, database);

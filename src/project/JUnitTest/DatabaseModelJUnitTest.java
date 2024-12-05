@@ -28,28 +28,19 @@ class DatabaseModelJUnitTest {
         databaseModel.disconnect();
     }
 
-//    @Test
-//    void testRegisterUserUnique() {
-//        // Test registering a new unique user
-//        String username = "test1";
-//        String password = "password123";
-//        String email = "test1@example.com";
-//        Object[] roles = {"Student"};
-//        
-//        assertFalse(databaseModel.doesUserExist(username), "User should not exist before registration");
-//        
-//        databaseModel.registerUser(
-//            username, 
-//            password, 
-//            email, 
-//            roles, 
-//            false, 
-//            OffsetDateTime.now(), 
-//            new String[]{"Test1"}
-//        );
-//        
-//        assertTrue(databaseModel.doesUserExist(username), "User should exist after registration");
-//    }
+    @Test
+    void testRegisterUserUnique() {
+        // Test registering a new unique user
+        String username = "test1";
+        String password = "password123";
+        String email = "test1@example.com";
+        
+        assertFalse(databaseModel.doesUserExist(username), "User should not exist before registration");
+        
+        databaseModel.registerUser(username, password, email, new String[]{"[Student]"}, false, null, new String[]{});
+        
+        assertTrue(databaseModel.doesUserExist(username), "User should exist after registration");
+    }
 
     @Test
     void testUserExists() {
