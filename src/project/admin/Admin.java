@@ -243,102 +243,13 @@ public class Admin extends TilePane {
             stage.setScene(listScene);
         });
 
-        // Add or Remove User Button ------------------------------------------------------------------------------
+        // Add or Remove Roles Button ------------------------------------------------------------------------------
         Button addOrRemoveUserButton = new Button("Add or Remove Roles");
         addOrRemoveUserButton.setOnAction(event -> {
-            TilePane addOrRemoveLayout = new TilePane();
-            Scene addOrRemoveScene = new Scene(addOrRemoveLayout, 600, 300);
-
-            TextField userField = new TextField();
-            userField.setPromptText("Enter username");
-            
-            Button back = new Button("Back");
-            back.setOnAction(backEvent -> {
-            	stage.setScene(Back.back(stage));
-            });
-
-            CheckBox instructorRole = new CheckBox("Instructor");
-            CheckBox studentRole = new CheckBox("Student");
-            CheckBox adminRole = new CheckBox("Admin");
-
-            Label feedbackLabel = new Label(); // Label to display feedback messages
-
-            // Button to Add Roles
-            Button addRolesButton = new Button("Add Roles");
-            addRolesButton.setOnAction(e -> {
-                String username = userField.getText().trim();
-                List<String> roleList = new ArrayList<>();
-
-                // Collect selected roles
-                if (instructorRole.isSelected()) roleList.add("Instructor");
-                if (studentRole.isSelected()) roleList.add("Student");
-                if (adminRole.isSelected()) roleList.add("Admin");
-
-                if (!username.isEmpty() && !roleList.isEmpty()) {
-                    if (database.doesUserExist(username)) {
-                        // Retrieve current roles of the user from the database
-                        String[] currentRoles = database.getUserRoles(username);
-                        List<String> currentRoleList = new ArrayList<>(Arrays.asList(currentRoles));
-
-                        for (String role : roleList) {
-                            if (!currentRoleList.contains(role)) {
-                                // If the role doesn't exist, add it
-                                currentRoleList.add(role);
-                            }
-                        }
-
-                        // Update user roles in the database
-                        database.updateUserRoles(username, currentRoleList.toArray(new String[0]));
-                        feedbackLabel.setText("Roles added successfully."); // Update feedback label
-                    } else {
-                        feedbackLabel.setText("User does not exist."); // Update feedback label
-                    }
-                } else {
-                    feedbackLabel.setText("Please enter a username and select at least one role."); // Update feedback label
-                }
-            });
-
-            // Button to Remove Roles
-            Button removeRolesButton = new Button("Remove Roles");
-            removeRolesButton.setOnAction(e -> {
-                String username = userField.getText().trim();
-                List<String> roleList = new ArrayList<>();
-
-                // Collect selected roles
-                if (instructorRole.isSelected()) roleList.add("Instructor");
-                if (studentRole.isSelected()) roleList.add("Student");
-                if (adminRole.isSelected()) roleList.add("Admin");
-
-                if (!username.isEmpty() && !roleList.isEmpty()) {
-                    if (database.doesUserExist(username)) {
-                        // Retrieve current roles of the user from the database
-                        String[] currentRoles = database.getUserRoles(username);
-                        List<String> currentRoleList = new ArrayList<>(Arrays.asList(currentRoles));
-
-                        for (String role : roleList) {
-                            currentRoleList.remove(role); // Remove selected roles
-                        }
-
-                        // Update user roles in the database
-                        database.updateUserRoles(username, currentRoleList.toArray(new String[0]));
-                        feedbackLabel.setText("Roles removed successfully."); // Update feedback label
-                    } else {
-                        feedbackLabel.setText("User does not exist."); // Update feedback label
-                    }
-                } else {
-                    feedbackLabel.setText("Please enter a username and select at least one role."); // Update feedback label
-                }
-            });
-
-            addOrRemoveLayout.getChildren().addAll(
-                    new Label("Modify Roles for User"), userField,
-                    instructorRole, studentRole, adminRole,
-                    addRolesButton, removeRolesButton, feedbackLabel, back // Add the feedback label here
-            );
-            Back.pushBack(addOrRemoveScene);
-            stage.setScene(addOrRemoveScene);
+            new AdminEditRoles(stage, user, database);
         });
         
+        // Manage Help Articles Button ----------------------------------------------------------------------------
         Button helpArticleManagementButton = new Button("Manage Help Articles");
         helpArticleManagementButton.setOnAction(event -> {
         	HelpArticleDatabase h = null;
