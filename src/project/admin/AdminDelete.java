@@ -41,8 +41,12 @@ public class AdminDelete extends BorderPane {
                 ButtonType.YES, ButtonType.NO);
             confirmAlert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.YES) {
-                    database.removeUser(usernameToDelete);
-                    feedbackLabel.setText("User deleted successfully.");
+                	if(database.doesUserExist(usernameToDelete)) {
+                		database.removeUser(usernameToDelete);
+                		feedbackLabel.setText("User deleted successfully.");
+                	} else {
+                		feedbackLabel.setText("User does not exist.");
+                	}
                 } else {
                     feedbackLabel.setText("User deletion cancelled.");
                 }
