@@ -11,6 +11,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -24,6 +25,7 @@ import project.util.Back;
 public class AdminListUsers extends BorderPane {
     public AdminListUsers(Stage stage, User user, DatabaseModel database) {
         Label feedbackLabel = new Label();
+        ScrollPane scrollPane = new ScrollPane();
         VBox usersBox = new VBox();
         // Fetch and display users using an instance of DatabaseModel
         List<String> users = database.displayUsersByAdmin(); // Call on the instance, not the class
@@ -32,6 +34,8 @@ public class AdminListUsers extends BorderPane {
         } else {
             users.forEach(userInfo -> usersBox.getChildren().addAll(new Text(userInfo), new Text())); // Renamed to userInfo
         }
+
+        scrollPane.setContent(usersBox);
         
                 
         // LOG OUT ------------------------------------------------------------
@@ -71,7 +75,7 @@ public class AdminListUsers extends BorderPane {
         centerPane.setPadding(new Insets(20));
         centerPane.setHgap(10);
         centerPane.setVgap(10);
-        centerPane.add(usersBox, 0, 0);
+        centerPane.add(scrollPane, 0, 0);
         centerPane.add(feedbackLabel, 0, 1);
 
         GridPane bottomPane = new GridPane();
