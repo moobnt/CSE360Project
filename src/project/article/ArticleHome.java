@@ -138,7 +138,7 @@ public class ArticleHome extends BorderPane {
 		// BACK BUTTON --------------------------------------------------------
 		Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -212,7 +212,7 @@ public class ArticleHome extends BorderPane {
 		this.setCenter(centerGrid);
         this.setBottom(bottomGrid);
 		Scene s = new Scene(this, 400, 300);
-        Back.pushBack(s);
+        Back.pushBack(s, "Article Home Page");
 		stage.setScene(s);
         stage.show();
     }

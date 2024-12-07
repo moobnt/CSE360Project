@@ -21,7 +21,7 @@ public class ListArticlesPage extends TilePane {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -48,7 +48,7 @@ public class ListArticlesPage extends TilePane {
 
         // Set the scene with the current TilePane
         Scene s = new Scene(this, 300, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "List Articles");
         stage.setScene(s);
         stage.show();
     }

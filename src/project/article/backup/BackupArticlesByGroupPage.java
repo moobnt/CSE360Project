@@ -77,7 +77,7 @@ public class BackupArticlesByGroupPage extends VBox {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -86,7 +86,7 @@ public class BackupArticlesByGroupPage extends VBox {
 
         // Set the scene with the current VBox
         Scene s = new Scene(this, 400, 250);
-        Back.pushBack(s);
+        Back.pushBack(s, "Backup Articles by Group");
         stage.setScene(s);
         stage.show();
     }

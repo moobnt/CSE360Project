@@ -32,7 +32,7 @@ public class ListArticlesByGroupPage extends ScrollPane {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
         
@@ -105,7 +105,7 @@ public class ListArticlesByGroupPage extends ScrollPane {
 
         // Set the scene with the current ScrollPane
         Scene s = new Scene(this, 800, 600);
-        Back.pushBack(s);
+        Back.pushBack(s, "Articles in Groups: " + groupIDs);
         stage.setScene(s); // Increase the window size for better readability
         stage.show();
     }

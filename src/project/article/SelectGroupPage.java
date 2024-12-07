@@ -73,7 +73,7 @@ public class SelectGroupPage extends TilePane {
 
         // Set the scene for this page
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Select Group Type");
         stage.setScene(s);
         stage.show();
     }

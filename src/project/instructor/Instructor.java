@@ -130,7 +130,7 @@ public class Instructor extends BorderPane {
         BorderPane.setAlignment(centerPane, Pos.CENTER);
 		BorderPane.setMargin(centerPane, new Insets(20));
         Scene s = new Scene(this, 400, 250);
-        Back.pushBack(s);
+        Back.pushBack(s, "Instructor Home page");
         stage.setScene(s);
         stage.show();
     }

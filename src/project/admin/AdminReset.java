@@ -29,6 +29,7 @@ import project.util.Back;
 
 public class AdminReset extends BorderPane {
     public AdminReset(Stage stage, User user, DatabaseModel database) {
+        stage.setTitle("Reset User");
         TextField resetUserField = new TextField();
         resetUserField.setPromptText("Enter username to reset");
         
@@ -95,7 +96,7 @@ public class AdminReset extends BorderPane {
         // BACK ---------------------------------------------------------------
         Button back = new Button("Back");
         back.setOnAction(backEvent -> {
-            stage.setScene(Back.back(stage));
+            Back.back(stage);
         });
         
         // STAGE SETUP --------------------------------------------------------
@@ -129,7 +130,7 @@ public class AdminReset extends BorderPane {
         BorderPane.setAlignment(centerPane, Pos.CENTER);
         BorderPane.setMargin(centerPane, new Insets(20));
         Scene s = new Scene(this, 400, 500);
-        Back.pushBack(s);
+        Back.pushBack(s, "Reset user");
         stage.setScene(s);
         stage.show();
     }

@@ -261,7 +261,7 @@ public class HelpFAQ extends BorderPane {
         this.setCenter(listViewContainer);
         // Set the scene with the current TilePane
         Scene s = new Scene(this, 600, 600);
-        Back.pushBack(s);
+        Back.pushBack(s, "Frequently Asked Questions");
         stage.setScene(s);
         stage.show();
     }

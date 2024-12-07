@@ -14,19 +14,23 @@ import javafx.stage.Stage;
 
 
 public class Back {
-	static Stack<Scene> history;
+	static Stack<SceneTitle> history;
 	
 	public static void initBack() {
-		history = new Stack<Scene>();
+		history = new Stack<SceneTitle>();
 	}
 	
-	public static Scene back(Stage stage) {
-		history.pop();
-		Scene s = history.peek();
-		return s;
+	public static void back(Stage stage) {
+		if(history.size() > 1) {
+			history.pop();
+		}
+
+		SceneTitle s = history.peek();
+        stage.setScene(s.getScene());
+        stage.setTitle(s.getTitle());
 	}
 	
-	public static void pushBack(Scene s) {
-		history.push(s);
+	public static void pushBack(Scene s, String title) {
+		history.push(new SceneTitle(s, title));
 	}
 }

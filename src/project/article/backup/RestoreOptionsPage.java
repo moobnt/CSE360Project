@@ -65,7 +65,7 @@ public class RestoreOptionsPage extends VBox {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -74,7 +74,7 @@ public class RestoreOptionsPage extends VBox {
 
         // Set the scene with the current VBox
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Restore Options");
         stage.setScene(s);
         stage.show();
     }

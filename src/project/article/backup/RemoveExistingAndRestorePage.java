@@ -44,7 +44,7 @@ public class RemoveExistingAndRestorePage extends VBox {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -52,7 +52,7 @@ public class RemoveExistingAndRestorePage extends VBox {
         getChildren().addAll(new Label("Articles restored!"), back);
 
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Remove Existing Articles and Restore");
         stage.setScene(s);
     }
 }

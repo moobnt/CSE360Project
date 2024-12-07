@@ -25,7 +25,7 @@ public class InputTitlePage extends VBox {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -43,7 +43,7 @@ public class InputTitlePage extends VBox {
         getChildren().addAll(instructionLabel, titleField, submitButton, back);
         
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Input Article Title");
         stage.setScene(s);
         stage.show();
     }

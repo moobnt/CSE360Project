@@ -113,7 +113,7 @@ public class UpdateHelpArticlePage extends TilePane {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -144,7 +144,7 @@ public class UpdateHelpArticlePage extends TilePane {
 
         // Set the scene with the current TilePane
         Scene s = new Scene(this, 500, 600);
-        Back.pushBack(s);
+        Back.pushBack(s, "Update Help Article");
         stage.setScene(s);
         stage.show();
     }

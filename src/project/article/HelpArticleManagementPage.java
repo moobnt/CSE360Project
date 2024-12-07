@@ -88,7 +88,7 @@ public class HelpArticleManagementPage extends TilePane {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
         
@@ -117,7 +117,7 @@ public class HelpArticleManagementPage extends TilePane {
 
         // Set the scene with the current TilePane
         Scene s = new Scene(this, 500, 600);
-        Back.pushBack(s);
+        Back.pushBack(s, "Help Article Management");
         stage.setScene(s);
         stage.show();
     }

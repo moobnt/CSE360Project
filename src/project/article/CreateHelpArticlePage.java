@@ -85,7 +85,7 @@ public class CreateHelpArticlePage extends TilePane {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-            stage.setScene(Back.back(stage)); // Navigate back
+            Back.back(stage); // Navigate back
         });
 
         // Add all labels and fields to the grid
@@ -114,7 +114,7 @@ public class CreateHelpArticlePage extends TilePane {
 
         // Set the scene with the current TilePane
         Scene s = new Scene(this, 500, 600);
-        Back.pushBack(s);
+        Back.pushBack(s, "Create Help Article");
         stage.setScene(s);
         stage.show();
     }

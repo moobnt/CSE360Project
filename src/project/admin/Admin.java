@@ -127,7 +127,7 @@ public class Admin extends BorderPane {
         BorderPane.setAlignment(centerPane, Pos.CENTER);
         BorderPane.setMargin(centerPane, new Insets(20));
         Scene s = new Scene(this, 500, 250);
-        Back.pushBack(s);
+        Back.pushBack(s, "Admin Home Page");
         stage.setScene(s);
         stage.show();
     }

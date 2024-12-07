@@ -29,13 +29,13 @@ public class SpecialViewPage {
         // Back Button
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> {
-            stage.setScene(Back.back(stage));
+            Back.back(stage);
         });
         gridPane.add(backButton, 0, 2);
 
         // Set the scene with the current GridPane
         Scene scene = new Scene(gridPane, 400, 250);
-        Back.pushBack(scene);
+        Back.pushBack(scene, "Special Access Group View - " + groupName);
         stage.setScene(scene);
         stage.show();
     }

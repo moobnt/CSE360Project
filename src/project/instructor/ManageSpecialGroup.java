@@ -53,7 +53,7 @@ public class ManageSpecialGroup extends BorderPane {
         // BACK ---------------------------------------------------------------
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
         
@@ -71,7 +71,7 @@ public class ManageSpecialGroup extends BorderPane {
 		BorderPane.setMargin(bottomPane, new Insets(20));
 
         Scene s = new Scene(this, 300, 300);
-        Back.pushBack(s);
+        Back.pushBack(s, "Manage Special Group");
 		stage.setScene(s);
         stage.show();
     }

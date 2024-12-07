@@ -21,7 +21,7 @@ public class ViewHelpArticlePage extends ScrollPane {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -86,7 +86,7 @@ public class ViewHelpArticlePage extends ScrollPane {
 
         // Set the scene with the current ScrollPane
         Scene s = new Scene(this, 800, 600);
-        Back.pushBack(s);
+        Back.pushBack(s, "Articles with Title: " + title);
         stage.setScene(s);
         stage.show();
     }

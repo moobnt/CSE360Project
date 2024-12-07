@@ -32,7 +32,7 @@ public class InputGroupIdPage extends VBox {
         
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -48,7 +48,7 @@ public class InputGroupIdPage extends VBox {
 
         getChildren().addAll(instructionLabel, groupIDField, submitButton, back);
         Scene s = new Scene(this, 300, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Input Group ID");
         stage.setScene(s);
         stage.show();
     }

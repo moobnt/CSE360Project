@@ -29,7 +29,7 @@ public class DeleteHelpArticlePage extends VBox {
         
         Button back = new Button("Back");
         back.setOnAction(backEvent -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         });
 
         // Create a List of HelpArticles with the specified title
@@ -92,7 +92,7 @@ public class DeleteHelpArticlePage extends VBox {
 
         // Set the scene with the current VBox
         Scene s = new Scene(this, 600, 400);
-        Back.pushBack(s);
+        Back.pushBack(s, "Delete Article(s) with Title: " + title);
         stage.setScene(s); // Increase the window size for better readability
         stage.show();
     }

@@ -26,6 +26,7 @@ public class AdminListUsers extends BorderPane {
     public AdminListUsers(Stage stage, User user, DatabaseModel database) {
         Label feedbackLabel = new Label();
         ScrollPane scrollPane = new ScrollPane();
+        stage.setTitle("List Users");
         VBox usersBox = new VBox();
         // Fetch and display users using an instance of DatabaseModel
         List<String> users = database.displayUsersByAdmin(); // Call on the instance, not the class
@@ -66,7 +67,7 @@ public class AdminListUsers extends BorderPane {
         // BACK ---------------------------------------------------------------
         Button back = new Button("Back");
         back.setOnAction(backEvent -> {
-            stage.setScene(Back.back(stage));
+            Back.back(stage);
         });
         
         // STAGE SETUP --------------------------------------------------------
@@ -94,7 +95,7 @@ public class AdminListUsers extends BorderPane {
         BorderPane.setAlignment(centerPane, Pos.CENTER);
         BorderPane.setMargin(centerPane, new Insets(20));
         Scene s = new Scene(this, 500, 500);
-        Back.pushBack(s);
+        Back.pushBack(s, "List Users");
         stage.setScene(s);
         stage.show();
     }

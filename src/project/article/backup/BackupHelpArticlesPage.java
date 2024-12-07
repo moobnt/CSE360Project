@@ -63,7 +63,7 @@ public class BackupHelpArticlesPage extends VBox {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -72,7 +72,7 @@ public class BackupHelpArticlesPage extends VBox {
 
         // Set the scene with the current VBox
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Backup Help Articles");
         stage.setScene(s);
         stage.show();
     }

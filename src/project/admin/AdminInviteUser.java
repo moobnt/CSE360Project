@@ -98,7 +98,7 @@ public class AdminInviteUser extends BorderPane {
         // BACK ---------------------------------------------------------------
         Button back = new Button("Back");
         back.setOnAction(backEvent -> {
-            stage.setScene(Back.back(stage));
+            Back.back(stage);
         });
         
         // STAGE SETUP --------------------------------------------------------
@@ -130,7 +130,7 @@ public class AdminInviteUser extends BorderPane {
         BorderPane.setAlignment(centerPane, Pos.CENTER);
         BorderPane.setMargin(centerPane, new Insets(20));
         Scene s = new Scene(this, 400, 300);
-        Back.pushBack(s);
+        Back.pushBack(s, "Invite User");
         stage.setScene(s);
         stage.show();
     }

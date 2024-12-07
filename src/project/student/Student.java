@@ -99,7 +99,7 @@ public class Student extends BorderPane {
 		BorderPane.setMargin(welcomeText, new Insets(20));
         this.setCenter(gridPane);
 		Scene s = new Scene(this, 300, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Student Home Page");
 		stage.setScene(s);
         stage.show();
     }

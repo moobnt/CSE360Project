@@ -48,7 +48,7 @@ public class OneTimePassPage extends TilePane {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -58,7 +58,7 @@ public class OneTimePassPage extends TilePane {
         getChildren().add(back);
         
         Scene s = new Scene(this, 350, 250);
-        Back.pushBack(s);
+        Back.pushBack(s, "One Time Pass");
         stage.setScene(s);
         stage.show();
 		

@@ -131,7 +131,7 @@ public class AdminEditRoles extends BorderPane {
         // BACK ---------------------------------------------------------------
         Button back = new Button("Back");
         back.setOnAction(backEvent -> {
-            stage.setScene(Back.back(stage));
+            Back.back(stage);
         });
 
         // STAGE SETUP --------------------------------------------------------
@@ -164,7 +164,7 @@ public class AdminEditRoles extends BorderPane {
         BorderPane.setAlignment(centerPane, Pos.CENTER);
 		BorderPane.setMargin(centerPane, new Insets(20));
         Scene s = new Scene(this, 400, 300);
-        Back.pushBack(s);
+        Back.pushBack(s, "Edit User Roles");
         stage.setScene(s);
         stage.show();
     }

@@ -46,14 +46,14 @@ public class InvitationCodePage extends TilePane {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
         getChildren().addAll(codeLabel, codeField, submitButton, feedbackLabel, back);
 
         Scene s = new Scene(this, 300, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Use Invitation Code");
         stage.setScene(s);
         stage.show();
     }

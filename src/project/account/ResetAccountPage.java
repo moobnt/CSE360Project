@@ -65,14 +65,14 @@ public class ResetAccountPage extends TilePane {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
         getChildren().addAll(usernameLabel, usernameField, codeLabel, codeField, newPasswordLabel, newPasswordField, confirmPasswordLabel, confirmPasswordField, resetPasswordButton, feedbackLabel, back);
 
         Scene s = new Scene(this, 400, 300);
-        Back.pushBack(s);
+        Back.pushBack(s, "Reset Account");
         stage.setScene(s);
         stage.show();
     }

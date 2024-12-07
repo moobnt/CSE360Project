@@ -41,13 +41,13 @@ public class SpecialAdminPage {
         // Back Button
         Button backButton = new Button("Back");
         backButton.setOnAction(event -> {
-            stage.setScene(Back.back(stage));
+            Back.back(stage);
         });
         gridPane.add(backButton, 0, 2);
 
         // Set the scene with the current GridPane
         Scene scene = new Scene(gridPane, 500, 500);
-        Back.pushBack(scene);
+        Back.pushBack(scene, "Special Access Group Admin - " + groupName);
         stage.setScene(scene);
         stage.show();
     }

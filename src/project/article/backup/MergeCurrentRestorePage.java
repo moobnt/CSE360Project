@@ -38,7 +38,7 @@ public class MergeCurrentRestorePage extends VBox {
 
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
 
@@ -46,7 +46,7 @@ public class MergeCurrentRestorePage extends VBox {
         getChildren().addAll(new Label("Merged!"), back);
 
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Merge with Current Articles");
         stage.setScene(s);
     }
 }

@@ -58,7 +58,7 @@ public class ManageSpecialGroupStudents extends BorderPane {
         // BACK ---------------------------------------------------------------
         Button back = new Button("Back");
         back.setOnAction(event -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         	
         });
         
@@ -76,7 +76,7 @@ public class ManageSpecialGroupStudents extends BorderPane {
 		BorderPane.setMargin(bottomPane, new Insets(20));
 
         Scene s = new Scene(this, 300, 300);
-        Back.pushBack(s);
+        Back.pushBack(s, "Manage Students");
 		stage.setScene(s);
         stage.show();
 

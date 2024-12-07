@@ -41,13 +41,13 @@ public class DeleteArticleTitlePage extends VBox {
         
         Button back = new Button("Back");
         back.setOnAction(backEvent -> {
-        	stage.setScene(Back.back(stage));
+        	Back.back(stage);
         });
 
         getChildren().addAll(instructionLabel, titleField, submitButton, back);
 
         Scene s = new Scene(this, 400, 200);
-        Back.pushBack(s);
+        Back.pushBack(s, "Delete Article by Title");
         stage.setScene(s);
         stage.show();
     }
