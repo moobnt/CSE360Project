@@ -33,7 +33,7 @@ public class LoginService extends BorderPane {
         Label usernameLabel = new Label("Enter Username:");
         TextField usernameField = new TextField();
         Label passwordLabel = new Label("Enter Password:");
-        TextField passwordField = new TextField();
+        PasswordField passwordField = new PasswordField();
         Button loginButton = new Button("Log In");
         Button useInvitationCodeButton = new Button("Use Invitation Code"); // Button for invitation code
         Button resetAccountButton = new Button("Reset Account"); // New button for reset account
