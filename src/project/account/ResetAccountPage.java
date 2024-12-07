@@ -41,6 +41,9 @@ public class ResetAccountPage extends TilePane {
             if (!newPassword.equals(confirmPassword)) {
                 feedbackLabel.setText("Passwords do not match!");
                 return;
+            } else if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
+            	feedbackLabel.setText("Passwords cannot be null!");
+                return;
             }
 
             // Validate one-time code and expiration time

@@ -48,7 +48,13 @@ public class InvitedUserCreateAccount extends TilePane {
             String lastName = lastNameField.getText().trim();
             String preferredName = preferredNameField.getText().trim();
 
-            if (!password.equals(confirmPassword)) {
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        		Alert alert = new Alert(Alert.AlertType.ERROR);
+        		alert.setTitle("Input Error");
+        		alert.setHeaderText("Missing Information");
+        		alert.setContentText("Please fill in both the username and password fields.");
+        		alert.showAndWait();
+        	} else if (!password.equals(confirmPassword)) {
                 System.out.println("Passwords do not match!");
                 return;
             }
