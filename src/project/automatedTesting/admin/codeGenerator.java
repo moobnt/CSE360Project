@@ -1,4 +1,4 @@
-package Tuan;
+package project.automatedTesting.admin;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,7 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 
-class Test2_2 {
+class codeGenerator {
 	
 	
 	//List to stored codes

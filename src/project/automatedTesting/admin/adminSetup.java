@@ -1,4 +1,4 @@
-package Tuan;
+package project.automatedTesting.admin;
 
 
 import javafx.application.Application;
@@ -8,7 +8,7 @@ import project.account.LoginService;
 import project.account.User;
 import project.util.Back;
 
-public class Test1 extends Application {
+public class adminSetup extends Application {
 	DatabaseModel databaseModel;
 
 	 @Override

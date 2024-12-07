@@ -1,4 +1,4 @@
-package Tuan;
+package project.automatedTesting.admin;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -11,7 +11,7 @@ import project.account.LoginService;
 import project.account.User;
 import project.util.Back;
 
-public class Test3 extends Application {
+public class userAdd extends Application {
 	DatabaseModel databaseModel;
 
 	 @Override
@@ -26,22 +26,17 @@ public class Test3 extends Application {
 	        database.resetTables(); // Optional: Reset or ensure database is empty
 	        User user = new User();
 	        
-	        //Admin Setup
-	        System.out.println("Create admin account with username and password is admin");
+	        //Set up Phase
 	        MultipleAccountCreation(database);
 	        
 	        //Login using admin
 	        new LoginService(primaryStage, user, database);
 	        System.out.println("\nINSTRUCTIONS:");
-	        System.out.println("Login with admin account -> Reset a User -> Type in Reset User Account : testUser1 \n-> Submit -> Copy Code -> Back.");
-	        System.out.println("Log out -> Reset Account -> Put the following information in -> Reset Password.\n");
-	        System.out.println("Username: userTest1");
-	        System.out.println("Enter One-Time Coded: copied one-time code");
-	        System.out.println("New Password: userTest1");
-	        System.out.println("Confirm Password: userTest1");
+	        System.out.println("Login testUser1 to check if it is truly a Student account");
+	        System.out.println("Login with admin account -> Add or Remove Roles -> Type in Modify Roles for User : testUser1 \\n-> Remove Student and Add Instructor -> Log Out.");
 
 	        
-	        System.out.println("\nFinally, log out and verify if the one-time Code or old password can still used to log in");
+	        System.out.println("\nCheck if testUser1 if it is now Instructor account");
 
 	    }
 
@@ -52,10 +47,10 @@ public class Test3 extends Application {
 	     * @param database the database model
 	     * @throws SQLException in case of database errors
 	     */
-	 	private void MultipleAccountCreation(DatabaseModel database) throws SQLException {
+	    private void MultipleAccountCreation(DatabaseModel database) throws SQLException {
 	    	// Valid Login with Single Role
 	    	System.out.println("Create student account with username is testUser1 and password is testPass1");
-	        database.registerUser("testUser1", "testPass1", "", new String[]{"[Student]"}, false, null, new String[]{});
+	        database.registerUser("testUser1", "testPass1", "", new String[]{"Student"}, false, null, new String[]{});
 
 
 	        //Valid Login with Multiple Roles

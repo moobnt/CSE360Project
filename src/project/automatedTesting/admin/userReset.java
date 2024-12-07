@@ -1,4 +1,4 @@
-package Tuan;
+package project.automatedTesting.admin;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -11,7 +11,7 @@ import project.account.LoginService;
 import project.account.User;
 import project.util.Back;
 
-public class Test2_1 extends Application {
+public class userReset extends Application {
 	DatabaseModel databaseModel;
 
 	 @Override
@@ -26,27 +26,22 @@ public class Test2_1 extends Application {
 	        database.resetTables(); // Optional: Reset or ensure database is empty
 	        User user = new User();
 	        
-	        //Admin Setup
-	        System.out.println("Create admin account with username and password is admin");
+	        //Setup
 	        MultipleAccountCreation(database);
 	        
 	        //Login using admin
 	        new LoginService(primaryStage, user, database);
 	        System.out.println("\nINSTRUCTIONS:");
-	        System.out.println("Login with admin account -> Invite New User -> Check any box you like -> Generate Invite Code -> Copy Code -> Back");
-	        System.out.println("Log out -> Use Invitation Code -> Paste the code in -> Submit Code\n");
-	        System.out.println("Enter the following information");
-	        System.out.println("Username: test2.1");
-	        System.out.println("Email: test2.1@gmail.com");
-	        System.out.println("Password: test2.1");
-	        System.out.println("Confirm Password: test2.1");
+	        System.out.println("Login with admin account -> Reset a User -> Type in Reset User Account : testUser1 \n"
+	        		+ "-> Put the date to the last day -> Submit -> Copy Code -> Back.");
+	        System.out.println("Log out -> Reset Account -> Put the following information in -> Reset Password.\n");
+	        System.out.println("Username: userTest1");
+	        System.out.println("Enter One-Time Coded: copied one-time code");
+	        System.out.println("New Password: userTest1");
+	        System.out.println("Confirm Password: userTest1");
 
-	        System.out.println("First Name: Test");
-	        System.out.println("Middle Name: ");
-	        System.out.println("Last Name: 2.1");
-	        System.out.println("Preferred Name (Optional): test2.1");
 	        
-	        System.out.println("\nFinally, log in the test2.1 to verify if it is account with your assigned role(s) or not");
+	        System.out.println("\nFinally, if it shows the one-time code is invalid or expired, test is sucessful");
 
 	    }
 
@@ -57,12 +52,14 @@ public class Test2_1 extends Application {
 	     * @param database the database model
 	     * @throws SQLException in case of database errors
 	     */
-	    private void MultipleAccountCreation(DatabaseModel database) throws SQLException {
+	 	private void MultipleAccountCreation(DatabaseModel database) throws SQLException {
 	    	// Valid Login with Single Role
-	        //database.registerUser("testUser1", "testPass1", "", new String[]{"[Student]"}, false, null, new String[]{});
+	    	System.out.println("Create student account with username is testUser1 and password is testPass1");
+	        database.registerUser("testUser1", "testPass1", "", new String[]{"[Student]"}, false, null, new String[]{});
 
 
 	        //Valid Login with Multiple Roles
+	        System.out.println("Create admin account with username and password is admin");
 	        database.registerUser("admin", "admin", "", new String[]{"[Admin]"}, false, null, new String[]{"Admin1"});
 	        
 	    }
