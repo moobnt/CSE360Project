@@ -48,60 +48,7 @@ public class Admin extends BorderPane {
         // Delete User Button -------------------------------------------------------------------------------------
         Button deleteButton = new Button("Delete a User");
         deleteButton.setOnAction(event -> {
-            TilePane deleteLayout = new TilePane();
-            Scene deleteScene = new Scene(deleteLayout, 600, 250);
-            
-            TextField deleteUserField = new TextField();
-            deleteUserField.setPromptText("Enter username to delete");
-            
-            Button back = new Button("Back");
-            back.setOnAction(backEvent -> {
-                stage.setScene(Back.back(stage));
-            });
-            
-            Button confirmButton = new Button("Confirm");
-            confirmButton.setOnAction(e -> {
-                TilePane confirmLayout = new TilePane();
-                Scene confirmScene = new Scene(confirmLayout, 600, 250);
-                
-                String usernameToDelete = deleteUserField.getText().trim();
-                if (usernameToDelete.isEmpty()) {
-                    deleteLayout.getChildren().addAll(new Text("Username cannot be empty."));
-                    return;
-                }
-                
-                Button back2 = new Button("Back");
-                back2.setOnAction(backEvent -> {
-                    stage.setScene(Back.back(stage));
-                });
-                
-                // Confirmation prompt
-                Text confirmText = new Text("Are you sure you want to delete the user '" + usernameToDelete + "'? Type 'Yes' to confirm.");
-                TextField confirmationField = new TextField();
-                
-                Button proceedButton = new Button("Proceed");
-                proceedButton.setOnAction(proceedEvent -> {
-                    String confirmationInput = confirmationField.getText().trim();
-                    if ("Yes".equalsIgnoreCase(confirmationInput)) {
-                        database.removeUser(usernameToDelete);
-                        confirmLayout.getChildren().clear(); // Clear previous elements
-                        confirmLayout.getChildren().addAll(new Text("User deleted successfully."), back2);
-                    } else {
-                        confirmLayout.getChildren().clear(); // Clear previous elements
-                        confirmLayout.getChildren().addAll(new Text("User deletion cancelled."), back2);
-                    }
-                });
-                
-                
-                confirmLayout.getChildren().clear(); // Clear the previous layout
-                confirmLayout.getChildren().addAll(confirmText, confirmationField, proceedButton, back2);
-                Back.pushBack(confirmScene);
-                stage.setScene(confirmScene);
-            });
-            
-            deleteLayout.getChildren().addAll(new Text("Delete User Account"), deleteUserField, confirmButton, back);
-            Back.pushBack(deleteScene);
-            stage.setScene(deleteScene);
+            new AdminDelete(stage, user, database);
         });
         
         // List Users Button --------------------------------------------------------------------------------------
