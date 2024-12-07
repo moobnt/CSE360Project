@@ -6,12 +6,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import project.account.*;
 import project.article.*;
 import project.util.Back;
-import java.util.*;
 import java.sql.SQLException;
 
 /**
@@ -54,25 +52,7 @@ public class Admin extends BorderPane {
         // List Users Button --------------------------------------------------------------------------------------
         Button listUsersButton = new Button("List All Users");
         listUsersButton.setOnAction(event -> {
-            TilePane listLayout = new TilePane();
-            Scene listScene = new Scene(listLayout, 600, 250);
-            
-            Button back = new Button("Back");
-            back.setOnAction(backEvent -> {
-                stage.setScene(Back.back(stage));
-            });
-            
-            // Fetch and display users using an instance of DatabaseModel
-            List<String> users = database.displayUsersByAdmin(); // Call on the instance, not the class
-            if (users.isEmpty()) {
-                listLayout.getChildren().add(new Text("No Users Registered"));
-            } else {
-                users.forEach(userInfo -> listLayout.getChildren().add(new Text(userInfo))); // Renamed to userInfo
-            }
-            
-            listLayout.getChildren().add(back);
-            Back.pushBack(listScene);
-            stage.setScene(listScene);
+            new AdminListUsers(stage, user, database);
         });
         
         // Add or Remove Roles Button ------------------------------------------------------------------------------
