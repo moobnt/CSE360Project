@@ -5,7 +5,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -14,8 +13,6 @@ import project.article.*;
 import project.util.Back;
 import java.util.*;
 import java.sql.SQLException;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 
 /**
 * <p> Admin Class </p>
@@ -45,55 +42,7 @@ public class Admin extends BorderPane {
         // Reset User Button --------------------------------------------------------------------------------------
         Button resetButton = new Button("Reset a User");
         resetButton.setOnAction(event -> {
-            TilePane resetLayout = new TilePane();
-            Scene resetScene = new Scene(resetLayout, 600, 400);
-            
-            TextField resetUserField = new TextField();
-            resetUserField.setPromptText("Enter username to reset");
-            
-            Label expirationDateLabel = new Label("Set Expiration Date (YYYY-MM-DD):");
-            TextField expirationDateField = new TextField(LocalDate.now().plusDays(1).toString()); // Default to next day
-            
-            Label expirationTimeLabel = new Label("Set Expiration Time (HH:MM):");
-            TextField expirationTimeField = new TextField("23:59"); // Default to 11:59 PM
-            
-            Button back = new Button("Back");
-            back.setOnAction(backEvent -> {
-                stage.setScene(Back.back(stage));
-            });
-            
-            Button submitButton = new Button("Submit");
-            submitButton.setOnAction(e -> {
-                String username = resetUserField.getText().trim();
-                LocalDate expirationDate = LocalDate.parse(expirationDateField.getText(), DateTimeFormatter.ISO_LOCAL_DATE);
-                LocalTime expirationTime = LocalTime.parse(expirationTimeField.getText(), DateTimeFormatter.ofPattern("HH:mm"));
-                OffsetDateTime expirationDateTime = OffsetDateTime.of(LocalDateTime.of(expirationDate, expirationTime), ZoneOffset.UTC);
-                
-                // Generate a one-time code for the reset
-                String oneTimeCode = generateCode();
-                
-                // Register the reset in the database
-                database.resetUserWithCode(username, oneTimeCode, expirationDateTime);
-                
-                Text resetSuccessMessage = new Text("User reset successfully. One-time code: " + oneTimeCode);
-                
-                // Copy button for the one-time code
-                Button copyButton = new Button("Copy Code");
-                copyButton.setOnAction(copyEvent -> {
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(oneTimeCode);
-                    Clipboard.getSystemClipboard().setContent(content);
-                });
-                
-                // Update layout with reset information
-                resetLayout.getChildren().clear();
-                resetLayout.getChildren().addAll(new Text("User reset successfully."), resetSuccessMessage, copyButton, back);
-            });
-            
-            resetLayout.getChildren().addAll(new Text("Reset User Account"), resetUserField, expirationDateLabel, expirationDateField, 
-            expirationTimeLabel, expirationTimeField, submitButton, back);
-            Back.pushBack(resetScene);
-            stage.setScene(resetScene);
+            new AdminReset(stage, user, database);
         });
         
         // Delete User Button -------------------------------------------------------------------------------------
