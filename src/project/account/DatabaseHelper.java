@@ -272,7 +272,7 @@ public class DatabaseHelper {
         String sql = "INSERT INTO codes (code, roles) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, code);
-            pstmt.setObject(2, roles, JDBCType.ARRAY);
+            pstmt.setObject(2, String.join(",", (CharSequence[]) roles));
             pstmt.executeUpdate();
         }
     }
