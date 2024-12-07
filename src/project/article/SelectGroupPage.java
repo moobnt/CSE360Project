@@ -17,6 +17,12 @@ public class SelectGroupPage extends TilePane {
         Button generalGroupButton = new Button("General Group");
         Button specialAccessGroupButton = new Button("Special Access Group");
 
+        // BACK ---------------------------------------------------------------
+        Button back = new Button("Back");
+        back.setOnAction(backEvent -> {
+            Back.back(stage);
+        });
+
         // Set actions for both buttons
         generalGroupButton.setOnAction(event -> {
             // Ask for the group name for a general group
@@ -69,7 +75,7 @@ public class SelectGroupPage extends TilePane {
         });
 
         // Add buttons to the page layout
-        getChildren().addAll(generalGroupButton, specialAccessGroupButton);
+        getChildren().addAll(generalGroupButton, specialAccessGroupButton, back);
 
         // Set the scene for this page
         Scene s = new Scene(this, 400, 200);
