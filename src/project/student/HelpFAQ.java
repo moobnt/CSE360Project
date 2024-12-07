@@ -25,6 +25,7 @@ import project.account.DatabaseModel;
 import project.account.LoginService;
 import project.account.User;
 import project.article.ArticleHome;
+import project.article.HelpArticleDatabase;
 import project.util.Back;
 
 /**
@@ -83,7 +84,14 @@ public class HelpFAQ extends BorderPane {
         // LIST ARTICLES BUTTON -----------------------------------------------
         Button listArticlesButton = new Button("Articles");
         listArticlesButton.setOnAction(event -> {
-            new ArticleHome(stage, user, database);
+        	HelpArticleDatabase h = null;
+			try {
+				h = new HelpArticleDatabase();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			new ArticleHome(stage, user, database, h);
         });
 
         // SEND GENERIC MESSAGE BUTTON ----------------------------------------

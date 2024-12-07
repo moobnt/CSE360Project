@@ -3,6 +3,9 @@ package project.article;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,14 +44,9 @@ public class ArticleHome extends BorderPane {
     /**
      * This method displays all options for searching or displaying articles
      */
-    public ArticleHome(Stage stage, User user, DatabaseModel database) {
+    public ArticleHome(Stage stage, User user, DatabaseModel database, HelpArticleDatabase helpArticleDatabase) {
         stage.setTitle("Article Home Page");
 
-		try {
-            HelpArticleDatabase helpArticleDatabase = new HelpArticleDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 		
         // set content level
 		Label contentLevelText = new Label();
@@ -86,6 +84,16 @@ public class ArticleHome extends BorderPane {
 
         contentLevelSelect.valueProperty().addListener((observable, oldValue, newValue) -> toggleSearchButton(searchButton, searchTerm, groupNameInput, contentLevelSelect));
 
+        // Create a VBox to hold the article details
+        VBox vbox = new VBox();
+        vbox.setSpacing(10); // Add spacing between articles
+        
+		// BACK BUTTON --------------------------------------------------------
+		Button back = new Button("Back");
+        back.setOnAction(event -> {
+        	Back.back(stage);
+        	
+        });
         searchButton.setOnAction(event -> {
             // Search for articles with given criteria
             String title = searchTerm.getText(); // Use the title as the search term
@@ -96,51 +104,68 @@ public class ArticleHome extends BorderPane {
                 showError("Please provide at least one search criterion.");
             } else {
                 try {
-                    // Construct the SQL query based on the user's input
-                    StringBuilder query = new StringBuilder("SELECT * FROM help_articles WHERE 1=1");
+                 // Fetch all articles
+                    List<HelpArticle> articles = helpArticleDatabase.getAllArticles();
+                    vbox.getChildren().clear(); // Clear existing articles
+                    vbox.getChildren().add(back);
 
-                    if (!title.isEmpty()) {
-                        query.append(" AND title LIKE ?");
-                    }
-                    if (!"All".equals(level)) {
-                        query.append(" AND level = ?");
-                    }
-                    if (!groupName.isEmpty()) {
-                        query.append(" AND groupIdentifier LIKE ?");
+                    // Filter articles based on the group IDs
+                    for (HelpArticle article : articles) {
+                    	
+                    	if (article.getTitle().equalsIgnoreCase(title) && article.getLevel().equalsIgnoreCase(level) && article.getGroupIdentifier().equalsIgnoreCase(groupName)) {
+                    		// Convert Object[] to String for keywords
+                            Object[] keywordsArray = article.getKeywords();
+                            String keywordsString = Arrays.stream(keywordsArray)
+                                                          .map(Object::toString)
+                                                          .collect(Collectors.joining(", "));
+
+                            // Convert Object[] to String for reference links
+                            Object[] referenceLinksArray = article.getReferenceLinks();
+                            String referencesString = Arrays.stream(referenceLinksArray)
+                                                            .map(Object::toString)
+                                                            .collect(Collectors.joining(", "));
+
+                            // Create a formatted string for each article
+                            String articleDetails = String.format(
+                                "Title: %s\nLevel: %s\nGroup Identifier: %s\nShort Description: %s\nKeywords: %s\nBody: %s\nReference Links: %s\n\n",
+                                article.getTitle(),
+                                article.getLevel(),
+                                article.getGroupIdentifier(),
+                                article.getShortDescription(),
+                                keywordsString,
+                                article.getBody(),
+                                referencesString
+                            );
+
+                            // Create a Label for each article
+                            Label articleLabel = new Label(articleDetails);
+                            articleLabel.setWrapText(true);
+                            vbox.getChildren().add(articleLabel);
+                    	}
+                        
                     }
 
-                    PreparedStatement pstmt = DatabaseHelper.getConnection().prepareStatement(query.toString());
-
-                    int index = 1;
-                    if (!title.isEmpty()) {
-                        pstmt.setString(index++, "%" + title + "%");
+                    // If no articles found for the group IDs
+                    if (vbox.getChildren().isEmpty()) {
+                        Label noArticlesLabel = new Label("No articles found");
+                        vbox.getChildren().add(noArticlesLabel);
                     }
-                    if (!"All".equals(level)) {
-                        pstmt.setString(index++, level);
-                    }
-                    if (!groupName.isEmpty()) {
-                        pstmt.setString(index, "%" + groupName + "%");
-                    }
-
-                    // Execute the query
-                    ResultSet rs = pstmt.executeQuery();
-                    // Process and display the search results
-                    displaySearchResults(rs, groupName, level);
 
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showError("Error performing search: " + e.getMessage());
                 }
+                
+                ScrollPane scrollPane = new ScrollPane(vbox);
+                scrollPane.setFitToWidth(true);
+                scrollPane.setPannable(true);
+
+                setCenter(scrollPane);
             }
         });
 
     // OPTIONS THAT ARE ALWAYS AVALIABLE --------------------------------------
-		// BACK BUTTON --------------------------------------------------------
-		Button back = new Button("Back");
-        back.setOnAction(event -> {
-        	Back.back(stage);
-        	
-        });
+
 
         // LOG OUT BUTTON -----------------------------------------------------
         Button logOutButton = new Button("Log out");
@@ -175,7 +200,7 @@ public class ArticleHome extends BorderPane {
 		// LIST ARTICLES BUTTON -----------------------------------------------
 		Button listArticlesButton = new Button("Articles");
 		listArticlesButton.setOnAction(event -> {
-			new ArticleHome(stage, user, database);
+			new ArticleHome(stage, user, database, helpArticleDatabase);
 		});
             
 		// STAGE SETUP --------------------------------------------------------

@@ -64,7 +64,14 @@ public class Instructor extends BorderPane {
         // VIEW HELP ARTICLES -------------------------------------------------
         Button listArticlesButton = new Button("View Help Articles");
         listArticlesButton.setOnAction(event -> {
-			new ArticleHome(stage, user, database);
+        	HelpArticleDatabase h = null;
+			try {
+				h = new HelpArticleDatabase();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			new ArticleHome(stage, user, database, h);
 		});
 
         // GENERAL GROUP SETTINGS ---------------------------------------------
