@@ -50,7 +50,7 @@ public class AdminInviteUser extends BorderPane {
             
             String[] roles = rolesList.toArray(new String[0]);
             
-            if (roles != null) {
+            if (roles.length > 0) {
                 // Register the invite code with associated roles
                 database.registerCode(inviteCode, roles);
                 
