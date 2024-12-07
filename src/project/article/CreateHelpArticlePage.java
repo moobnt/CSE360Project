@@ -27,19 +27,21 @@ public class CreateHelpArticlePage extends TilePane {
         gridPane.setVgap(10); // Vertical spacing between rows
 
         // Create labels and fields
-        Label levelLabel = new Label("Level:");
-        TextField levelField = new TextField();
-        levelField.setPromptText("e.g., beginner");
+        Label levelLabel = new Label();
+        levelLabel.setText("Select Content Level:");
+		ComboBox<String> contentLevelSelect = new ComboBox<String>();
+		contentLevelSelect.getItems().addAll(
+			"Beginner",
+			"Intermediate",
+			"Advanced",
+			"Expert",
+			"All"
+		);
 
-        Label groupIdentifierLabel = new Label("Group Identifier:");
-        TextField groupIdentifierField = new TextField();
 
         Label authorLabel = new Label("Author:");
         TextField authorField = new TextField();
-
-        Label accessLabel = new Label("Access:");
-        TextField accessField = new TextField();
-        accessField.setPromptText("e.g., public");
+        
 
         Label titleLabel = new Label("Title:");
         TextField titleField = new TextField();
@@ -62,10 +64,10 @@ public class CreateHelpArticlePage extends TilePane {
 
         Button submitButton = new Button("Create Article");
         submitButton.setOnAction(e -> {
-            String level = levelField.getText();
-            String groupIdentifier = groupIdentifierField.getText();
+            String level = contentLevelSelect.getValue();
+            String groupIdentifier = "";
             String author = authorField.getText();
-            String access = accessField.getText();
+            String access = "";
             String title = titleField.getText();
             String shortDescription = shortDescriptionField.getText();
             String[] keywords = keywordsField.getText().split(",");
@@ -90,13 +92,9 @@ public class CreateHelpArticlePage extends TilePane {
 
         // Add all labels and fields to the grid
         gridPane.add(levelLabel, 0, 0);
-        gridPane.add(levelField, 1, 0);
-        gridPane.add(groupIdentifierLabel, 0, 1);
-        gridPane.add(groupIdentifierField, 1, 1);
+        gridPane.add(contentLevelSelect, 1, 0);
         gridPane.add(authorLabel, 0, 2);
         gridPane.add(authorField, 1, 2);
-        gridPane.add(accessLabel, 0, 3);
-        gridPane.add(accessField, 1, 3);
         gridPane.add(titleLabel, 0, 4);
         gridPane.add(titleField, 1, 4);
         gridPane.add(shortDescriptionLabel, 0, 5);
