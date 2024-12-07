@@ -49,12 +49,12 @@ public class userList extends Application {
 	    private void MultipleAccountCreation(DatabaseModel database) throws SQLException {
 	    	// Valid Login with Single Role
 	    	System.out.println("Create student account with username is testUser1 and password is testPass1");
-	        database.registerUser("testUser1", "testPass1", "", new String[]{"[Student]"}, false, null, new String[]{});
+	        database.registerUser("testUser1", "testPass1", "", new String[]{"Student"}, false, null, new String[]{});
 
 
 	        //Valid Login with Multiple Roles
 	        System.out.println("Create admin account with username and password is admin");
-	        database.registerUser("admin", "admin", "", new String[]{"[Admin]"}, false, null, new String[]{"Admin1"});
+	        database.registerUser("admin", "admin", "", new String[]{"Admin"}, false, null, new String[]{"Admin1"});
 	        
 	    }
 

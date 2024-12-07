@@ -55,7 +55,7 @@ public class userAdd extends Application {
 
 	        //Valid Login with Multiple Roles
 	        System.out.println("Create admin account with username and password is admin");
-	        database.registerUser("admin", "admin", "", new String[]{"[Admin]"}, false, null, new String[]{"Admin1"});
+	        database.registerUser("admin", "admin", "", new String[]{"Admin"}, false, null, new String[]{"Admin1"});
 	        
 	    }
 

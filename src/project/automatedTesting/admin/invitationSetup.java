@@ -63,7 +63,7 @@ public class invitationSetup extends Application {
 
 
 	        //Valid Login with Multiple Roles
-	        database.registerUser("admin", "admin", "", new String[]{"[Admin]"}, false, null, new String[]{"Admin1"});
+	        database.registerUser("admin", "admin", "", new String[]{"Admin"}, false, null, new String[]{"Admin1"});
 	        
 	    }
 
