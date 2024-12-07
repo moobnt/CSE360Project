@@ -23,7 +23,7 @@ public class FinishSetupPage extends TilePane {
 	
 	public FinishSetupPage(Stage primaryStage, User user, DatabaseModel database) {
 		
-		primaryStage.setTitle("Instructor Home page");
+		primaryStage.setTitle("Finish Setup");
         TextField email = new TextField();
         TextField first = new TextField();
         TextField middle = new TextField();
