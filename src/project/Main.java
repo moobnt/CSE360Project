@@ -1,42 +1,29 @@
 package project;
 
-import java.sql.JDBCType;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import project.account.DatabaseModel;
+import project.account.LoginService;
+import project.account.User;
+import project.util.Back;
 
-import project.DatabaseHelper;
+public class Main extends Application {
+    DatabaseModel databaseModel;
 
-public class Main {
-	
-	
-	public static void main(String[] args) {
-		
-		DatabaseModel databaseModel = new DatabaseModel();
-		
-		databaseModel.connect();
-		databaseModel.resetTables();
-		databaseModel.registerUser(
-				"asmithey", 
-				"pw", 
-				"aasmithe@asu.edu", 
-				new String[] {"Admin", "Student"}, 
-				false,
-				new Date().getTime() + TimeUnit.DAYS.toMillis(1),
-				new String[] {"Adam", "A", "Smithey", "Adam"});
-		
-		databaseModel.registerCode(
-				"hello", 
-				"Student", "Admin");
-		
-		databaseModel.editUser("asmithey", "password", "pass");
-		System.out.println(databaseModel.getUserField("asmithey","password"));
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-		databaseModel.addCodeRoles("hello", "Instructor");
-		
-		
-	}
-	
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        User user = new User();
+
+        databaseModel = new DatabaseModel();
+        databaseModel.connect();
+        
+        Back.initBack();
+
+        // Start at the login page
+        new LoginService(primaryStage, user, databaseModel);
+    }
 }
-
-
